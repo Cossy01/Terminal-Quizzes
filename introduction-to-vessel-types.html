@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introduction to Vessel Types</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .results-table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .results-table th, .results-table td {
+      padding: 12px 8px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      vertical-align: middle;
+    }
+    .results-table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #374151;
+    }
+    .results-table td:first-child {
+      text-align: left;
+      max-width: 300px;
+      word-wrap: break-word;
+    }
+    .correct { 
+      color: #059669; 
+      font-weight: 600;
+    }
+    .incorrect { 
+      color: #dc2626; 
+      font-weight: 600;
+    }
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .container {
+        background: white;
+        box-shadow: none;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+      }
+      #results-container button {
+        display: none;
+      }
+      .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+      }
+      .results-table th, .results-table td {
+        border: 1px solid #ddd;
+        font-size: 12px;
+        padding: 8px 4px;
+      }
+      .results-table td:first-child {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="quiz-container" class="container p-8 rounded-xl shadow-xl">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Introduction to Vessel Types</h1>
+    <div id="question-number" class="text-lg text-gray-600 mb-3 text-center font-medium"></div>
+    <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700"></div>
+    <form id="options-form" class="space-y-3"></form>
+    <div id="feedback" class="mt-6 text-center font-medium text-red-600"></div>
+    <div class="flex justify-center gap-4 mt-8">
+      <button id="back-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[100px]">Back</button>
+      <button id="next-btn" class="px-6 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors duration-200 font-medium min-w-[100px]">Next</button>
+    </div>
+  </div>
+  <div id="results-container" class="container p-8 rounded-xl shadow-xl" style="display:none;">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Introduction to Vessel Types - Results</h1>
+    <div class="text-center mb-8">
+      <p class="text-xl mb-2 text-gray-700">Your Score:</p>
+      <p class="text-4xl font-bold text-blue-700"><span id="final-score"></span> out of 15 (<span id="percentage"></span>%)</p>
+    </div>
+    <div class="overflow-x-auto">
+      <table id="results-table" class="results-table"></table>
+    </div>
+    <div class="flex justify-center gap-4 mt-8">
+      <button id="print-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[120px]">Print Results</button>
+      <button id="restart-btn" class="px-6 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors duration-200 font-medium min-w-[120px]">Restart Quiz</button>
+    </div>
+  </div>
+  <script>
+    const quizData = [
+      {
+        question: "Which vessel type is designed specifically for carrying containers and fitted with cell guides?",
+        options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
+        correct: "Cellular Vessel"
+      },
+      {
+        question: "What equipment is a Self-Sustained Vessel equipped with for loading and unloading?",
+        options: ["Cell guides", "Onboard lifting cranes", "Ramps", "Tugboats"],
+        correct: "Onboard lifting cranes"
+      },
+      {
+        question: "For which type of ports is a Self-Sustained Vessel most suitable?",
+        options: ["Ports with advanced quay cranes", "Ports with inadequate lifting equipment", "Ports with only ramps", "Ports with tugboats"],
+        correct: "Ports with inadequate lifting equipment"
+      },
+      {
+        question: "Which vessel combines features of a Cellular Vessel with onboard lifting cranes?",
+        options: ["Self-Sustained Non-Cellular Vessel", "Self-Sustained Cellular Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
+        correct: "Self-Sustained Cellular Vessel"
+      },
+      {
+        question: "What type of cargo does a Self-Sustained Non-Cellular Vessel typically carry?",
+        options: ["Wheeled vehicles", "Containers with cell guides", "Dry bulk", "Light containers"],
+        correct: "Dry bulk"
+      },
+      {
+        question: "Which vessel type is designed for wheeled vehicles, chassis, or trailers and uses a ramp?",
+        options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
+        correct: "Roll-On/Roll-Off Vessel"
+      },
+      {
+        question: "Is a Roll-On/Roll-Off Vessel considered self-sustaining?",
+        options: ["Yes", "No", "Only with tugboats", "Only with cell guides"],
+        correct: "Yes"
+      },
+      {
+        question: "What is a key feature of a Hatchless Vessel or Ultimate Container Carrier?",
+        options: ["Equipped with ramps", "No hatches for faster loading", "Uses tugboats", "Fitted with cell guides"],
+        correct: "No hatches for faster loading"
+      },
+      {
+        question: "Which vessel uses waterways to carry cargo and containers?",
+        options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
+        correct: "Barge/Lighter"
+      },
+      {
+        question: "What type of barge carrier may use onboard cranes to load or move containers?",
+        options: ["Lighter type", "Cellular type", "Roll-On type", "Hatchless type"],
+        correct: "Lighter type"
+      },
+      {
+        question: "Which vessel type might require tugboats for movement?",
+        options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
+        correct: "Barge/Lighter"
+      },
+      {
+        question: "What is a primary advantage of a Self-Sustained Vessel in ports with limited equipment?",
+        options: ["Faster ramp usage", "Independent loading and unloading", "Better cell guide fit", "Reduced tugboat need"],
+        correct: "Independent loading and unloading"
+      },
+      {
+        question: "Which vessel type is most likely to carry dry bulk cargo instead of containers?",
+        options: ["Self-Sustained Cellular Vessel", "Self-Sustained Non-Cellular Vessel", "Cellular Vessel", "Roll-On/Roll-Off Vessel"],
+        correct: "Self-Sustained Non-Cellular Vessel"
+      },
+      {
+        question: "What allows vehicles to be driven off a Roll-On/Roll-Off Vessel?",
+        options: ["Onboard cranes", "Cell guides", "A ramp", "Tugboats"],
+        correct: "A ramp"
+      },
+      {
+        question: "Which vessel type is designed to optimize container handling speed with no hatches?",
+        options: ["Ultimate Container Carrier/Hatchless Vessel", "Self-Sustained Vessel", "Barge/Lighter", "Cellular Vessel"],
+        correct: "Ultimate Container Carrier/Hatchless Vessel"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let answers = [];
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function startQuiz() {
+      shuffleArray(quizData);
+      answers = new Array(quizData.length).fill(null);
+      currentQuestion = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = quizData[currentQuestion];
+      document.getElementById('question-number').textContent = `Question ${currentQuestion + 1} of ${quizData.length}:`;
+      document.getElementById('question-text').textContent = q.question;
+      const optionsForm = document.getElementById('options-form');
+      optionsForm.innerHTML = '';
+      q.options.forEach(option => {
+        const label = document.createElement('label');
+        label.className = 'block p-4 bg-white bg-opacity-90 rounded-lg hover:bg-gray-50 border border-gray-200 cursor-pointer transition-all duration-200 hover:shadow-md';
+        label.innerHTML = `<input type="radio" name="answer" value="${option}" class="mr-3"> <span class="text-gray-700 text-lg">${option}</span>`;
+        optionsForm.appendChild(label);
+      });
+      document.getElementById('feedback').textContent = '';
+      document.querySelectorAll('input[name="answer"]').forEach(input => {
+        input.disabled = false;
+        if (answers[currentQuestion] === input.value) {
+          input.checked = true;
+        }
+      });
+      document.getElementById('back-btn').disabled = currentQuestion === 0;
+      document.getElementById('next-btn').textContent = currentQuestion === quizData.length - 1 ? 'Finish' : 'Next';
+      document.getElementById('next-btn').disabled = false;
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected && currentQuestion < quizData.length - 1) {
+        document.getElementById('feedback').textContent = 'Please select an answer!';
+        return;
+      }
+      if (selected) {
+        answers[currentQuestion] = selected.value;
+      }
+      if (currentQuestion < quizData.length - 1) {
+        currentQuestion++;
+        showQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function backQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('results-container').style.display = 'block';
+      let score = 0;
+      const table = document.getElementById('results-table');
+      let html = '<tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr>';
+      quizData.forEach((q, index) => {
+        const userAnswer = answers[index] || 'Not answered';
+        const isCorrect = userAnswer === q.correct;
+        if (isCorrect) score++;
+        html += `<tr><td>${q.question}</td><td>${userAnswer}</td><td>${q.correct}</td><td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td></tr>`;
+      });
+      table.innerHTML = html;
+      const percentage = Math.round((score / quizData.length) * 100);
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('percentage').textContent = percentage;
+    }
+
+    function restartQuiz() {
+      document.getElementById('results-container').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      startQuiz();
+    }
+
+    function printResults() { window.print(); }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('next-btn').addEventListener('click', nextQuestion);
+      document.getElementById('back-btn').addEventListener('click', backQuestion);
+      document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+      document.getElementById('print-btn').addEventListener('click', printResults);
+      startQuiz();
+    });
+  </script>
+</body>
+</html>
