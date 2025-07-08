@@ -3,22 +3,175 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terminal Quizzes</title>
+  <title>Terminal Operations Training Quizzes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    body { background-color: white; text-align: center; padding: 20px; }
-    ul { list-style-type: none; padding: 0; }
-    li { margin: 10px 0; }
-    a { text-decoration: none; color: #007BFF; }
-    a:hover { text-decoration: underline; }
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .quiz-card {
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    .quiz-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    .quiz-icon {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem auto;
+      font-size: 2rem;
+      box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3);
+    }
+    .header-gradient {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      .quiz-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
-<body>
-  <h1>Terminal Quizzes</h1>
-  <ul>
-    <li><a href="introduction-to-containers.html">Introduction to Containers</a></li>
-    <li><a href="introduction-to-terminal-systems.html">Introduction to Terminal Systems</a></li>
-    <li><a href="introduction-to-vessel-types.html">Introduction to Vessel Types</a></li>
-    <li><a href="introduction-to-terminal-equipment.html">Introduction to Terminal Equipment</a></li>
-  </ul>
+<body class="flex items-center justify-center min-h-screen p-4">
+  <div class="container max-w-6xl mx-auto">
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-24 h-24 bg-white rounded-full shadow-lg mb-6">
+        <i class="fas fa-ship text-4xl text-blue-600"></i>
+      </div>
+      <h1 class="text-5xl font-bold text-white mb-4 drop-shadow-lg">
+        Terminal Operations
+      </h1>
+      <h2 class="text-3xl font-semibold text-blue-100 mb-6">
+        Training Quizzes
+      </h2>
+      <p class="text-xl text-blue-50 max-w-2xl mx-auto leading-relaxed">
+        Test your knowledge with our comprehensive terminal operations training modules. 
+        Each quiz covers essential concepts for port and terminal professionals.
+      </p>
+    </div>
+
+    <!-- Quiz Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 quiz-grid">
+      <!-- Containers Quiz -->
+      <div class="quiz-card rounded-2xl p-8 text-center">
+        <div class="quiz-icon">
+          <i class="fas fa-boxes"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Introduction to Containers</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          Learn about container types, specifications, and handling procedures essential for terminal operations.
+        </p>
+        <a href="introduction-to-containers.html" 
+           class="inline-flex items-center justify-center w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+          <i class="fas fa-play mr-3"></i>
+          Start Quiz
+        </a>
+        <div class="mt-4 flex justify-center items-center text-sm text-gray-500">
+          <i class="fas fa-clock mr-2"></i>
+          <span>~15 minutes</span>
+        </div>
+      </div>
+
+      <!-- Terminal Systems Quiz -->
+      <div class="quiz-card rounded-2xl p-8 text-center">
+        <div class="quiz-icon">
+          <i class="fas fa-cogs"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Terminal Systems</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          Master the key terminal management systems and operational procedures used in modern ports.
+        </p>
+        <a href="introduction-to-terminal-systems.html" 
+           class="inline-flex items-center justify-center w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+          <i class="fas fa-play mr-3"></i>
+          Start Quiz
+        </a>
+        <div class="mt-4 flex justify-center items-center text-sm text-gray-500">
+          <i class="fas fa-clock mr-2"></i>
+          <span>~20 minutes</span>
+        </div>
+      </div>
+
+      <!-- Vessel Types Quiz -->
+      <div class="quiz-card rounded-2xl p-8 text-center">
+        <div class="quiz-icon">
+          <i class="fas fa-anchor"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Vessel Types</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          Understand different vessel classifications, characteristics, and handling requirements.
+        </p>
+        <a href="introduction-to-vessel-types.html" 
+           class="inline-flex items-center justify-center w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-orange-700 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+          <i class="fas fa-play mr-3"></i>
+          Start Quiz
+        </a>
+        <div class="mt-4 flex justify-center items-center text-sm text-gray-500">
+          <i class="fas fa-clock mr-2"></i>
+          <span>~18 minutes</span>
+        </div>
+      </div>
+
+      <!-- Terminal Equipment Quiz -->
+      <div class="quiz-card rounded-2xl p-8 text-center">
+        <div class="quiz-icon">
+          <i class="fas fa-tools"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Terminal Equipment</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          Explore the various equipment types used in terminal operations and their specific functions.
+        </p>
+        <a href="introduction-to-terminal-equipment.html" 
+           class="inline-flex items-center justify-center w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+          <i class="fas fa-play mr-3"></i>
+          Start Quiz
+        </a>
+        <div class="mt-4 flex justify-center items-center text-sm text-gray-500">
+          <i class="fas fa-clock mr-2"></i>
+          <span>~22 minutes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-12 text-blue-100">
+      <div class="flex justify-center items-center space-x-6 mb-4">
+        <div class="flex items-center">
+          <i class="fas fa-graduation-cap mr-2"></i>
+          <span>Professional Training</span>
+        </div>
+        <div class="flex items-center">
+          <i class="fas fa-certificate mr-2"></i>
+          <span>Skill Assessment</span>
+        </div>
+        <div class="flex items-center">
+          <i class="fas fa-chart-line mr-2"></i>
+          <span>Progress Tracking</span>
+        </div>
+      </div>
+      <p class="text-sm opacity-75">
+        © 2025 Terminal Operations Training • Hutchison Ports
+      </p>
+    </div>
+  </div>
 </body>
 </html>
