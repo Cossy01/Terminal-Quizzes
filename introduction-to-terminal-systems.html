@@ -17,7 +17,13 @@
 </head>
 <body class="flex items-center justify-center p-4">
   <div id="quiz-container" class="container max-w-md p-6 rounded-lg shadow-lg">
-    <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Introduction to Terminal Systems</h1>
+    <div class="flex justify-between items-center mb-4">
+      <a href="index.html" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200 text-sm">
+        ← Menu
+      </a>
+      <h1 class="text-2xl font-bold text-gray-800 flex-1 text-center">Introduction to Terminal Systems</h1>
+      <div class="w-16"></div> <!-- Spacer for centering -->
+    </div>
     <div id="question-number" class="text-lg text-gray-600 mb-2"></div>
     <div id="question-text" class="text-xl mb-4"></div>
     <form id="options-form" class="space-y-2">
@@ -33,7 +39,13 @@
     </div>
   </div>
   <div id="results-container" class="container max-w-md p-6 rounded-lg shadow-lg hidden">
-    <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Introduction to Terminal Systems - Results</h1>
+    <div class="flex justify-between items-center mb-4">
+      <a href="index.html" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200 text-sm">
+        ← Menu
+      </a>
+      <h1 class="text-2xl font-bold text-gray-800 flex-1 text-center">Introduction to Terminal Systems - Results</h1>
+      <div class="w-16"></div> <!-- Spacer for centering -->
+    </div>
     <p class="text-center text-lg mb-4">Your Score: <span id="final-score"></span> out of 25</p>
     <table id="results-table" class="results-table w-full"></table>
     <div class="mt-4 flex justify-between">
