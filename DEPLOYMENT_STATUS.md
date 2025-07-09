@@ -10,8 +10,6 @@ Terminal-Quizzes/
 ├── introduction-to-terminal-equipment.html # Terminal equipment quiz (25 questions)
 ├── introduction-to-terminal-systems.html   # Terminal systems quiz (25 questions)
 ├── introduction-to-vessel-types.html       # Vessel types quiz (15 questions)
-├── hutchison-ports-logo.png               # Logo asset
-├── hutchison-ports-logo.svg               # Logo asset (vector)
 └── .git/                                   # Git repository
 ```
 
