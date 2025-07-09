@@ -65,6 +65,14 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      display: block;
+      width: 100%;
+    }
+    
+    #options-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
     
     .quiz-option:hover {
@@ -219,7 +227,7 @@
     
     <div id="question-number" class="text-lg text-gray-600 mb-3 text-center font-medium"></div>
     <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700 font-medium"></div>
-    <form id="options-form" class="space-y-3"></form>
+    <form id="options-form"></form>
     <div id="feedback" class="mt-6 text-center font-medium text-red-600"></div>
     <div class="flex justify-center gap-4 mt-8">
       <button id="back-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[100px] disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
@@ -305,6 +313,8 @@
       q.options.forEach(option => {
         const label = document.createElement('label');
         label.className = 'quiz-option';
+        label.style.display = 'block';
+        label.style.width = '100%';
         label.innerHTML = `<input type="radio" name="answer" value="${option}"> <span class="text-gray-700 text-lg font-medium">${option}</span>`;
         
         // Add click handler for enhanced interaction
