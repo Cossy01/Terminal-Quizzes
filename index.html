@@ -93,21 +93,21 @@
     
     .quiz-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(355px, 1fr));
-      gap: 1.65rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
     }
     
     .quiz-card {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 16px;
-      padding: 2.2rem;
+      padding: 1.8rem;
       text-align: left;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
       display: flex;
       flex-direction: column;
-      min-height: 310px;
+      min-height: 280px;
       position: relative;
       overflow: hidden;
     }
@@ -237,6 +237,9 @@
     }
     
     /* Responsive Design */
+    @media (max-width: 1200px) {
+      .quiz-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    }
     @media (max-width: 768px) {
       .main-title { font-size: 2.25rem; }
       .subtitle { font-size: 1.25rem; }
