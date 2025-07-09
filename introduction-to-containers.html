@@ -217,20 +217,42 @@
         ← Back to Menu
       </a>
       <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">Introduction To Containers</h1>
-      <div class="w-24"></div> <!-- Spacer for centering -->
+      <div class="timer-display text-lg font-bold text-green-700" id="timer-display">25:00</div>
     </div>
     
-    <!-- Progress Bar -->
-    <div class="progress-container">
-      <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+    <!-- Enhanced Progress Section -->
+    <div class="mb-6">
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+      </div>
+      
+      <!-- Quiz Stats -->
+      <div class="flex justify-between items-center mt-3 text-sm text-gray-600">
+        <div class="quiz-stats">
+          <span id="question-category" class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium"></span>
+          <span id="question-difficulty" class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium ml-2"></span>
+        </div>
+        <div class="score-display">
+          Correct: <span id="current-score" class="font-bold text-green-600">0</span> / 
+          <span id="total-questions">25</span>
+        </div>
+      </div>
     </div>
     
     <div id="question-number" class="text-lg text-gray-600 mb-3 text-center font-medium"></div>
     <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700 font-medium"></div>
     <form id="options-form"></form>
-    <div id="feedback" class="mt-6 text-center font-medium text-red-600"></div>
+    
+    <!-- Feedback Section -->
+    <div id="feedback" class="mt-6 text-center">
+      <div id="answer-feedback" class="mb-4"></div>
+      <div id="explanation" class="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg hidden"></div>
+    </div>
+    
     <div class="flex justify-center gap-4 mt-8">
       <button id="back-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[100px] disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
+      <button id="show-explanation-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[140px] hidden">Show Explanation</button>
       <button id="next-btn" class="px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors duration-200 font-medium min-w-[100px] shadow-lg hover:shadow-xl">Next</button>
     </div>
   </div>
@@ -247,9 +269,27 @@
     <div class="bg-gradient-to-br from-green-50 to-emerald-100 p-6 rounded-xl mb-8 border border-green-200">
       <div class="text-center">
         <p class="text-xl mb-2 text-gray-700 font-medium">Your Final Score</p>
-        <p class="text-5xl font-bold text-green-700 mb-2"><span id="final-score"></span>/<span>17</span></p>
+        <p class="text-5xl font-bold text-green-700 mb-2"><span id="final-score"></span>/<span>25</span></p>
         <p class="text-xl text-green-600 font-semibold"><span id="percentage"></span>% Complete</p>
+        
+        <!-- Performance Grade -->
+        <div class="mt-4">
+          <div id="performance-grade" class="text-2xl font-bold mb-2"></div>
+          <div id="performance-message" class="text-gray-600"></div>
+        </div>
+        
+        <!-- Time Stats -->
+        <div class="mt-4 text-sm text-gray-600">
+          <div>Time Taken: <span id="time-taken" class="font-medium"></span></div>
+          <div>Average per Question: <span id="avg-time" class="font-medium"></span></div>
+        </div>
       </div>
+    </div>
+    
+    <!-- Category Performance -->
+    <div class="mb-6">
+      <h3 class="text-lg font-bold mb-4 text-gray-800">Performance by Category</h3>
+      <div id="category-performance" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
     </div>
     
     <div class="overflow-x-auto">
@@ -257,32 +297,221 @@
     </div>
     <div class="flex justify-center gap-4 mt-8">
       <button id="print-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">📄 Print Results</button>
+      <button id="review-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">📚 Review Answers</button>
       <button id="restart-btn" class="px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">🔄 Restart Quiz</button>
     </div>
   </div>
   <script>
     const quizData = [
-      { question: "Which container type is the standard design with fixed walls and roof?", options: ["General-Purpose", "Open-Top", "Platform", "Tank"], correct: "General-Purpose" },
-      { question: "Which container type has a removable flexible roof for loading heavy or oversized cargo?", options: ["General-Purpose", "Open-Top", "Platform", "Tank"], correct: "Open-Top" },
-      { question: "What is the primary use of a Platform Container?", options: ["Transporting liquids", "Carrying oversized cargo that doesn't fit in standard containers", "Storing frozen goods", "Transporting clothing on hangers"], correct: "Carrying oversized cargo that doesn't fit in standard containers" },
-      { question: "Which container is designed for transporting heavy machinery with fixed or collapsible end walls?", options: ["Flat Rack", "Side-Door", "Ventilation", "Dry-Bulk"], correct: "Flat Rack" },
-      { question: "What feature makes a Side-Door Container easier to load when rear access isn't possible?", options: ["Pivoting or lifting doors on the side", "Removable roof", "Collapsible walls", "Built-in cooling unit"], correct: "Pivoting or lifting doors on the side" },
-      { question: "Which container is ideal for coffee or cocoa beans due to ventilation slots?", options: ["Ventilation Container", "Reefer Container", "Garment Container", "Dry-Bulk Container"], correct: "Ventilation Container" },
-      { question: "What type of cargo is a Tank Container designed to transport?", options: ["Heavy machinery", "Liquids or gases", "Clothing on hangers", "Loose unpackaged goods"], correct: "Liquids or gases" },
-      { question: "Which container is suited for heavy, free-flowing cargo like cement or steel pipes?", options: ["Dry-Bulk Container", "Insulated Container", "Open-Top Container", "Garment Container"], correct: "Dry-Bulk Container" },
-      { question: "Which container is essentially a giant refrigerator for frozen or cold cargo?", options: ["Insulated Container", "Reefer Container", "Open-Top Container", "Bulk Cargo Container"], correct: "Reefer Container" },
-      { question: "What is the primary feature of an Insulated Container?", options: ["Built-in cooling unit", "Reliance on external cold-air source", "Removable roof", "Side doors"], correct: "Reliance on external cold-air source" },
-      { question: "Which container is designed specifically for transporting clothing on hangers?", options: ["Garment Container", "Reefer Container", "Ventilation Container", "Platform Container"], correct: "Garment Container" },
-      { question: "What type of cargo is a Bulk Cargo Container ideal for?", options: ["Liquids", "Loose or unpackaged goods like boats or sugar", "Frozen goods", "Clothing on hangers"], correct: "Loose or unpackaged goods like boats or sugar" },
-      { question: "According to the ISO 6346 standard, what does the size code '45G1' indicate about a container?", options: ["A 20-foot general-purpose container", "A 45-foot high-cube container", "A 45-foot general-purpose container", "A 40-foot refrigerated container"], correct: "A 45-foot general-purpose container" },
-      { question: "Which UNDG classification applies to dangerous goods that may liquefy if their moisture content exceeds the Transportable Moisture Limit?", options: ["Group A", "Group B", "Group C", "Group D"], correct: "Group A" },
-      { question: "What does an 'OOG' designation signify for a container?", options: ["Overloaded cargo", "Out-of-gauge or over-dimension cargo", "Operational off-grid", "Optimized open-gate"], correct: "Out-of-gauge or over-dimension cargo" },
-      { question: "In the ISO 6346 standard, what is the purpose of the E-code or equipment category identifier?", options: ["To indicate the container's weight limit", "To specify the type of container or related equipment", "To mark the country of origin", "To assign a unique serial number"], correct: "To specify the type of container or related equipment" },
-      { question: "What does an SP code typically indicate for a container requiring special handling?", options: ["Standard packing instructions", "Special procedures for hazardous materials", "Structural performance rating", "Scheduled port clearance"], correct: "Special procedures for hazardous materials" }
+      { 
+        question: "Which container type is the standard design with fixed walls and roof?", 
+        options: ["General-Purpose", "Open-Top", "Platform", "Tank"], 
+        correct: "General-Purpose",
+        explanation: "General-Purpose containers are the most common type, featuring a rigid structure with fixed walls and roof, suitable for dry cargo that doesn't require special handling.",
+        category: "Container Types",
+        difficulty: "Basic"
+      },
+      { 
+        question: "Which container type has a removable flexible roof for loading heavy or oversized cargo?", 
+        options: ["General-Purpose", "Open-Top", "Platform", "Tank"], 
+        correct: "Open-Top",
+        explanation: "Open-Top containers feature removable tarpaulin roofs that allow loading from above using cranes, perfect for oversized or heavy cargo that won't fit through standard doors.",
+        category: "Container Types",
+        difficulty: "Basic"
+      },
+      { 
+        question: "What is the primary use of a Platform Container?", 
+        options: ["Transporting liquids", "Carrying oversized cargo that doesn't fit in standard containers", "Storing frozen goods", "Transporting clothing on hangers"], 
+        correct: "Carrying oversized cargo that doesn't fit in standard containers",
+        explanation: "Platform containers are essentially flat bases without walls or roof, designed specifically for cargo that exceeds standard container dimensions.",
+        category: "Container Types",
+        difficulty: "Basic"
+      },
+      { 
+        question: "Which container is designed for transporting heavy machinery with fixed or collapsible end walls?", 
+        options: ["Flat Rack", "Side-Door", "Ventilation", "Dry-Bulk"], 
+        correct: "Flat Rack",
+        explanation: "Flat Rack containers have collapsible or fixed end walls and are specifically engineered to handle heavy machinery and oversized equipment that requires side loading.",
+        category: "Container Types",
+        difficulty: "Intermediate"
+      },
+      { 
+        question: "What feature makes a Side-Door Container easier to load when rear access isn't possible?", 
+        options: ["Pivoting or lifting doors on the side", "Removable roof", "Collapsible walls", "Built-in cooling unit"], 
+        correct: "Pivoting or lifting doors on the side",
+        explanation: "Side-Door containers feature additional doors along the side panels, providing access when rear loading is restricted or impractical in tight terminal spaces.",
+        category: "Container Features",
+        difficulty: "Basic"
+      },
+      { 
+        question: "Which container is ideal for coffee or cocoa beans due to ventilation slots?", 
+        options: ["Ventilation Container", "Reefer Container", "Garment Container", "Dry-Bulk Container"], 
+        correct: "Ventilation Container",
+        explanation: "Ventilation containers have specially designed air circulation slots that prevent moisture buildup and spoilage in organic commodities like coffee and cocoa beans.",
+        category: "Specialized Containers",
+        difficulty: "Intermediate"
+      },
+      { 
+        question: "What type of cargo is a Tank Container designed to transport?", 
+        options: ["Heavy machinery", "Liquids or gases", "Clothing on hangers", "Loose unpackaged goods"], 
+        correct: "Liquids or gases",
+        explanation: "Tank containers are pressure vessels specifically designed for liquid and gaseous cargo, featuring specialized fittings, valves, and safety systems.",
+        category: "Specialized Containers",
+        difficulty: "Basic"
+      },
+      { 
+        question: "Which container is suited for heavy, free-flowing cargo like cement or steel pipes?", 
+        options: ["Dry-Bulk Container", "Insulated Container", "Open-Top Container", "Garment Container"], 
+        correct: "Dry-Bulk Container",
+        explanation: "Dry-Bulk containers feature specialized discharge systems and reinforced structures to handle loose, granular materials and heavy industrial cargo.",
+        category: "Specialized Containers",
+        difficulty: "Intermediate"
+      },
+      { 
+        question: "Which container is essentially a giant refrigerator for frozen or cold cargo?", 
+        options: ["Insulated Container", "Reefer Container", "Open-Top Container", "Bulk Cargo Container"], 
+        correct: "Reefer Container",
+        explanation: "Reefer (Refrigerated) containers have built-in cooling systems with compressors and condensers, maintaining precise temperature control for perishable goods.",
+        category: "Temperature-Controlled",
+        difficulty: "Basic"
+      },
+      { 
+        question: "What is the primary feature of an Insulated Container?", 
+        options: ["Built-in cooling unit", "Reliance on external cold-air source", "Removable roof", "Side doors"], 
+        correct: "Reliance on external cold-air source",
+        explanation: "Insulated containers depend on external refrigeration systems (clip-on units) rather than built-in cooling, making them more cost-effective for certain routes.",
+        category: "Temperature-Controlled",
+        difficulty: "Intermediate"
+      },
+      { 
+        question: "Which container is designed specifically for transporting clothing on hangers?", 
+        options: ["Garment Container", "Reefer Container", "Ventilation Container", "Platform Container"], 
+        correct: "Garment Container",
+        explanation: "Garment containers feature internal rail systems that allow clothing to be transported while hanging, preventing wrinkles and reducing handling damage.",
+        category: "Specialized Containers",
+        difficulty: "Basic"
+      },
+      { 
+        question: "What type of cargo is a Bulk Cargo Container ideal for?", 
+        options: ["Liquids", "Loose or unpackaged goods like boats or sugar", "Frozen goods", "Clothing on hangers"], 
+        correct: "Loose or unpackaged goods like boats or sugar",
+        explanation: "Bulk Cargo containers are designed for loose, granular, or irregularly shaped cargo that doesn't require individual packaging or special environmental controls.",
+        category: "Specialized Containers",
+        difficulty: "Basic"
+      },
+      { 
+        question: "According to the ISO 6346 standard, what does the size code '45G1' indicate about a container?", 
+        options: ["A 20-foot general-purpose container", "A 45-foot high-cube container", "A 45-foot general-purpose container", "A 40-foot refrigerated container"], 
+        correct: "A 45-foot general-purpose container",
+        explanation: "In ISO 6346, the first two digits (45) indicate length, 'G' indicates general-purpose type, and '1' indicates standard height, totaling a 45-foot standard container.",
+        category: "Standards & Codes",
+        difficulty: "Advanced"
+      },
+      { 
+        question: "Which UNDG classification applies to dangerous goods that may liquefy if their moisture content exceeds the Transportable Moisture Limit?", 
+        options: ["Group A", "Group B", "Group C", "Group D"], 
+        correct: "Group A",
+        explanation: "Group A dangerous goods under UNDG can liquefy during transport if moisture exceeds limits, potentially causing cargo shift and vessel stability issues.",
+        category: "Dangerous Goods",
+        difficulty: "Advanced"
+      },
+      { 
+        question: "What does an 'OOG' designation signify for a container?", 
+        options: ["Overloaded cargo", "Out-of-gauge or over-dimension cargo", "Operational off-grid", "Optimized open-gate"], 
+        correct: "Out-of-gauge or over-dimension cargo",
+        explanation: "OOG (Out-of-Gauge) indicates cargo that exceeds standard container dimensions, requiring special handling equipment and operational procedures.",
+        category: "Operational Terms",
+        difficulty: "Intermediate"
+      },
+      { 
+        question: "In the ISO 6346 standard, what is the purpose of the E-code or equipment category identifier?", 
+        options: ["To indicate the container's weight limit", "To specify the type of container or related equipment", "To mark the country of origin", "To assign a unique serial number"], 
+        correct: "To specify the type of container or related equipment",
+        explanation: "The E-code in ISO 6346 classifies container types (like dry cargo, tank, refrigerated) ensuring proper handling and equipment matching at terminals.",
+        category: "Standards & Codes",
+        difficulty: "Advanced"
+      },
+      { 
+        question: "What does an SP code typically indicate for a container requiring special handling?", 
+        options: ["Standard packing instructions", "Special procedures for hazardous materials", "Structural performance rating", "Scheduled port clearance"], 
+        correct: "Special procedures for hazardous materials",
+        explanation: "SP (Special Provisions) codes mandate specific safety procedures for dangerous goods, including packaging, marking, and handling requirements.",
+        category: "Dangerous Goods",
+        difficulty: "Advanced"
+      },
+      { 
+        question: "What is the maximum gross weight for a standard 20-foot container according to ISO specifications?", 
+        options: ["24,000 kg", "30,480 kg", "26,330 kg", "20,320 kg"], 
+        correct: "30,480 kg",
+        explanation: "ISO standards specify 30,480 kg (67,200 lbs) as the maximum gross weight for 20-foot containers, including container tare weight and cargo.",
+        category: "Specifications",
+        difficulty: "Intermediate"
+      },
+      { 
+        question: "Which temperature range is typically maintained in a reefer container for frozen cargo?", 
+        options: ["+2°C to +8°C", "-18°C to -25°C", "-5°C to +5°C", "+10°C to +15°C"], 
+        correct: "-18°C to -25°C",
+        explanation: "Frozen cargo requires temperatures between -18°C to -25°C to maintain product integrity and prevent spoilage during long-distance transport.",
+        category: "Temperature-Controlled",
+        difficulty: "Intermediate"
+      },
+      { 
+        question: "What is the internal cubic capacity of a standard 40-foot high-cube container?", 
+        options: ["67.7 m³", "76.3 m³", "86.1 m³", "59.3 m³"], 
+        correct: "76.3 m³",
+        explanation: "A 40-foot high-cube container provides 76.3 m³ of internal volume, offering additional height compared to standard containers for voluminous cargo.",
+        category: "Specifications",
+        difficulty: "Intermediate"
+      },
+      { 
+        question: "Which marking on a container indicates it has passed CSC (Container Safety Convention) inspection?", 
+        options: ["ISO certification plate", "CSC approval plate", "IMDG compliance label", "Terminal inspection sticker"], 
+        correct: "CSC approval plate",
+        explanation: "The CSC approval plate certifies that containers meet international safety standards and are approved for international transport under the Container Safety Convention.",
+        category: "Safety & Inspection",
+        difficulty: "Advanced"
+      },
+      { 
+        question: "What is the purpose of corner castings on shipping containers?", 
+        options: ["Decoration and branding", "Structural reinforcement and lifting points", "Ventilation and drainage", "Lock mechanisms only"], 
+        correct: "Structural reinforcement and lifting points",
+        explanation: "Corner castings are critical structural elements that distribute lifting forces and provide standardized connection points for handling equipment and securing systems.",
+        category: "Container Design",
+        difficulty: "Basic"
+      },
+      { 
+        question: "Which container modification allows for temperature monitoring during transport?", 
+        options: ["Data logger installation", "GPS tracking device", "RFID tag placement", "Barcode enhancement"], 
+        correct: "Data logger installation",
+        explanation: "Data loggers continuously monitor and record temperature, humidity, and other environmental conditions, providing evidence of proper cargo care during transport.",
+        category: "Technology",
+        difficulty: "Intermediate"
+      },
+      { 
+        question: "What does the term 'demurrage' refer to in container operations?", 
+        options: ["Container cleaning costs", "Storage fees for containers held beyond free time", "Transportation insurance", "Loading equipment rental"], 
+        correct: "Storage fees for containers held beyond free time",
+        explanation: "Demurrage charges apply when containers remain at terminals or depots beyond the agreed free time period, encouraging efficient cargo movement and terminal space utilization.",
+        category: "Commercial Terms",
+        difficulty: "Intermediate"
+      },
+      { 
+        question: "Which factor is most critical when determining container stacking height in a terminal yard?", 
+        options: ["Container color coding", "Ground bearing capacity and equipment reach", "Alphabetical organization", "Customer preference"], 
+        correct: "Ground bearing capacity and equipment reach",
+        explanation: "Safe stacking depends on ground conditions that can support the weight and equipment capabilities to reach higher tiers safely and efficiently.",
+        category: "Terminal Operations",
+        difficulty: "Advanced"
+      }
     ];
 
     let currentQuestion = 0;
     let answers = [];
+    let startTime = Date.now();
+    let timeLimit = 25 * 60 * 1000; // 25 minutes in milliseconds
+    let timerInterval;
+    let currentScore = 0;
+    let questionStartTime = Date.now();
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -291,14 +520,72 @@
       }
     }
 
+    function startTimer() {
+      const timerDisplay = document.getElementById('timer-display');
+      timerInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remaining = timeLimit - elapsed;
+        
+        if (remaining <= 0) {
+          clearInterval(timerInterval);
+          showResults(); // Auto-submit when time runs out
+          return;
+        }
+        
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Change color when time is running low
+        if (remaining < 5 * 60 * 1000) { // Last 5 minutes
+          timerDisplay.classList.add('text-red-600');
+          timerDisplay.classList.remove('text-green-700');
+        }
+      }, 1000);
+    }
+
+    function updateQuestionMeta(question) {
+      document.getElementById('question-category').textContent = question.category || 'General';
+      
+      const difficultyEl = document.getElementById('question-difficulty');
+      difficultyEl.textContent = question.difficulty || 'Basic';
+      difficultyEl.className = `px-2 py-1 rounded text-xs font-medium ml-2 ${
+        question.difficulty === 'Advanced' ? 'bg-red-100 text-red-700' :
+        question.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' :
+        'bg-green-100 text-green-700'
+      }`;
+      
+      document.getElementById('current-score').textContent = currentScore;
+      document.getElementById('total-questions').textContent = quizData.length;
+    }
+
+    function showFeedback(isCorrect, explanation) {
+      const feedbackEl = document.getElementById('answer-feedback');
+      const explanationEl = document.getElementById('explanation');
+      const showExplanationBtn = document.getElementById('show-explanation-btn');
+      
+      feedbackEl.innerHTML = isCorrect ? 
+        '<div class="text-green-600 font-semibold">✓ Correct!</div>' :
+        '<div class="text-red-600 font-semibold">✗ Incorrect</div>';
+      
+      if (explanation) {
+        explanationEl.textContent = explanation;
+        showExplanationBtn.style.display = 'inline-block';
+      }
+    }
+
     function startQuiz() {
       shuffleArray(quizData);
       answers = new Array(quizData.length).fill(null);
       currentQuestion = 0;
+      currentScore = 0;
+      startTime = Date.now();
+      startTimer();
       showQuestion();
     }
 
     function showQuestion() {
+      questionStartTime = Date.now();
       const q = quizData[currentQuestion];
       
       // Update progress bar
@@ -307,6 +594,10 @@
       
       document.getElementById('question-number').textContent = `Question ${currentQuestion + 1} of ${quizData.length}:`;
       document.getElementById('question-text').textContent = q.question;
+      
+      // Update question metadata
+      updateQuestionMeta(q);
+      
       const optionsForm = document.getElementById('options-form');
       optionsForm.innerHTML = '';
       
@@ -326,12 +617,22 @@
         optionsForm.appendChild(label);
       });
       
-      document.getElementById('feedback').textContent = '';
+      // Clear previous feedback
+      document.getElementById('answer-feedback').innerHTML = '';
+      document.getElementById('explanation').classList.add('hidden');
+      document.getElementById('show-explanation-btn').style.display = 'none';
+      
+      // Restore previous selection if exists
       document.querySelectorAll('input[name="answer"]').forEach(input => {
         input.disabled = false;
-        if (answers[currentQuestion] === input.value) {
+        if (answers[currentQuestion] && answers[currentQuestion].answer === input.value) {
           input.checked = true;
           input.closest('.quiz-option').classList.add('selected');
+          
+          // Show previous feedback if available
+          if (answers[currentQuestion].feedback) {
+            showFeedback(answers[currentQuestion].isCorrect, q.explanation);
+          }
         }
       });
       
@@ -343,16 +644,35 @@
     function nextQuestion() {
       const selected = document.querySelector('input[name="answer"]:checked');
       if (!selected && currentQuestion < quizData.length - 1) {
-        document.getElementById('feedback').textContent = 'Please select an answer!';
+        document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">Please select an answer!</div>';
         return;
       }
+      
       if (selected) {
-        answers[currentQuestion] = selected.value;
+        const isCorrect = selected.value === quizData[currentQuestion].correct;
+        
+        // Store answer with additional metadata
+        answers[currentQuestion] = {
+          answer: selected.value,
+          isCorrect: isCorrect,
+          timeSpent: Date.now() - questionStartTime,
+          feedback: true
+        };
+        
+        if (isCorrect) {
+          currentScore++;
+          document.getElementById('current-score').textContent = currentScore;
+        }
+        
+        // Show immediate feedback
+        showFeedback(isCorrect, quizData[currentQuestion].explanation);
       }
+      
       if (currentQuestion < quizData.length - 1) {
         currentQuestion++;
         showQuestion();
       } else {
+        clearInterval(timerInterval);
         showResults();
       }
     }
@@ -367,22 +687,96 @@
     function showResults() {
       document.getElementById('quiz-container').style.display = 'none';
       document.getElementById('results-container').style.display = 'block';
+      
       let score = 0;
-      const table = document.getElementById('results-table');
-      let html = '<tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr>';
+      let totalTime = Date.now() - startTime;
+      let categoryStats = {};
+      
+      // Calculate performance statistics
       quizData.forEach((q, index) => {
-        const userAnswer = answers[index] || 'Not answered';
-        const isCorrect = userAnswer === q.correct;
+        const answer = answers[index];
+        const isCorrect = answer && answer.isCorrect;
         if (isCorrect) score++;
-        html += `<tr><td>${q.question}</td><td>${userAnswer}</td><td>${q.correct}</td><td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td></tr>`;
+        
+        // Category performance tracking
+        const category = q.category || 'General';
+        if (!categoryStats[category]) {
+          categoryStats[category] = { correct: 0, total: 0 };
+        }
+        categoryStats[category].total++;
+        if (isCorrect) categoryStats[category].correct++;
       });
-      table.innerHTML = html;
+      
+      // Update score display
       const percentage = Math.round((score / quizData.length) * 100);
       document.getElementById('final-score').textContent = score;
       document.getElementById('percentage').textContent = percentage;
+      
+      // Show performance grade
+      const gradeEl = document.getElementById('performance-grade');
+      const messageEl = document.getElementById('performance-message');
+      
+      if (percentage >= 90) {
+        gradeEl.textContent = 'Excellent! 🏆';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-green-600';
+        messageEl.textContent = 'Outstanding performance! You have mastered container operations.';
+      } else if (percentage >= 80) {
+        gradeEl.textContent = 'Very Good! 🎯';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-blue-600';
+        messageEl.textContent = 'Great job! You have a strong understanding of container concepts.';
+      } else if (percentage >= 70) {
+        gradeEl.textContent = 'Good 👍';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-yellow-600';
+        messageEl.textContent = 'Good work! Consider reviewing some topics for improvement.';
+      } else {
+        gradeEl.textContent = 'Needs Review 📚';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-red-600';
+        messageEl.textContent = 'Additional study recommended. Focus on the areas you missed.';
+      }
+      
+      // Time statistics
+      const minutes = Math.floor(totalTime / 60000);
+      const seconds = Math.floor((totalTime % 60000) / 1000);
+      const avgTimePerQuestion = Math.floor(totalTime / quizData.length / 1000);
+      
+      document.getElementById('time-taken').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      document.getElementById('avg-time').textContent = `${avgTimePerQuestion}s`;
+      
+      // Category performance
+      const categoryContainer = document.getElementById('category-performance');
+      categoryContainer.innerHTML = '';
+      Object.entries(categoryStats).forEach(([category, stats]) => {
+        const categoryCard = document.createElement('div');
+        const categoryPercentage = Math.round((stats.correct / stats.total) * 100);
+        categoryCard.className = 'bg-white p-4 rounded-lg border text-center';
+        categoryCard.innerHTML = `
+          <div class="font-semibold text-gray-800">${category}</div>
+          <div class="text-2xl font-bold ${categoryPercentage >= 80 ? 'text-green-600' : categoryPercentage >= 60 ? 'text-yellow-600' : 'text-red-600'}">${stats.correct}/${stats.total}</div>
+          <div class="text-sm text-gray-600">${categoryPercentage}%</div>
+        `;
+        categoryContainer.appendChild(categoryCard);
+      });
+      
+      // Update results table
+      const table = document.getElementById('results-table');
+      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr>';
+      quizData.forEach((q, index) => {
+        const answer = answers[index];
+        const userAnswer = answer ? answer.answer : 'Not answered';
+        const isCorrect = answer ? answer.isCorrect : false;
+        html += `<tr>
+          <td>${q.question}</td>
+          <td><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">${q.category || 'General'}</span></td>
+          <td>${userAnswer}</td>
+          <td>${q.correct}</td>
+          <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
+        </tr>`;
+      });
+      table.innerHTML = html;
     }
 
     function restartQuiz() {
+      if (timerInterval) clearInterval(timerInterval);
       document.getElementById('results-container').style.display = 'none';
       document.getElementById('quiz-container').style.display = 'block';
       startQuiz();
@@ -390,11 +784,25 @@
 
     function printResults() { window.print(); }
 
+    function reviewAnswers() {
+      // Create a review modal or scroll to detailed results
+      alert('Review functionality: Study the detailed results table below to understand your performance in each category.');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('next-btn').addEventListener('click', nextQuestion);
       document.getElementById('back-btn').addEventListener('click', backQuestion);
       document.getElementById('restart-btn').addEventListener('click', restartQuiz);
       document.getElementById('print-btn').addEventListener('click', printResults);
+      
+      // Add new event handlers
+      document.getElementById('review-btn').addEventListener('click', reviewAnswers);
+      document.getElementById('show-explanation-btn').addEventListener('click', function() {
+        const explanationEl = document.getElementById('explanation');
+        explanationEl.classList.toggle('hidden');
+        this.textContent = explanationEl.classList.contains('hidden') ? 'Show Explanation' : 'Hide Explanation';
+      });
+      
       startQuiz();
     });
   </script>

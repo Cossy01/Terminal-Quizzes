@@ -140,9 +140,52 @@
     
     .quiz-description {
       color: #94a3b8;
-      margin-bottom: auto;
+      margin-bottom: 1rem;
       line-height: 1.6;
       font-size: 0.95rem;
+      font-weight: 400;
+    }
+    
+    .quiz-metadata {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+    
+    .difficulty-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      align-self: flex-start;
+    }
+    
+    .difficulty-badge.beginner {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+    }
+    
+    .difficulty-badge.intermediate {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+    }
+    
+    .difficulty-badge.advanced {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+    
+    .question-count {
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+    
+    .estimated-time {
+      color: #94a3b8;
       font-weight: 400;
     }
     
@@ -234,6 +277,34 @@
     .icon-grad::before { content: "🎓"; }
     .icon-cert::before { content: "📜"; }
     .icon-chart::before { content: "📈"; }
+
+    /* New Styles for Enhanced Features */
+    .quiz-metadata {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #9ca3af;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    
+    .difficulty-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .difficulty-badge.beginner { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+    .difficulty-badge.intermediate { background: rgba(229, 63, 63, 0.1); color: #ef4444; }
+    .difficulty-badge.advanced { background: rgba(59, 130, 246, 0.1); color: #2563eb; }
+    
+    .question-count, .estimated-time {
+      font-weight: 400;
+      color: #cbd5e1;
+    }
   </style>
 </head>
 <body data-version="2025-01-09-v4.2">
@@ -258,6 +329,11 @@
         <p class="quiz-description">
           Master container specifications, handling protocols, and operational procedures critical for efficient terminal management.
         </p>
+        <div class="quiz-metadata">
+          <div class="difficulty-badge beginner">Beginner</div>
+          <div class="question-count">25 Questions</div>
+          <div class="estimated-time">⏱️ 15-20 min</div>
+        </div>
         <a href="introduction-to-containers.html" class="quiz-button containers-btn">
           Begin Quiz
         </a>
@@ -272,6 +348,11 @@
         <p class="quiz-description">
           Develop proficiency in terminal operating systems, workflow optimization, and integrated port management technologies.
         </p>
+        <div class="quiz-metadata">
+          <div class="difficulty-badge intermediate">Intermediate</div>
+          <div class="question-count">28 Questions</div>
+          <div class="estimated-time">⏱️ 20-25 min</div>
+        </div>
         <a href="introduction-to-terminal-systems.html" class="quiz-button systems-btn">
           Begin Quiz
         </a>
@@ -286,6 +367,11 @@
         <p class="quiz-description">
           Understand vessel classifications, cargo handling requirements, and maritime operational procedures for different ship types.
         </p>
+        <div class="quiz-metadata">
+          <div class="difficulty-badge intermediate">Intermediate</div>
+          <div class="question-count">30 Questions</div>
+          <div class="estimated-time">⏱️ 18-22 min</div>
+        </div>
         <a href="introduction-to-vessel-types.html" class="quiz-button vessels-btn">
           Begin Quiz
         </a>
@@ -300,8 +386,37 @@
         <p class="quiz-description">
           Gain expertise in terminal equipment operations, maintenance protocols, and safety procedures for heavy machinery.
         </p>
+        <div class="quiz-metadata">
+          <div class="difficulty-badge advanced">Advanced</div>
+          <div class="question-count">32 Questions</div>
+          <div class="estimated-time">⏱️ 25-30 min</div>
+        </div>
         <a href="introduction-to-terminal-equipment.html" class="quiz-button equipment-btn">
           Begin Quiz
         </a>
       </div>
     </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+      <div class="features">
+        <div class="feature">
+          <span class="icon-container"></span>
+          <span>Includes various question types</span>
+        </div>
+        <div class="feature">
+          <span class="icon-system"></span>
+          <span>System-based learning approach</span>
+        </div>
+        <div class="feature">
+          <span class="icon-grad"></span>
+          <span>Track your progress and performance</span>
+        </div>
+      </div>
+      <div class="copyright">
+        &copy; 2025 Terminal Operations Training. All rights reserved.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
