@@ -5,99 +5,364 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Introduction to Terminal Equipment</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Fallback: Uncomment and host tailwind.css locally if CDN fails
-  <link href="tailwind.css" rel="stylesheet"> -->
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
-      background-color: white;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
+    
     .container {
-      background: rgba(255, 255, 255, 0.95);
-      position: relative;
-      z-index: 1;
+      background: rgba(255, 255, 255, 0.98);
       width: 100%;
-      max-width: 600px;
+      max-width: 800px;
       margin: 0 auto;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    .results-table {
-      margin: 0 auto;
-      border-collapse: collapse;
-      width: 100%;
+    
+    .progress-container {
+      background: #f1f5f9;
+      height: 8px;
+      border-radius: 4px;
+      margin-bottom: 2rem;
+      overflow: hidden;
     }
-    .results-table th, .results-table td {
-      padding: 12px 8px;
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
+    }
+    
+    .quiz-content {
+      padding: 2.5rem;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .back-button {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+    
+    .quiz-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1f2937;
       text-align: center;
-      border-bottom: 1px solid #ddd;
-      vertical-align: middle;
+      flex: 1;
     }
+    
+    .question-number {
+      font-size: 1rem;
+      color: #6b7280;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .question-text {
+      font-size: 1.375rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .options-container {
+      margin-bottom: 2rem;
+    }
+    
+    .option-label {
+      display: block;
+      padding: 1rem 1.25rem;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.75rem;
+    }
+    
+    .option-label:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+    
+    .option-label.selected {
+      background: #ede9fe;
+      border-color: #8b5cf6;
+      color: #7c3aed;
+    }
+    
+    .option-input {
+      margin-right: 0.75rem;
+    }
+    
+    .button-container {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .nav-button {
+      flex: 1;
+      padding: 0.875rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .back-nav-button {
+      background: #6b7280;
+      color: white;
+    }
+    
+    .back-nav-button:hover {
+      background: #4b5563;
+      transform: translateY(-2px);
+    }
+    
+    .next-button {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: white;
+    }
+    
+    .next-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    }
+    
+    .feedback {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-weight: 500;
+      text-align: center;
+    }
+    
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+    }
+    
+    .results-table th,
+    .results-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
     .results-table th {
-      background-color: #f8f9fa;
+      background: #f9fafb;
       font-weight: 600;
       color: #374151;
     }
-    .results-table td:first-child {
-      text-align: left;
-      max-width: 300px;
-      word-wrap: break-word;
-    }
-    .correct { 
-      color: #059669; 
+    
+    .correct {
+      color: #059669;
       font-weight: 600;
     }
-    .incorrect { 
-      color: #dc2626; 
+    
+    .incorrect {
+      color: #dc2626;
       font-weight: 600;
     }
-
+    
+    .results-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .print-button {
+      background: #6b7280;
+      color: white;
+    }
+    
+    .print-button:hover {
+      background: #4b5563;
+    }
+    
+    .restart-button {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: white;
+    }
+    
+    .restart-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      
+      .container {
+        max-width: 100%;
+        border-radius: 16px;
+      }
+      
+      .quiz-content {
+        padding: 1.5rem;
+      }
+      
+      .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      .quiz-title {
+        font-size: 1.5rem;
+        order: -1;
+      }
+      
+      .back-button {
+        align-self: flex-start;
+        font-size: 0.8rem;
+        padding: 0.6rem 1rem;
+      }
+      
+      .question-text {
+        font-size: 1.2rem;
+      }
+      
+      .button-container {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .nav-button {
+        padding: 1rem;
+        font-size: 1rem;
+      }
+      
+      .results-actions {
+        flex-direction: column;
+      }
+    }
+    
     @media print {
       body {
         background: white;
-        padding: 0;
       }
+      
       .container {
         background: white;
         box-shadow: none;
         width: 100%;
         max-width: 100%;
-        margin: 0;
       }
-      #results-container button {
+      
+      .back-button,
+      .nav-button,
+      .results-actions {
         display: none;
       }
+      
       .results-table {
-        width: 100%;
         border-collapse: collapse;
-        margin: 0;
       }
-      .results-table th, .results-table td {
+      
+      .results-table th,
+      .results-table td {
         border: 1px solid #ddd;
-        font-size: 12px;
-        padding: 8px 4px;
-      }
-      .results-table td:first-child {
-        max-width: none;
       }
     }
   </style>
 </head>
 <body>
-  <div id="quiz-container" class="container p-8 rounded-xl shadow-xl">
-    <div class="flex justify-between items-center mb-6">
-      <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium text-sm">
-        ← Back to Menu
-      </a>
-      <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">Introduction to Terminal Equipment</h1>
-      <div class="w-24"></div> <!-- Spacer for centering -->
+  <div id="quiz-container" class="container">
+    <div class="progress-container">
+      <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
     </div>
-    <div id="question-number" class="text-lg text-gray-600 mb-3 text-center font-medium"></div>
-    <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700"></div>
+    <div class="quiz-content">
+      <div class="header">
+        <a href="index.html" class="back-button">
+          ← Back to Menu
+        </a>
+        <h1 class="quiz-title">Introduction to Terminal Equipment</h1>
+        <div style="width: 140px;"></div> <!-- Spacer for centering -->
+      </div>
+      <div id="question-number" class="question-number"></div>
+      <div id="question-text" class="question-text"></div>
+      <div id="options-form" class="options-container"></div>
+      <div id="feedback" class="feedback"></div>
+      <div class="button-container">
+        <button id="back-btn" onclick="backQuestion()" class="nav-button back-nav-button">Back</button>
+        <button id="next-btn" onclick="nextQuestion()" class="nav-button next-button">Next</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="results-container" class="container" style="display: none;">
+    <div class="quiz-content">
+      <div class="header">
+        <a href="index.html" class="back-button">
+          ← Back to Menu
+        </a>
+        <h1 class="quiz-title">Terminal Equipment - Results</h1>
+        <div style="width: 140px;"></div> <!-- Spacer for centering -->
+      </div>
+      <p style="text-align: center; font-size: 1.25rem; margin-bottom: 1.5rem; color: #374151;">
+        Your Score: <span id="final-score" style="font-weight: 700; color: #059669;"></span> out of 25
+      </p>
+      <table id="results-table" class="results-table"></table>
+      <div class="results-actions">
+        <button onclick="printResults()" class="nav-button print-button">Print Results</button>
+        <button onclick="restartQuiz()" class="nav-button restart-button">Restart Quiz</button>
+      </div>
+    </div>
+  </div>
     <form id="options-form" class="space-y-3">
       <!-- Options will be dynamically loaded here -->
     </form>
