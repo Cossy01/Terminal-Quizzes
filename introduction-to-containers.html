@@ -747,7 +747,7 @@
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
           
-          // In study mode, show explanation immediately
+          // In study mode, show explanation immediately for any selection
           if (currentMode === 'study') {
             const selectedValue = this.querySelector('input').value;
             const isCorrect = selectedValue === q.correct;
@@ -763,7 +763,7 @@
                 document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
               }
               
-              // Show explanation immediately in study mode
+              // Always show explanation in study mode, regardless of correct/incorrect
               document.getElementById('explanation').textContent = q.explanation;
               document.getElementById('explanation').classList.remove('hidden');
             }, 100);

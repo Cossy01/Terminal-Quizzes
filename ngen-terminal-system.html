@@ -705,6 +705,15 @@
       } else {
         feedback.innerHTML = `<div class="text-red-600 font-medium">✗ Incorrect. The correct answer is: ${question.correct}</div>`;
       }
+      
+      // Always show hint/explanation in study mode for any selection
+      if (question.hint) {
+        const hintText = document.getElementById('hint-text');
+        if (hintText) {
+          hintText.textContent = question.hint;
+          hintText.classList.remove('hidden');
+        }
+      }
     }
 
     function showResults() {
