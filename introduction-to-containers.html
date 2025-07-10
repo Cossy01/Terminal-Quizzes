@@ -689,6 +689,28 @@
         label.addEventListener('click', function() {
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
+          
+          // In study mode, show explanation immediately
+          if (currentMode === 'study') {
+            const selectedValue = this.querySelector('input').value;
+            const isCorrect = selectedValue === q.correct;
+            
+            setTimeout(() => {
+              if (isCorrect) {
+                document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
+                if (!answers[currentQuestion] || !answers[currentQuestion].isCorrect) {
+                  currentScore++;
+                  document.getElementById('current-score').textContent = currentScore;
+                }
+              } else {
+                document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
+              }
+              
+              // Show explanation immediately in study mode
+              document.getElementById('explanation').textContent = q.explanation;
+              document.getElementById('explanation').classList.remove('hidden');
+            }, 100);
+          }
         });
         
         optionsForm.appendChild(label);
@@ -698,6 +720,15 @@
       document.getElementById('answer-feedback').innerHTML = '';
       document.getElementById('explanation').classList.add('hidden');
       document.getElementById('show-explanation-btn').style.display = 'none';
+      document.getElementById('hint-text').classList.add('hidden');
+      
+      // Reset hint button for new question (only if not used for this question)
+      if (currentMode === 'quiz' && !hintsUsed.includes(currentQuestion)) {
+        const hintBtn = document.getElementById('hint-btn');
+        hintBtn.disabled = false;
+        hintBtn.textContent = '💡 Use Hint';
+        hintBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
       
       // Restore previous selection if exists
       document.querySelectorAll('input[name="answer"]').forEach(input => {
@@ -871,6 +902,41 @@
       document.getElementById('restart-btn').addEventListener('click', restartQuiz);
       document.getElementById('print-btn').addEventListener('click', printResults);
       
+      // Mode selection event handlers
+      document.getElementById('study-mode-btn').addEventListener('click', function() {
+        setMode('study');
+        startQuiz();
+      });
+      
+      document.getElementById('quiz-mode-btn').addEventListener('click', function() {
+        setMode('quiz');
+        startQuiz();
+      });
+      
+      document.getElementById('reset-mode-btn').addEventListener('click', function() {
+        resetMode();
+      });
+      
+      // Hint system event handler
+      document.getElementById('hint-btn').addEventListener('click', function() {
+        if (hintsRemaining > 0) {
+          const hint = generateHint(quizData[currentQuestion]);
+          document.getElementById('hint-text').textContent = hint;
+          document.getElementById('hint-text').classList.remove('hidden');
+          
+          hintsRemaining--;
+          hintsUsed.push(currentQuestion);
+          
+          // Update hint button
+          this.disabled = true;
+          this.textContent = 'Hint Used';
+          this.classList.add('opacity-50', 'cursor-not-allowed');
+          
+          // Update hints remaining display
+          document.getElementById('hints-remaining').textContent = `💡 Hints: ${hintsRemaining}`;
+        }
+      });
+      
       // Add new event handlers
       document.getElementById('review-btn').addEventListener('click', reviewAnswers);
       document.getElementById('show-explanation-btn').addEventListener('click', function() {
@@ -879,7 +945,8 @@
         this.textContent = explanationEl.classList.contains('hidden') ? 'Show Explanation' : 'Hide Explanation';
       });
       
-      startQuiz();
+      // Initialize with mode selection
+      resetMode();
     });
   </script>
 </body>
