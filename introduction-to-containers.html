@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>Introduction To Containers</title>
+  <title>Introduction To Containers - v5.1 - Training Quiz</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * {
@@ -227,7 +227,7 @@
     <div id="mode-selection" class="mb-6 text-center">
       <p class="text-lg text-gray-600 mb-6">Choose your learning mode:</p>
       <div class="flex flex-col md:flex-row gap-6 justify-center">
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('study')">
+        <div id="study-mode-card" class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('study')" onmouseover="console.log('Study mode hover')" onmousedown="console.log('Study mode mousedown')">
           <div class="text-blue-600 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -236,7 +236,7 @@
           <h3 class="text-xl font-bold text-blue-800 mb-2">Study Mode</h3>
           <p class="text-blue-700">Learn with immediate feedback, hints, and explanations. Perfect for understanding new concepts.</p>
         </div>
-        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('quiz')">
+        <div id="quiz-mode-card" class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('quiz')" onmouseover="console.log('Quiz mode hover')" onmousedown="console.log('Quiz mode mousedown')">
           <div class="text-green-600 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -950,9 +950,54 @@
       
       // Mode selection function
       function selectMode(mode) {
-        console.log(mode + ' mode selected');
-        setMode(mode);
-        startQuiz();
+        console.log('selectMode called with:', mode);
+        try {
+          setMode(mode);
+          startQuiz();
+        } catch (error) {
+          console.error('Error in selectMode:', error);
+        }
+      }
+      
+      // Make selectMode globally accessible
+      window.selectMode = selectMode;
+      
+      // Add click event listeners as fallback for mode selection
+      document.addEventListener('click', function(event) {
+        if (event.target.closest('[onclick*="selectMode"]')) {
+          console.log('Click detected on mode selection element');
+          const element = event.target.closest('[onclick*="selectMode"]');
+          const onclickAttr = element.getAttribute('onclick');
+          console.log('onclick attribute:', onclickAttr);
+          
+          if (onclickAttr.includes("selectMode('study')")) {
+            console.log('Study mode clicked');
+            selectMode('study');
+          } else if (onclickAttr.includes("selectMode('quiz')")) {
+            console.log('Quiz mode clicked');
+            selectMode('quiz');
+          }
+        }
+      });
+      
+      // Add direct event listeners to mode cards
+      const studyModeCard = document.getElementById('study-mode-card');
+      const quizModeCard = document.getElementById('quiz-mode-card');
+      
+      if (studyModeCard) {
+        studyModeCard.addEventListener('click', function(e) {
+          console.log('Study mode card clicked directly');
+          e.preventDefault();
+          selectMode('study');
+        });
+      }
+      
+      if (quizModeCard) {
+        quizModeCard.addEventListener('click', function(e) {
+          console.log('Quiz mode card clicked directly');
+          e.preventDefault();
+          selectMode('quiz');
+        });
       }
       
       // Mode selection event handlers (keeping for backward compatibility)
@@ -1003,6 +1048,13 @@
       
       // Initialize with mode selection
       console.log('Initializing with mode selection...');
+      console.log('DOM elements check:');
+      console.log('mode-selection:', document.getElementById('mode-selection'));
+      console.log('quiz-content:', document.getElementById('quiz-content'));
+      
+      // Test if onclick works
+      console.log('Testing selectMode function availability:', typeof window.selectMode);
+      
       resetMode();
     });
   </script>
