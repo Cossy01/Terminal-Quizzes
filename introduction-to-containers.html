@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Introduction To Containers</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -638,8 +641,20 @@
     }
 
     function startQuiz() {
-      document.getElementById('mode-selection').style.display = 'none';
-      document.getElementById('quiz-content').style.display = 'block';
+      console.log('Starting quiz in mode:', currentMode);
+      
+      // Hide mode selection, show quiz content
+      const modeSelection = document.getElementById('mode-selection');
+      const quizContent = document.getElementById('quiz-content');
+      
+      if (modeSelection && quizContent) {
+        modeSelection.style.display = 'none';
+        quizContent.style.display = 'block';
+        console.log('Mode selection hidden, quiz content shown');
+      } else {
+        console.error('Mode selection or quiz content elements not found');
+        return;
+      }
       
       shuffleArray(quizData);
       answers = new Array(quizData.length).fill(null);
@@ -650,16 +665,36 @@
       
       // Reset hint button
       const hintBtn = document.getElementById('hint-btn');
-      hintBtn.disabled = false;
-      hintBtn.textContent = '💡 Use Hint';
-      hintBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      if (hintBtn) {
+        hintBtn.disabled = false;
+        hintBtn.textContent = '💡 Use Hint';
+        hintBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
       
       showQuestion();
     }
 
     function resetMode() {
-      document.getElementById('mode-selection').style.display = 'block';
-      document.getElementById('quiz-content').style.display = 'none';
+      console.log('Resetting mode - showing mode selection');
+      
+      // Reset variables
+      currentQuestion = 0;
+      answers = [];
+      currentScore = 0;
+      hintsRemaining = 3;
+      hintsUsed = [];
+      
+      // Show mode selection, hide quiz content
+      const modeSelection = document.getElementById('mode-selection');
+      const quizContent = document.getElementById('quiz-content');
+      
+      if (modeSelection && quizContent) {
+        modeSelection.style.display = 'block';
+        quizContent.style.display = 'none';
+        console.log('Mode selection shown, quiz content hidden');
+      } else {
+        console.error('Mode selection or quiz content elements not found');
+      }
     }
 
     function showQuestion() {
@@ -897,6 +932,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+      // Ensure all elements are available before setting up event listeners
+      console.log('DOM loaded, initializing quiz...');
+      
       document.getElementById('next-btn').addEventListener('click', nextQuestion);
       document.getElementById('back-btn').addEventListener('click', backQuestion);
       document.getElementById('restart-btn').addEventListener('click', restartQuiz);
@@ -904,16 +942,19 @@
       
       // Mode selection event handlers
       document.getElementById('study-mode-btn').addEventListener('click', function() {
+        console.log('Study mode selected');
         setMode('study');
         startQuiz();
       });
       
       document.getElementById('quiz-mode-btn').addEventListener('click', function() {
+        console.log('Quiz mode selected');
         setMode('quiz');
         startQuiz();
       });
       
       document.getElementById('reset-mode-btn').addEventListener('click', function() {
+        console.log('Reset mode clicked');
         resetMode();
       });
       
@@ -946,6 +987,7 @@
       });
       
       // Initialize with mode selection
+      console.log('Initializing with mode selection...');
       resetMode();
     });
   </script>
