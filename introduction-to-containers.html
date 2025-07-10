@@ -561,7 +561,7 @@
         modeIndicator.textContent = '📚 Study Mode';
         modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
         hintsRemainingEl.style.display = 'none';
-        hintSection.style.display = 'block'; // Show hints in study mode
+        hintSection.style.display = 'none'; // Hide hints in study mode since explanations are automatic
       } else {
         modeIndicator.textContent = '🎯 Quiz Mode';
         modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
@@ -747,44 +747,47 @@
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
           
-          // In study mode, show hint and explanation immediately for any selection
+          // In study mode, show explanation immediately for any selection
           if (currentMode === 'study') {
             const selectedValue = this.querySelector('input').value;
             const isCorrect = selectedValue === q.correct;
             
-            // Clear previous feedback and explanation immediately
-            document.getElementById('answer-feedback').innerHTML = '';
-            document.getElementById('explanation').classList.add('hidden');
-            document.getElementById('hint-text').classList.add('hidden');
+            // Immediately update feedback - no delay, smooth transition
+            const feedbackEl = document.getElementById('answer-feedback');
+            const explanationEl = document.getElementById('explanation');
             
-            setTimeout(() => {
-              if (isCorrect) {
-                document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
-                if (!answers[currentQuestion] || !answers[currentQuestion].isCorrect) {
-                  currentScore++;
-                  document.getElementById('current-score').textContent = currentScore;
-                }
-              } else {
-                document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
+            if (isCorrect) {
+              feedbackEl.innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
+              if (!answers[currentQuestion] || !answers[currentQuestion].isCorrect) {
+                currentScore++;
+                document.getElementById('current-score').textContent = currentScore;
               }
-              
-              // Show both hint and explanation in study mode
-              const hint = generateHint(q.question);
-              document.getElementById('hint-text').textContent = hint;
-              document.getElementById('hint-text').classList.remove('hidden');
-              
-              document.getElementById('explanation').textContent = q.explanation;
-              document.getElementById('explanation').classList.remove('hidden');
-            }, 100);
+            } else {
+              feedbackEl.innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
+            }
+            
+            // Always show explanation in study mode - smooth update without hiding/showing
+            explanationEl.textContent = q.explanation;
+            explanationEl.classList.remove('hidden');
+            
+            // Store the answer immediately for smooth navigation
+            answers[currentQuestion] = {
+              answer: selectedValue,
+              isCorrect: isCorrect,
+              feedback: true,
+              hintUsed: hintsUsed.includes(currentQuestion)
+            };
           }
         });
         
         optionsForm.appendChild(label);
       });
       
-      // Clear previous feedback
-      document.getElementById('answer-feedback').innerHTML = '';
-      document.getElementById('explanation').classList.add('hidden');
+      // Clear previous feedback only if not in study mode with existing answer
+      if (currentMode !== 'study' || !answers[currentQuestion]) {
+        document.getElementById('answer-feedback').innerHTML = '';
+        document.getElementById('explanation').classList.add('hidden');
+      }
       document.getElementById('show-explanation-btn').style.display = 'none';
       document.getElementById('hint-text').classList.add('hidden');
       
@@ -803,9 +806,21 @@
           input.checked = true;
           input.closest('.quiz-option').classList.add('selected');
           
-          // Show previous feedback if available
+          // Show previous feedback if available - smooth display
           if (answers[currentQuestion].feedback) {
-            showFeedback(answers[currentQuestion].isCorrect, q.explanation);
+            const isCorrect = answers[currentQuestion].isCorrect;
+            const feedbackEl = document.getElementById('answer-feedback');
+            const explanationEl = document.getElementById('explanation');
+            
+            feedbackEl.innerHTML = isCorrect ? 
+              '<div class="text-green-600 font-medium">✓ Correct!</div>' :
+              '<div class="text-red-600 font-medium">✗ Incorrect</div>';
+            
+            // In study mode, always show explanation immediately without any delay
+            if (currentMode === 'study') {
+              explanationEl.textContent = q.explanation;
+              explanationEl.classList.remove('hidden');
+            }
           }
         }
       });
@@ -825,25 +840,24 @@
       if (selected) {
         const isCorrect = selected.value === quizData[currentQuestion].correct;
         
-        // Store answer with additional metadata
-        answers[currentQuestion] = {
-          answer: selected.value,
-          isCorrect: isCorrect,
-          feedback: true,
-          hintUsed: hintsUsed.includes(currentQuestion)
-        };
+        // Store answer with additional metadata (if not already stored in study mode)
+        if (!answers[currentQuestion]) {
+          answers[currentQuestion] = {
+            answer: selected.value,
+            isCorrect: isCorrect,
+            feedback: true,
+            hintUsed: hintsUsed.includes(currentQuestion)
+          };
+        }
         
         if (isCorrect && currentMode === 'quiz') {
           currentScore++;
           document.getElementById('current-score').textContent = currentScore;
         }
         
-        // Show immediate feedback
-        showFeedback(isCorrect, quizData[currentQuestion].explanation);
-        
-        // In study mode, always show explanation immediately
-        if (currentMode === 'study') {
-          document.getElementById('explanation').classList.remove('hidden');
+        // Show immediate feedback only in quiz mode (study mode handles this on click)
+        if (currentMode === 'quiz') {
+          showFeedback(isCorrect, quizData[currentQuestion].explanation);
         }
       }
       

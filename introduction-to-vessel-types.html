@@ -466,9 +466,8 @@
           this.classList.add('selected');
           
           if (currentMode === 'study') {
-            setTimeout(() => {
-              checkAnswerInStudyMode(option);
-            }, 300);
+            // Immediate feedback without delay for smooth UI
+            checkAnswerInStudyMode(option);
           }
         });
         

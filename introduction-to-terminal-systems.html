@@ -505,15 +505,19 @@
             const selectedValue = this.querySelector('input').value;
             const isCorrect = selectedValue === question.correct;
             
-            setTimeout(() => {
-              if (isCorrect) {
-                document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
-                if (!answers[currentQuestion]) score++;
-              } else {
-                document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
-              }
-              showExplanation();
-            }, 100);
+            // Immediate feedback without delay for smooth UI
+            if (isCorrect) {
+              document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
+              if (!answers[currentQuestion]) score++;
+            } else {
+              document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
+            }
+            
+            // Store answer immediately for smooth navigation
+            answers[currentQuestion] = selectedValue;
+            
+            // Show explanation immediately without delay
+            showExplanation();
           }
         });
         
