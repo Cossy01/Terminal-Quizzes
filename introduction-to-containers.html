@@ -747,10 +747,15 @@
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
           
-          // In study mode, show explanation immediately for any selection
+          // In study mode, show hint and explanation immediately for any selection
           if (currentMode === 'study') {
             const selectedValue = this.querySelector('input').value;
             const isCorrect = selectedValue === q.correct;
+            
+            // Clear previous feedback and explanation immediately
+            document.getElementById('answer-feedback').innerHTML = '';
+            document.getElementById('explanation').classList.add('hidden');
+            document.getElementById('hint-text').classList.add('hidden');
             
             setTimeout(() => {
               if (isCorrect) {
@@ -763,7 +768,11 @@
                 document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
               }
               
-              // Always show explanation in study mode, regardless of correct/incorrect
+              // Show both hint and explanation in study mode
+              const hint = generateHint(q.question);
+              document.getElementById('hint-text').textContent = hint;
+              document.getElementById('hint-text').classList.remove('hidden');
+              
               document.getElementById('explanation').textContent = q.explanation;
               document.getElementById('explanation').classList.remove('hidden');
             }, 100);
