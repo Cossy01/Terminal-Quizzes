@@ -188,6 +188,8 @@
     .category-data-entry { background: rgba(245, 158, 11, 0.1); color: #d97706; }
     .category-code-conversion { background: rgba(139, 92, 246, 0.1); color: #7c3aed; }
     .category-terminal-layout { background: rgba(239, 68, 68, 0.1); color: #dc2626; }
+    .category-stowage-planning { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+    .category-cargo-operations { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
     
     .difficulty-badge {
       padding: 4px 8px;
@@ -282,7 +284,7 @@
         </div>
         <div class="score-display">
           Correct: <span id="current-score" class="font-bold text-red-600">0</span> / 
-          <span id="total-questions">28</span>
+          <span id="total-questions">15</span>
         </div>
       </div>
     </div>
@@ -317,7 +319,7 @@
     <div class="bg-gradient-to-br from-red-50 to-pink-100 p-6 rounded-xl mb-8 border border-red-200">
       <div class="text-center">
         <p class="text-xl mb-2 text-gray-700 font-medium">Your Final Score</p>
-        <p class="text-5xl font-bold text-red-700 mb-2"><span id="final-score"></span>/<span>28</span></p>
+        <p class="text-5xl font-bold text-red-700 mb-2"><span id="final-score"></span>/<span>15</span></p>
         <p class="text-xl text-red-600 font-semibold"><span id="percentage"></span>% Complete</p>
         
         <!-- Performance Grade -->
@@ -354,228 +356,124 @@
   <script>
     const quizData = [
       {
-        question: "What does POC stand for in the Service Port Structure?",
-        options: ["Port of Call", "Port of Cargo", "Port Operations Center", "Port Control Code"],
-        correct: "Port of Call",
-        explanation: "POC (Port of Call) represents the actual sequence of ports in a shipping route, showing the real navigation order.",
-        category: "Service Structure",
-        difficulty: "Basic"
-      },
-      {
-        question: "According to the UN Port Code standard, how many digits are used?",
-        options: ["3 digits", "4 digits", "5 digits", "6 digits"],
-        correct: "5 digits",
-        explanation: "The UN Port Code uses a standardized 5-digit format according to UNECE regulations for international port identification.",
+        question: "What does the \"UN Port\" refer to in the context of stowage instructions?",
+        options: ["United Nations headquarters", "A standardized code for identifying ports", "A type of shipping vessel", "A storage facility"],
+        correct: "A standardized code for identifying ports",
+        explanation: "UN Port codes are standardized international codes used to identify ports worldwide for shipping and logistics purposes.",
         category: "Port Codes",
         difficulty: "Basic"
       },
       {
-        question: "What does POD represent in the port structure hierarchy?",
-        options: ["Port of Departure", "Port of Discharge", "Port of Destination", "Port of Delivery"],
+        question: "Which of the following is a key component of stowage instructions?",
+        options: ["Passenger seating arrangement", "Cargo placement and packing", "Crew scheduling", "Fuel management"],
+        correct: "Cargo placement and packing",
+        explanation: "Stowage instructions primarily focus on how cargo should be placed and packed within the vessel for safe and efficient transport.",
+        category: "Stowage Planning",
+        difficulty: "Basic"
+      },
+      {
+        question: "What is the purpose of the \"Line Code\" in port operations?",
+        options: ["To identify the shipping line", "To mark the port boundary", "To calculate shipping costs", "To schedule vessel maintenance"],
+        correct: "To identify the shipping line",
+        explanation: "Line codes are used to identify specific shipping companies or lines in port operations and logistics systems.",
+        category: "Service Structure",
+        difficulty: "Basic"
+      },
+      {
+        question: "In the service port diagram, what does \"JPTYO\" represent?",
+        options: ["A terminal code", "A local port in Japan", "A shipping route", "A cargo type"],
+        correct: "A local port in Japan",
+        explanation: "JPTYO represents Tokyo, Japan in the international port coding system used in maritime logistics.",
+        category: "Port Codes",
+        difficulty: "Basic"
+      },
+      {
+        question: "What is the role of \"USLAX\" in the service port structure?",
+        options: ["A hub code", "A destination port", "A stowage block", "A vessel identifier"],
+        correct: "A destination port",
+        explanation: "USLAX represents Los Angeles, USA and serves as a major destination port in the service port structure.",
+        category: "Terminal Layout",
+        difficulty: "Basic"
+      },
+      {
+        question: "Which term is associated with the \"POD\" in logistics?",
+        options: ["Point of Origin", "Port of Discharge", "Package Order Date", "Product Origin Data"],
         correct: "Port of Discharge",
-        explanation: "POD (Port of Discharge) indicates where containers will be unloaded from the vessel at their designated ports.",
+        explanation: "POD stands for Port of Discharge, which is where cargo is unloaded from the vessel at its destination.",
         category: "Service Structure",
         difficulty: "Basic"
       },
       {
-        question: "Which organization standardizes the UN Port Code system?",
-        options: ["IMO", "UNECE", "ICS", "BIMCO"],
-        correct: "UNECE",
-        explanation: "UNECE (United Nations Economic Commission for Europe) is responsible for standardizing the 5-digit UN Port Code system used globally.",
-        category: "Port Codes",
-        difficulty: "Intermediate"
-      },
-      {
-        question: "What does S.I. stand for in the stowage instruction context?",
-        options: ["Ship Instructions", "Stowage Instructions", "Service Index", "System Interface"],
-        correct: "Stowage Instructions",
-        explanation: "S.I. (Stowage Instructions) represents the loading position codes provided by shipping companies for cargo placement.",
+        question: "What does \"S.I.\" stand for in the context of port operations?",
+        options: ["Shipping Index", "Stowage Instruction", "Safety Inspection", "Service Interval"],
+        correct: "Stowage Instruction",
+        explanation: "S.I. stands for Stowage Instruction, which provides detailed guidelines for cargo placement and handling.",
         category: "Service Structure",
         difficulty: "Basic"
       },
       {
-        question: "In the data entry example, what system handles EDI/IES booking data?",
-        options: ["Manual Entry System", "nGen System", "Port Management System", "Cargo Tracking System"],
-        correct: "nGen System",
-        explanation: "The nGen system processes EDI/IES booking data and performs mapping conversions for port operations management.",
-        category: "Data Entry",
-        difficulty: "Intermediate"
-      },
-      {
-        question: "What is the primary purpose of Block stowage in the port structure?",
-        options: ["Container counting", "Providing stowage data to shipping companies", "Port security", "Cargo inspection"],
-        correct: "Providing stowage data to shipping companies",
-        explanation: "Block stowage provides detailed loading position information to shipping companies based on converted company codes.",
-        category: "Service Structure",
-        difficulty: "Intermediate"
-      },
-      {
-        question: "Which ports are mentioned in the service route: SGSIN → CNYAI → TWKAO → JPNGO → JPTYO → USLAX?",
-        options: ["6 ports", "5 ports", "7 ports", "4 ports"],
-        correct: "6 ports",
-        explanation: "The route includes Singapore (SGSIN), China Yantian (CNYAI), Taiwan Kaohsiung (TWKAO), Japan Nagoya (JPNGO), Japan Tokyo (JPTYO), and US Los Angeles (USLAX).",
-        category: "Terminal Layout",
+        question: "Which of the following is a key activity in cargo handling?",
+        options: ["Passenger check-in", "Loading and unloading", "Vehicle maintenance", "Office administration"],
+        correct: "Loading and unloading",
+        explanation: "Loading and unloading are fundamental cargo handling activities that involve moving cargo to and from vessels.",
+        category: "Cargo Operations",
         difficulty: "Basic"
       },
       {
-        question: "What does the mapping process convert in the data entry example?",
-        options: ["Container numbers to tracking codes", "Port codes to stowage instructions", "Booking data to operational codes", "Ship schedules to berth assignments"],
-        correct: "Booking data to operational codes",
-        explanation: "The mapping process converts booking data (POD, FD, Block) into operational codes (POC, POD, SI) for terminal operations.",
-        category: "Code Conversion",
+        question: "What is the significance of the \"Block\" in stowage planning?",
+        options: ["A section of the ship for cargo storage", "A type of shipping container", "A port security measure", "A navigation route"],
+        correct: "A section of the ship for cargo storage",
+        explanation: "In stowage planning, a block refers to a designated section or area of the ship where cargo is stored and organized.",
+        category: "Stowage Planning",
         difficulty: "Intermediate"
       },
       {
-        question: "In the terminal layout, what does TY1 represent?",
-        options: ["Terminal Yard 1", "Tokyo Terminal 1", "VIP China Terminal", "Container Block"],
-        correct: "VIP China Terminal",
-        explanation: "TY1 is designated as the VIP China terminal in the port layout, serving specific shipping line operations.",
-        category: "Terminal Layout",
-        difficulty: "Intermediate"
-      },
-      {
-        question: "What is the advantage of supporting both UN-Port code and Shipping Line code in input fields?",
-        options: ["Faster data entry", "Reduced errors", "Flexibility in code entry", "Better security"],
-        correct: "Flexibility in code entry",
-        explanation: "Supporting both code types in the same input field allows operators to use either standardized UN codes or company-specific codes as needed.",
-        category: "Code Conversion",
-        difficulty: "Advanced"
-      },
-      {
-        question: "Which area numbers are associated with SGSIN in the port layout?",
-        options: ["Areas 1 and 7", "Areas 2 and 6", "Areas 3 and 4", "Areas 5 and 8"],
-        correct: "Areas 1 and 7",
-        explanation: "Singapore (SGSIN) operations are located in areas 1 and 7 according to the service port layout diagram.",
-        category: "Terminal Layout",
-        difficulty: "Advanced"
-      },
-      {
-        question: "What does IES represent in the context of data transmission?",
-        options: ["International Export System", "Integrated EDI System", "Import/Export System", "Information Exchange System"],
-        correct: "Information Exchange System",
-        explanation: "IES (Information Exchange System) is used for port code reference tables and data conversion processes in terminal operations.",
-        category: "Data Entry",
-        difficulty: "Intermediate"
-      },
-      {
-        question: "In the manual entry process, what must be based on shipping company documents?",
-        options: ["Container weights", "Direct input of import codes", "Berth assignments", "Cargo descriptions"],
-        correct: "Direct input of import codes",
-        explanation: "Manual entry allows terminal staff to directly input import codes or full names based on shipping company documentation.",
-        category: "Data Entry",
-        difficulty: "Intermediate"
-      },
-      {
-        question: "What is the relationship between S.I. and SPL/YPL standards?",
-        options: ["S.I. replaces SPL/YPL", "S.I. serves as the standard for SPL container loading and YPL container discharge", "They are unrelated", "SPL/YPL replaces S.I."],
-        correct: "S.I. serves as the standard for SPL container loading and YPL container discharge",
-        explanation: "Stowage Instructions (S.I.) provide the standardized framework for both SPL (container loading) and YPL (container discharge) operations.",
-        category: "Service Structure",
-        difficulty: "Advanced"
-      },
-      {
-        question: "Which terminal codes are shown in the LA (Los Angeles) area?",
-        options: ["LA1, LA2, LA3", "LAX1, LAX2, LAX3", "USLAX1, USLAX2, USLAX3", "LA-A, LA-B, LA-C"],
-        correct: "LA1, LA2, LA3",
-        explanation: "The Los Angeles area is divided into three terminal sections: LA1, LA2, and LA3 for operational organization.",
-        category: "Terminal Layout",
-        difficulty: "Basic"
-      },
-      {
-        question: "What does TWKAO represent in the port structure?",
-        options: ["Taiwan Container Terminal", "Kaohsiung Port, Taiwan", "Taiwan Warehouse Operations", "Terminal West Kaohsiung"],
-        correct: "Kaohsiung Port, Taiwan",
-        explanation: "TWKAO is the port code for Kaohsiung, which is a major container port in Taiwan.",
-        category: "Port Codes",
-        difficulty: "Basic"
-      },
-      {
-        question: "What limitation exists for manual input of shipping company codes?",
-        options: ["Only during business hours", "Only for emergency situations", "Only for ports that have corresponding shipping companies in IES", "Only for domestic shipments"],
-        correct: "Only for ports that have corresponding shipping companies in IES",
-        explanation: "Manual input of shipping company codes is restricted to ports that have established corresponding shipping company entries in the IES system.",
-        category: "Code Conversion",
-        difficulty: "Advanced"
-      },
-      {
-        question: "In the block stowage level, what does ZZXKA represent?",
-        options: ["A special container type", "A converted block code for XKA terminal", "A shipping line identifier", "A cargo classification"],
-        correct: "A converted block code for XKA terminal",
-        explanation: "ZZXKA represents the block stowage code converted from the XKA terminal code for operational use.",
-        category: "Service Structure",
-        difficulty: "Advanced"
-      },
-      {
-        question: "What are the Hub Codes mentioned in the port layout?",
-        options: ["USCHI, USNYC, USBOS", "USLAX, USOAK, USSEA", "USHOU, USMIA, USSAV", "USPOR, USTAC, USBAL"],
-        correct: "USCHI, USNYC, USBOS",
-        explanation: "The hub codes shown are USCHI (Chicago), USNYC (New York), and USBOS (Boston), representing major US port hubs.",
-        category: "Terminal Layout",
-        difficulty: "Intermediate"
-      },
-      {
-        question: "What is the primary benefit of Port-SI structured connection?",
-        options: ["Faster cargo handling", "Route definition with modification capability", "Reduced documentation", "Lower operational costs"],
-        correct: "Route definition with modification capability",
-        explanation: "Port-SI structured connection allows for predefined route configurations while maintaining the flexibility to modify arrangements for individual voyages.",
-        category: "Service Structure",
-        difficulty: "Advanced"
-      },
-      {
-        question: "In the data conversion example, what happens to Block = CHY?",
-        options: ["It becomes Block = USCHI", "It becomes Block = CHY", "It becomes SI = CHY", "It becomes POD = CHY"],
-        correct: "It becomes Block = USCHI",
-        explanation: "In the mapping process, the original Block code CHY is converted to USCHI in the nGen system output.",
-        category: "Code Conversion",
-        difficulty: "Intermediate"
-      },
-      {
-        question: "What does FD represent in the booking data context?",
-        options: ["Final Destination", "Freight Delivery", "First Discharge", "Forward Declaration"],
+        question: "In the data entry example, what does \"FD\" represent?",
+        options: ["Final Destination", "Freight Data", "Forwarding Direction", "Free Delivery"],
         correct: "Final Destination",
-        explanation: "FD (Final Destination) indicates the ultimate destination port for the cargo in the shipping route.",
+        explanation: "FD stands for Final Destination, indicating the ultimate destination port for the cargo shipment.",
         category: "Data Entry",
         difficulty: "Basic"
       },
       {
-        question: "Which area is designated for USLAX operations?",
-        options: ["Area 4", "Area 5", "Area 6", "Area 7"],
-        correct: "Area 5",
-        explanation: "USLAX (Los Angeles) operations are designated in Area 5 according to the port layout structure.",
-        category: "Terminal Layout",
+        question: "Which port code is mapped to \"LA3\" in the EDI/IES booking example?",
+        options: ["USCHI", "USLAX", "USWDO", "USBOS"],
+        correct: "USLAX",
+        explanation: "LA3 is mapped to USLAX (Los Angeles) in the EDI/IES booking system for terminal operations.",
+        category: "Code Conversion",
         difficulty: "Intermediate"
       },
       {
-        question: "What is the main advantage of EDI/IES automated data entry over manual entry?",
-        options: ["Lower cost", "Reduced human error and faster processing", "Better security", "More detailed reporting"],
-        correct: "Reduced human error and faster processing",
-        explanation: "EDI/IES automated systems minimize manual input errors and accelerate data processing compared to manual entry methods.",
+        question: "What is the primary function of the \"IES\" system mentioned in the data entry?",
+        options: ["Inventory tracking", "Electronic data interchange for shipping", "Employee scheduling", "Vessel design"],
+        correct: "Electronic data interchange for shipping",
+        explanation: "IES (Information Exchange System) facilitates electronic data interchange for shipping operations and port management.",
         category: "Data Entry",
         difficulty: "Intermediate"
       },
       {
-        question: "In the service port structure, which level directly connects to shipping company codes?",
-        options: ["POC level", "POD level", "S.I. level", "Block level"],
-        correct: "Block level",
-        explanation: "The Block level represents codes converted from shipping company identifiers to indicate specific stowage positions.",
-        category: "Service Structure",
-        difficulty: "Advanced"
-      },
-      {
-        question: "What does the concept of Stowage Instruction aim to reflect?",
-        options: ["Container inventory", "Actual shipping routes", "Port regulations", "Crew assignments"],
-        correct: "Actual shipping routes",
-        explanation: "Stowage Instructions are designed to accurately reflect real shipping routes and operational sequences in maritime transportation.",
-        category: "Service Structure",
+        question: "Which of the following is a manual entry field in the data entry example?",
+        options: ["Owner", "Mapping", "Bik/POD", "SI"],
+        correct: "Bik/POD",
+        explanation: "Bik/POD represents manual entry fields where operators can input booking and port of discharge information directly.",
+        category: "Data Entry",
         difficulty: "Intermediate"
       },
       {
-        question: "What is the primary function of the nGen system in port operations?",
-        options: ["Cargo tracking only", "Data mapping and conversion for multiple entry methods", "Financial processing", "Security monitoring"],
-        correct: "Data mapping and conversion for multiple entry methods",
-        explanation: "The nGen system performs data mapping and conversion for both automated EDI/IES booking data and manual entry processes, standardizing information for port operations.",
-        category: "Data Entry",
-        difficulty: "Advanced"
+        question: "What does \"TWKAO\" indicate in the service port diagram?",
+        options: ["A terminal in Taiwan", "A cargo handling method", "A shipping line code", "A port authority"],
+        correct: "A terminal in Taiwan",
+        explanation: "TWKAO represents Kaohsiung, Taiwan, which is a major port terminal in the Asian shipping network.",
+        category: "Port Codes",
+        difficulty: "Basic"
+      },
+      {
+        question: "How is cargo stowage planning beneficial in port operations?",
+        options: ["Reduces shipping costs", "Improves cargo safety and efficiency", "Increases passenger comfort", "Simplifies crew training"],
+        correct: "Improves cargo safety and efficiency",
+        explanation: "Proper cargo stowage planning ensures safe transport and efficient use of vessel space, reducing risks and optimizing operations.",
+        category: "Stowage Planning",
+        difficulty: "Intermediate"
       }
     ];
 
