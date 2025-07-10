@@ -222,18 +222,26 @@
     
     <!-- Mode Selection -->
     <div id="mode-selection" class="mb-6 text-center">
-      <h3 class="text-lg font-semibold text-gray-700 mb-4">Choose Your Learning Mode:</h3>
-      <div class="flex justify-center gap-4">
-        <button id="study-mode-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[140px] shadow-lg">
-          📚 Study Mode
-        </button>
-        <button id="quiz-mode-btn" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium min-w-[140px] shadow-lg">
-          🎯 Quiz Mode
-        </button>
-      </div>
-      <div class="mt-4 text-sm text-gray-600 max-w-2xl mx-auto">
-        <p><strong>Study Mode:</strong> See explanations immediately, no pressure, perfect for learning</p>
-        <p><strong>Quiz Mode:</strong> Test your knowledge, track performance, hints available</p>
+      <p class="text-lg text-gray-600 mb-6">Choose your learning mode:</p>
+      <div class="flex flex-col md:flex-row gap-6 justify-center">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('study')">
+          <div class="text-blue-600 mb-4">
+            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-blue-800 mb-2">Study Mode</h3>
+          <p class="text-blue-700">Learn with immediate feedback, hints, and explanations. Perfect for understanding new concepts.</p>
+        </div>
+        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('quiz')">
+          <div class="text-green-600 mb-4">
+            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-green-800 mb-2">Quiz Mode</h3>
+          <p class="text-green-700">Test your knowledge without hints. Get detailed results at the end to review your performance.</p>
+        </div>
       </div>
     </div>
     
@@ -679,16 +687,22 @@
       initializeQuiz();
     });
 
-    // Mode selection event handlers
-    document.getElementById('study-mode-btn').addEventListener('click', function() {
-      currentMode = 'study';
+    // Mode selection function
+    function selectMode(mode) {
+      currentMode = mode;
       startQuiz();
-    });
+    }
 
-    document.getElementById('quiz-mode-btn').addEventListener('click', function() {
-      currentMode = 'quiz';
-      startQuiz();
-    });
+    // Mode selection event handlers (keeping for backward compatibility)
+    // document.getElementById('study-mode-btn').addEventListener('click', function() {
+    //   currentMode = 'study';
+    //   startQuiz();
+    // });
+
+    // document.getElementById('quiz-mode-btn').addEventListener('click', function() {
+    //   currentMode = 'quiz';
+    //   startQuiz();
+    // });
 
     document.getElementById('reset-mode-btn').addEventListener('click', function() {
       initializeQuiz();
