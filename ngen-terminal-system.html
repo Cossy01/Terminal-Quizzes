@@ -664,8 +664,11 @@
         };
         
         if (isCorrect) {
-          currentScore++;
-          document.getElementById('current-score').textContent = currentScore;
+          // Only increment score if this question hasn't been answered correctly before
+          if (!answers[currentQuestion] || !answers[currentQuestion].isCorrect) {
+            currentScore++;
+            document.getElementById('current-score').textContent = currentScore;
+          }
         }
         
         // Show immediate feedback

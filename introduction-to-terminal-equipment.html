@@ -518,7 +518,10 @@
             // Immediate feedback without delay for smooth UI
             if (isCorrect) {
               document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
-              if (!answers[currentQuestion]) score++;
+              // Only increment score if this question hasn't been answered correctly before
+              if (!answers[currentQuestion] || answers[currentQuestion] !== question.correct) {
+                score++;
+              }
             } else {
               document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
             }
@@ -595,14 +598,12 @@
       const currentQ = quizData[currentQuestion];
       const isCorrect = selectedValue === currentQ.correct;
       
-      // Store the answer
-      answers[currentQuestion] = selectedValue;
-      
       // In quiz mode, show feedback and explanation button
       if (currentMode === 'quiz') {
         if (isCorrect) {
           document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
-          if (!answers[currentQuestion] || answers[currentQuestion] !== selectedValue) {
+          // Only increment score if this question hasn't been answered correctly before
+          if (!answers[currentQuestion] || answers[currentQuestion] !== currentQ.correct) {
             score++;
           }
         } else {
@@ -613,6 +614,9 @@
         document.getElementById('show-explanation-btn').classList.remove('hidden');
         updateScoreDisplay();
       }
+      
+      // Store the answer after score calculation
+      answers[currentQuestion] = selectedValue;
       
       // Move to next question or show results
       if (currentQuestion < quizData.length - 1) {

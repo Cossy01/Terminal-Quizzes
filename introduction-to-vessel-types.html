@@ -572,6 +572,13 @@
       const resultsTable = document.getElementById('results-table');
       const modeIndicator = document.getElementById('mode-indicator');
       
+      // Calculate score
+      quizData.forEach((question, index) => {
+        const userAnswer = answers[index] || 'Not answered';
+        const isCorrect = userAnswer === question.correct;
+        if (isCorrect) score++;
+      });
+      
       // Set mode indicator
       modeIndicator.textContent = currentMode === 'study' ? 'Study Mode Results' : 'Quiz Mode Results';
       
@@ -593,7 +600,6 @@
       quizData.forEach((question, index) => {
         const userAnswer = answers[index] || 'Not answered';
         const isCorrect = userAnswer === question.correct;
-        if (isCorrect) score++;
         
         const row = document.createElement('tr');
         let rowContent = `
