@@ -65,7 +65,7 @@
     
     .quiz-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 1.5rem;
     }
     
@@ -129,6 +129,7 @@
     .systems-icon { --accent-color: #10b981; }
     .vessels-icon { --accent-color: #f59e0b; }
     .equipment-icon { --accent-color: #8b5cf6; }
+    .stowage-icon { --accent-color: #ef4444; }
     
     .quiz-title {
       font-size: 1.5rem;
@@ -252,6 +253,9 @@
     }
     
     /* Responsive Design */
+    @media (max-width: 1200px) {
+      .quiz-grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    }
     @media (max-width: 800px) {
       .quiz-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
     }
@@ -392,6 +396,25 @@
           <div class="estimated-time">⏱️ 25-30 min</div>
         </div>
         <a href="introduction-to-terminal-equipment.html" class="quiz-button equipment-btn">
+          Begin Quiz
+        </a>
+      </div>
+
+      <!-- Port Stowage Instructions Quiz -->
+      <div class="quiz-card stowage-icon">
+        <div class="quiz-icon stowage-icon">
+          PSI
+        </div>
+        <h3 class="quiz-title">Port Stowage Quiz</h3>
+        <p class="quiz-description">
+          Master port stowage instructions, UN port codes, service structure, and data conversion processes for optimal cargo planning.
+        </p>
+        <div class="quiz-metadata">
+          <div class="difficulty-badge advanced">Advanced</div>
+          <div class="question-count">28 Questions</div>
+          <div class="estimated-time">⏱️ 20-25 min</div>
+        </div>
+        <a href="port-stowage-instructions.html" class="quiz-button stowage-btn">
           Begin Quiz
         </a>
       </div>

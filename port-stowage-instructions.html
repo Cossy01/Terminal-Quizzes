@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Port Stowage Instructions Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.98);
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .progress-container {
+      background: #f1f5f9;
+      height: 8px;
+      border-radius: 4px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #dc2626);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
+    }
+    
+    .timer-display {
+      color: #ef4444;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 auto;
+    }
+    
+    .quiz-option {
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 8px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: block;
+      width: 100%;
+    }
+    
+    #options-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .quiz-option:hover {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.05);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.15);
+    }
+    
+    .quiz-option.selected {
+      border-color: #ef4444;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.2);
+    }
+    
+    .quiz-option input[type="radio"] {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #cbd5e1;
+      border-radius: 50%;
+      margin-right: 12px;
+      position: relative;
+      transition: all 0.3s ease;
+      vertical-align: middle;
+    }
+    
+    .quiz-option input[type="radio"]:checked {
+      border-color: #ef4444;
+      background: #ef4444;
+    }
+    
+    .quiz-option input[type="radio"]:checked::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+    }
+    
+    .results-table th, .results-table td {
+      padding: 16px 12px;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: middle;
+    }
+    
+    .results-table th {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .results-table tr:hover {
+      background-color: #f9fafb;
+    }
+    
+    .results-table td:first-child {
+      text-align: left;
+      max-width: 300px;
+      word-wrap: break-word;
+    }
+    
+    .correct { 
+      color: #059669; 
+      font-weight: 600;
+      background-color: #d1fae5;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    
+    .incorrect { 
+      color: #dc2626; 
+      font-weight: 600;
+      background-color: #fee2e2;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    
+    .quiz-stats {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .category-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .category-port-codes { background: rgba(59, 130, 246, 0.1); color: #2563eb; }
+    .category-service-structure { background: rgba(16, 185, 129, 0.1); color: #059669; }
+    .category-data-entry { background: rgba(245, 158, 11, 0.1); color: #d97706; }
+    .category-code-conversion { background: rgba(139, 92, 246, 0.1); color: #7c3aed; }
+    .category-terminal-layout { background: rgba(239, 68, 68, 0.1); color: #dc2626; }
+    
+    .difficulty-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .difficulty-basic { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+    .difficulty-intermediate { background: rgba(251, 191, 36, 0.1); color: #f59e0b; }
+    .difficulty-advanced { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .container {
+        margin: 10px;
+        padding: 1.5rem !important;
+      }
+      
+      .quiz-option {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+      }
+      
+      .results-table th, .results-table td {
+        padding: 12px 8px;
+        font-size: 0.875rem;
+      }
+      
+      .results-table td:first-child {
+        max-width: 200px;
+      }
+      
+      .quiz-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+      }
+    }
+    
+    @media print {
+      body {
+        background: white !important;
+        padding: 0;
+      }
+      .container {
+        background: white !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+      #results-container button {
+        display: none !important;
+      }
+      .results-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+      }
+      .results-table th, .results-table td {
+        border: 1px solid #ddd !important;
+        font-size: 12px !important;
+        padding: 8px 4px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="quiz-container" class="container p-8 rounded-xl shadow-xl">
+    <div class="flex justify-between items-center mb-6">
+      <a href="index.html" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium text-sm">
+        ← Back to Menu
+      </a>
+      <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">Port Stowage Instructions</h1>
+      <div class="timer-display" id="timer-display">20:00</div>
+    </div>
+    
+    <!-- Enhanced Progress Section -->
+    <div class="mb-6">
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+      </div>
+      
+      <!-- Quiz Stats -->
+      <div class="flex justify-between items-center mt-3 text-sm text-gray-600">
+        <div class="quiz-stats">
+          <span id="question-category" class="category-badge"></span>
+          <span id="question-difficulty" class="difficulty-badge"></span>
+        </div>
+        <div class="score-display">
+          Correct: <span id="current-score" class="font-bold text-red-600">0</span> / 
+          <span id="total-questions">28</span>
+        </div>
+      </div>
+    </div>
+    
+    <div id="question-number" class="text-lg text-gray-600 mb-3 text-center font-medium"></div>
+    <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700 font-medium"></div>
+    <form id="options-form"></form>
+    
+    <!-- Feedback Section -->
+    <div id="feedback" class="mt-6 text-center">
+      <div id="answer-feedback" class="mb-4"></div>
+      <div id="explanation" class="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg hidden"></div>
+    </div>
+    
+    <div class="flex justify-center gap-4 mt-8">
+      <button id="back-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[100px] disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
+      <button id="show-explanation-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[140px] hidden">Show Explanation</button>
+      <button id="next-btn" class="px-6 py-3 bg-red-700 text-white rounded-lg hover:bg-red-800 transition-colors duration-200 font-medium min-w-[100px] shadow-lg hover:shadow-xl">Next</button>
+    </div>
+  </div>
+
+  <div id="results-container" class="container p-8 rounded-xl shadow-xl" style="display:none;">
+    <div class="flex justify-between items-center mb-6">
+      <a href="index.html" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium text-sm">
+        ← Back to Menu
+      </a>
+      <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">Quiz Results</h1>
+      <div class="w-24"></div> <!-- Spacer for centering -->
+    </div>
+    
+    <!-- Score Card -->
+    <div class="bg-gradient-to-br from-red-50 to-pink-100 p-6 rounded-xl mb-8 border border-red-200">
+      <div class="text-center">
+        <p class="text-xl mb-2 text-gray-700 font-medium">Your Final Score</p>
+        <p class="text-5xl font-bold text-red-700 mb-2"><span id="final-score"></span>/<span>28</span></p>
+        <p class="text-xl text-red-600 font-semibold"><span id="percentage"></span>% Complete</p>
+        
+        <!-- Performance Grade -->
+        <div class="mt-4">
+          <div id="performance-grade" class="text-2xl font-bold mb-2"></div>
+          <div id="performance-message" class="text-gray-600"></div>
+        </div>
+        
+        <!-- Time Stats -->
+        <div class="mt-4 text-sm text-gray-600">
+          <div>Time Taken: <span id="time-taken" class="font-medium"></span></div>
+          <div>Average per Question: <span id="avg-time" class="font-medium"></span></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Category Performance -->
+    <div class="mb-6">
+      <h3 class="text-lg font-bold mb-4 text-gray-800">Performance by Category</h3>
+      <div id="category-performance" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+    </div>
+    
+    <div class="overflow-x-auto">
+      <table id="results-table" class="results-table"></table>
+    </div>
+    
+    <div class="flex justify-center gap-4 mt-8">
+      <button id="print-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">📄 Print Results</button>
+      <button id="review-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">📚 Review Answers</button>
+      <button id="restart-btn" class="px-6 py-3 bg-red-700 text-white rounded-lg hover:bg-red-800 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">🔄 Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What does POC stand for in the Service Port Structure?",
+        options: ["Port of Call", "Port of Cargo", "Port Operations Center", "Port Control Code"],
+        correct: "Port of Call",
+        explanation: "POC (Port of Call) represents the actual sequence of ports in a shipping route, showing the real navigation order.",
+        category: "Service Structure",
+        difficulty: "Basic"
+      },
+      {
+        question: "According to the UN Port Code standard, how many digits are used?",
+        options: ["3 digits", "4 digits", "5 digits", "6 digits"],
+        correct: "5 digits",
+        explanation: "The UN Port Code uses a standardized 5-digit format according to UNECE regulations for international port identification.",
+        category: "Port Codes",
+        difficulty: "Basic"
+      },
+      {
+        question: "What does POD represent in the port structure hierarchy?",
+        options: ["Port of Departure", "Port of Discharge", "Port of Destination", "Port of Delivery"],
+        correct: "Port of Discharge",
+        explanation: "POD (Port of Discharge) indicates where containers will be unloaded from the vessel at their designated ports.",
+        category: "Service Structure",
+        difficulty: "Basic"
+      },
+      {
+        question: "Which organization standardizes the UN Port Code system?",
+        options: ["IMO", "UNECE", "ICS", "BIMCO"],
+        correct: "UNECE",
+        explanation: "UNECE (United Nations Economic Commission for Europe) is responsible for standardizing the 5-digit UN Port Code system used globally.",
+        category: "Port Codes",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "What does S.I. stand for in the stowage instruction context?",
+        options: ["Ship Instructions", "Stowage Instructions", "Service Index", "System Interface"],
+        correct: "Stowage Instructions",
+        explanation: "S.I. (Stowage Instructions) represents the loading position codes provided by shipping companies for cargo placement.",
+        category: "Service Structure",
+        difficulty: "Basic"
+      },
+      {
+        question: "In the data entry example, what system handles EDI/IES booking data?",
+        options: ["Manual Entry System", "nGen System", "Port Management System", "Cargo Tracking System"],
+        correct: "nGen System",
+        explanation: "The nGen system processes EDI/IES booking data and performs mapping conversions for port operations management.",
+        category: "Data Entry",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "What is the primary purpose of Block stowage in the port structure?",
+        options: ["Container counting", "Providing stowage data to shipping companies", "Port security", "Cargo inspection"],
+        correct: "Providing stowage data to shipping companies",
+        explanation: "Block stowage provides detailed loading position information to shipping companies based on converted company codes.",
+        category: "Service Structure",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "Which ports are mentioned in the service route: SGSIN → CNYAI → TWKAO → JPNGO → JPTYO → USLAX?",
+        options: ["6 ports", "5 ports", "7 ports", "4 ports"],
+        correct: "6 ports",
+        explanation: "The route includes Singapore (SGSIN), China Yantian (CNYAI), Taiwan Kaohsiung (TWKAO), Japan Nagoya (JPNGO), Japan Tokyo (JPTYO), and US Los Angeles (USLAX).",
+        category: "Terminal Layout",
+        difficulty: "Basic"
+      },
+      {
+        question: "What does the mapping process convert in the data entry example?",
+        options: ["Container numbers to tracking codes", "Port codes to stowage instructions", "Booking data to operational codes", "Ship schedules to berth assignments"],
+        correct: "Booking data to operational codes",
+        explanation: "The mapping process converts booking data (POD, FD, Block) into operational codes (POC, POD, SI) for terminal operations.",
+        category: "Code Conversion",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "In the terminal layout, what does TY1 represent?",
+        options: ["Terminal Yard 1", "Tokyo Terminal 1", "VIP China Terminal", "Container Block"],
+        correct: "VIP China Terminal",
+        explanation: "TY1 is designated as the VIP China terminal in the port layout, serving specific shipping line operations.",
+        category: "Terminal Layout",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "What is the advantage of supporting both UN-Port code and Shipping Line code in input fields?",
+        options: ["Faster data entry", "Reduced errors", "Flexibility in code entry", "Better security"],
+        correct: "Flexibility in code entry",
+        explanation: "Supporting both code types in the same input field allows operators to use either standardized UN codes or company-specific codes as needed.",
+        category: "Code Conversion",
+        difficulty: "Advanced"
+      },
+      {
+        question: "Which area numbers are associated with SGSIN in the port layout?",
+        options: ["Areas 1 and 7", "Areas 2 and 6", "Areas 3 and 4", "Areas 5 and 8"],
+        correct: "Areas 1 and 7",
+        explanation: "Singapore (SGSIN) operations are located in areas 1 and 7 according to the service port layout diagram.",
+        category: "Terminal Layout",
+        difficulty: "Advanced"
+      },
+      {
+        question: "What does IES represent in the context of data transmission?",
+        options: ["International Export System", "Integrated EDI System", "Import/Export System", "Information Exchange System"],
+        correct: "Information Exchange System",
+        explanation: "IES (Information Exchange System) is used for port code reference tables and data conversion processes in terminal operations.",
+        category: "Data Entry",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "In the manual entry process, what must be based on shipping company documents?",
+        options: ["Container weights", "Direct input of import codes", "Berth assignments", "Cargo descriptions"],
+        correct: "Direct input of import codes",
+        explanation: "Manual entry allows terminal staff to directly input import codes or full names based on shipping company documentation.",
+        category: "Data Entry",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "What is the relationship between S.I. and SPL/YPL standards?",
+        options: ["S.I. replaces SPL/YPL", "S.I. serves as the standard for SPL container loading and YPL container discharge", "They are unrelated", "SPL/YPL replaces S.I."],
+        correct: "S.I. serves as the standard for SPL container loading and YPL container discharge",
+        explanation: "Stowage Instructions (S.I.) provide the standardized framework for both SPL (container loading) and YPL (container discharge) operations.",
+        category: "Service Structure",
+        difficulty: "Advanced"
+      },
+      {
+        question: "Which terminal codes are shown in the LA (Los Angeles) area?",
+        options: ["LA1, LA2, LA3", "LAX1, LAX2, LAX3", "USLAX1, USLAX2, USLAX3", "LA-A, LA-B, LA-C"],
+        correct: "LA1, LA2, LA3",
+        explanation: "The Los Angeles area is divided into three terminal sections: LA1, LA2, and LA3 for operational organization.",
+        category: "Terminal Layout",
+        difficulty: "Basic"
+      },
+      {
+        question: "What does TWKAO represent in the port structure?",
+        options: ["Taiwan Container Terminal", "Kaohsiung Port, Taiwan", "Taiwan Warehouse Operations", "Terminal West Kaohsiung"],
+        correct: "Kaohsiung Port, Taiwan",
+        explanation: "TWKAO is the port code for Kaohsiung, which is a major container port in Taiwan.",
+        category: "Port Codes",
+        difficulty: "Basic"
+      },
+      {
+        question: "What limitation exists for manual input of shipping company codes?",
+        options: ["Only during business hours", "Only for emergency situations", "Only for ports that have corresponding shipping companies in IES", "Only for domestic shipments"],
+        correct: "Only for ports that have corresponding shipping companies in IES",
+        explanation: "Manual input of shipping company codes is restricted to ports that have established corresponding shipping company entries in the IES system.",
+        category: "Code Conversion",
+        difficulty: "Advanced"
+      },
+      {
+        question: "In the block stowage level, what does ZZXKA represent?",
+        options: ["A special container type", "A converted block code for XKA terminal", "A shipping line identifier", "A cargo classification"],
+        correct: "A converted block code for XKA terminal",
+        explanation: "ZZXKA represents the block stowage code converted from the XKA terminal code for operational use.",
+        category: "Service Structure",
+        difficulty: "Advanced"
+      },
+      {
+        question: "What are the Hub Codes mentioned in the port layout?",
+        options: ["USCHI, USNYC, USBOS", "USLAX, USOAK, USSEA", "USHOU, USMIA, USSAV", "USPOR, USTAC, USBAL"],
+        correct: "USCHI, USNYC, USBOS",
+        explanation: "The hub codes shown are USCHI (Chicago), USNYC (New York), and USBOS (Boston), representing major US port hubs.",
+        category: "Terminal Layout",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "What is the primary benefit of Port-SI structured connection?",
+        options: ["Faster cargo handling", "Route definition with modification capability", "Reduced documentation", "Lower operational costs"],
+        correct: "Route definition with modification capability",
+        explanation: "Port-SI structured connection allows for predefined route configurations while maintaining the flexibility to modify arrangements for individual voyages.",
+        category: "Service Structure",
+        difficulty: "Advanced"
+      },
+      {
+        question: "In the data conversion example, what happens to Block = CHY?",
+        options: ["It becomes Block = USCHI", "It becomes Block = CHY", "It becomes SI = CHY", "It becomes POD = CHY"],
+        correct: "It becomes Block = USCHI",
+        explanation: "In the mapping process, the original Block code CHY is converted to USCHI in the nGen system output.",
+        category: "Code Conversion",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "What does FD represent in the booking data context?",
+        options: ["Final Destination", "Freight Delivery", "First Discharge", "Forward Declaration"],
+        correct: "Final Destination",
+        explanation: "FD (Final Destination) indicates the ultimate destination port for the cargo in the shipping route.",
+        category: "Data Entry",
+        difficulty: "Basic"
+      },
+      {
+        question: "Which area is designated for USLAX operations?",
+        options: ["Area 4", "Area 5", "Area 6", "Area 7"],
+        correct: "Area 5",
+        explanation: "USLAX (Los Angeles) operations are designated in Area 5 according to the port layout structure.",
+        category: "Terminal Layout",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "What is the main advantage of EDI/IES automated data entry over manual entry?",
+        options: ["Lower cost", "Reduced human error and faster processing", "Better security", "More detailed reporting"],
+        correct: "Reduced human error and faster processing",
+        explanation: "EDI/IES automated systems minimize manual input errors and accelerate data processing compared to manual entry methods.",
+        category: "Data Entry",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "In the service port structure, which level directly connects to shipping company codes?",
+        options: ["POC level", "POD level", "S.I. level", "Block level"],
+        correct: "Block level",
+        explanation: "The Block level represents codes converted from shipping company identifiers to indicate specific stowage positions.",
+        category: "Service Structure",
+        difficulty: "Advanced"
+      },
+      {
+        question: "What does the concept of Stowage Instruction aim to reflect?",
+        options: ["Container inventory", "Actual shipping routes", "Port regulations", "Crew assignments"],
+        correct: "Actual shipping routes",
+        explanation: "Stowage Instructions are designed to accurately reflect real shipping routes and operational sequences in maritime transportation.",
+        category: "Service Structure",
+        difficulty: "Intermediate"
+      },
+      {
+        question: "What is the primary function of the nGen system in port operations?",
+        options: ["Cargo tracking only", "Data mapping and conversion for multiple entry methods", "Financial processing", "Security monitoring"],
+        correct: "Data mapping and conversion for multiple entry methods",
+        explanation: "The nGen system performs data mapping and conversion for both automated EDI/IES booking data and manual entry processes, standardizing information for port operations.",
+        category: "Data Entry",
+        difficulty: "Advanced"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let answers = [];
+    let startTime = Date.now();
+    let timeLimit = 20 * 60 * 1000; // 20 minutes in milliseconds
+    let timerInterval;
+    let currentScore = 0;
+    let questionStartTime = Date.now();
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function startTimer() {
+      const timerDisplay = document.getElementById('timer-display');
+      timerInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remaining = timeLimit - elapsed;
+        
+        if (remaining <= 0) {
+          clearInterval(timerInterval);
+          showResults(); // Auto-submit when time runs out
+          return;
+        }
+        
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Change color when time is running low
+        if (remaining < 5 * 60 * 1000) { // Last 5 minutes
+          timerDisplay.classList.add('text-red-800');
+          timerDisplay.classList.remove('text-red-600');
+        }
+      }, 1000);
+    }
+
+    function updateQuestionMeta(question) {
+      const categoryEl = document.getElementById('question-category');
+      const difficultyEl = document.getElementById('question-difficulty');
+      
+      categoryEl.textContent = question.category || 'General';
+      categoryEl.className = `category-badge category-${question.category?.toLowerCase().replace(/\s+/g, '-') || 'general'}`;
+      
+      difficultyEl.textContent = question.difficulty || 'Basic';
+      difficultyEl.className = `difficulty-badge difficulty-${question.difficulty?.toLowerCase() || 'basic'}`;
+      
+      document.getElementById('current-score').textContent = currentScore;
+      document.getElementById('total-questions').textContent = quizData.length;
+    }
+
+    function showFeedback(isCorrect, explanation) {
+      const feedbackEl = document.getElementById('answer-feedback');
+      const explanationEl = document.getElementById('explanation');
+      const showExplanationBtn = document.getElementById('show-explanation-btn');
+      
+      feedbackEl.innerHTML = isCorrect ? 
+        '<div class="text-green-600 font-semibold">✓ Correct!</div>' :
+        '<div class="text-red-600 font-semibold">✗ Incorrect</div>';
+      
+      if (explanation) {
+        explanationEl.textContent = explanation;
+        showExplanationBtn.style.display = 'inline-block';
+      }
+    }
+
+    function startQuiz() {
+      shuffleArray(quizData);
+      answers = new Array(quizData.length).fill(null);
+      currentQuestion = 0;
+      currentScore = 0;
+      startTime = Date.now();
+      startTimer();
+      showQuestion();
+    }
+
+    function showQuestion() {
+      questionStartTime = Date.now();
+      const q = quizData[currentQuestion];
+      
+      // Update progress bar
+      const progressPercentage = ((currentQuestion + 1) / quizData.length) * 100;
+      document.getElementById('progress-bar').style.width = progressPercentage + '%';
+      
+      document.getElementById('question-number').textContent = `Question ${currentQuestion + 1} of ${quizData.length}:`;
+      document.getElementById('question-text').textContent = q.question;
+      
+      // Update question metadata
+      updateQuestionMeta(q);
+      
+      const optionsForm = document.getElementById('options-form');
+      optionsForm.innerHTML = '';
+      
+      q.options.forEach(option => {
+        const label = document.createElement('label');
+        label.className = 'quiz-option';
+        label.style.display = 'block';
+        label.style.width = '100%';
+        label.innerHTML = `<input type="radio" name="answer" value="${option}"> <span class="text-gray-700 text-lg font-medium">${option}</span>`;
+        
+        // Add click handler for enhanced interaction
+        label.addEventListener('click', function() {
+          document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+        
+        optionsForm.appendChild(label);
+      });
+      
+      // Clear previous feedback
+      document.getElementById('answer-feedback').innerHTML = '';
+      document.getElementById('explanation').classList.add('hidden');
+      document.getElementById('show-explanation-btn').style.display = 'none';
+      
+      // Restore previous selection if exists
+      document.querySelectorAll('input[name="answer"]').forEach(input => {
+        input.disabled = false;
+        if (answers[currentQuestion] && answers[currentQuestion].answer === input.value) {
+          input.checked = true;
+          input.closest('.quiz-option').classList.add('selected');
+          
+          // Show previous feedback if available
+          if (answers[currentQuestion].feedback) {
+            showFeedback(answers[currentQuestion].isCorrect, q.explanation);
+          }
+        }
+      });
+      
+      document.getElementById('back-btn').disabled = currentQuestion === 0;
+      document.getElementById('next-btn').textContent = currentQuestion === quizData.length - 1 ? 'Finish Quiz' : 'Next';
+      document.getElementById('next-btn').disabled = false;
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected && currentQuestion < quizData.length - 1) {
+        document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">Please select an answer!</div>';
+        return;
+      }
+      
+      if (selected) {
+        const isCorrect = selected.value === quizData[currentQuestion].correct;
+        
+        // Store answer with additional metadata
+        answers[currentQuestion] = {
+          answer: selected.value,
+          isCorrect: isCorrect,
+          timeSpent: Date.now() - questionStartTime,
+          feedback: true
+        };
+        
+        if (isCorrect) {
+          currentScore++;
+          document.getElementById('current-score').textContent = currentScore;
+        }
+        
+        // Show immediate feedback
+        showFeedback(isCorrect, quizData[currentQuestion].explanation);
+      }
+      
+      if (currentQuestion < quizData.length - 1) {
+        currentQuestion++;
+        showQuestion();
+      } else {
+        clearInterval(timerInterval);
+        showResults();
+      }
+    }
+
+    function backQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('results-container').style.display = 'block';
+      
+      let score = 0;
+      let totalTime = Date.now() - startTime;
+      let categoryStats = {};
+      
+      // Calculate performance statistics
+      quizData.forEach((q, index) => {
+        const answer = answers[index];
+        const isCorrect = answer && answer.isCorrect;
+        if (isCorrect) score++;
+        
+        // Category performance tracking
+        const category = q.category || 'General';
+        if (!categoryStats[category]) {
+          categoryStats[category] = { correct: 0, total: 0 };
+        }
+        categoryStats[category].total++;
+        if (isCorrect) categoryStats[category].correct++;
+      });
+      
+      // Update score display
+      const percentage = Math.round((score / quizData.length) * 100);
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('percentage').textContent = percentage;
+      
+      // Show performance grade
+      const gradeEl = document.getElementById('performance-grade');
+      const messageEl = document.getElementById('performance-message');
+      
+      if (percentage >= 90) {
+        gradeEl.textContent = 'Excellent! 🏆';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-green-600';
+        messageEl.textContent = 'Outstanding! You have mastered port stowage instructions.';
+      } else if (percentage >= 80) {
+        gradeEl.textContent = 'Very Good! 🎯';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-blue-600';
+        messageEl.textContent = 'Great job! You have a strong understanding of stowage operations.';
+      } else if (percentage >= 70) {
+        gradeEl.textContent = 'Good 👍';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-yellow-600';
+        messageEl.textContent = 'Good work! Consider reviewing some stowage concepts for improvement.';
+      } else {
+        gradeEl.textContent = 'Needs Review 📚';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-red-600';
+        messageEl.textContent = 'Additional study recommended. Focus on port operations and stowage procedures.';
+      }
+      
+      // Time statistics
+      const minutes = Math.floor(totalTime / 60000);
+      const seconds = Math.floor((totalTime % 60000) / 1000);
+      const avgTimePerQuestion = Math.floor(totalTime / quizData.length / 1000);
+      
+      document.getElementById('time-taken').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      document.getElementById('avg-time').textContent = `${avgTimePerQuestion}s`;
+      
+      // Category performance
+      const categoryContainer = document.getElementById('category-performance');
+      categoryContainer.innerHTML = '';
+      Object.entries(categoryStats).forEach(([category, stats]) => {
+        const categoryCard = document.createElement('div');
+        const categoryPercentage = Math.round((stats.correct / stats.total) * 100);
+        categoryCard.className = 'bg-white p-4 rounded-lg border text-center';
+        categoryCard.innerHTML = `
+          <div class="font-semibold text-gray-800">${category}</div>
+          <div class="text-2xl font-bold ${categoryPercentage >= 80 ? 'text-green-600' : categoryPercentage >= 60 ? 'text-yellow-600' : 'text-red-600'}">${stats.correct}/${stats.total}</div>
+          <div class="text-sm text-gray-600">${categoryPercentage}%</div>
+        `;
+        categoryContainer.appendChild(categoryCard);
+      });
+      
+      // Update results table
+      const table = document.getElementById('results-table');
+      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr>';
+      quizData.forEach((q, index) => {
+        const answer = answers[index];
+        const userAnswer = answer ? answer.answer : 'Not answered';
+        const isCorrect = answer ? answer.isCorrect : false;
+        html += `<tr>
+          <td>${q.question}</td>
+          <td><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">${q.category || 'General'}</span></td>
+          <td>${userAnswer}</td>
+          <td>${q.correct}</td>
+          <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
+        </tr>`;
+      });
+      table.innerHTML = html;
+    }
+
+    function restartQuiz() {
+      if (timerInterval) clearInterval(timerInterval);
+      document.getElementById('results-container').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      startQuiz();
+    }
+
+    function printResults() { window.print(); }
+
+    function reviewAnswers() {
+      alert('Review functionality: Study the detailed results table below to understand your performance in each category.');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('next-btn').addEventListener('click', nextQuestion);
+      document.getElementById('back-btn').addEventListener('click', backQuestion);
+      document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+      document.getElementById('print-btn').addEventListener('click', printResults);
+      
+      // Add new event handlers
+      document.getElementById('review-btn').addEventListener('click', reviewAnswers);
+      document.getElementById('show-explanation-btn').addEventListener('click', function() {
+        const explanationEl = document.getElementById('explanation');
+        explanationEl.classList.toggle('hidden');
+        this.textContent = explanationEl.classList.contains('hidden') ? 'Show Explanation' : 'Hide Explanation';
+      });
+      
+      startQuiz();
+    });
+  </script>
+</body>
+</html>
