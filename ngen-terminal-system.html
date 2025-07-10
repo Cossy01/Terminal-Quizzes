@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nGen Terminal System Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.98);
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .progress-container {
+      background: #f1f5f9;
+      height: 8px;
+      border-radius: 4px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
+    }
+    
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 auto;
+    }
+    
+    .quiz-option {
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 8px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: block;
+      width: 100%;
+    }
+    
+    #options-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .quiz-option:hover {
+      border-color: #8b5cf6;
+      background: rgba(139, 92, 246, 0.05);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.15);
+    }
+    
+    .quiz-option.selected {
+      border-color: #8b5cf6;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.05));
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
+    }
+    
+    .quiz-option input[type="radio"] {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #cbd5e1;
+      border-radius: 50%;
+      margin-right: 12px;
+      position: relative;
+      transition: all 0.3s ease;
+      vertical-align: middle;
+    }
+    
+    .quiz-option input[type="radio"]:checked {
+      border-color: #8b5cf6;
+      background: #8b5cf6;
+    }
+    
+    .quiz-option input[type="radio"]:checked::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+    }
+    
+    .results-table th, .results-table td {
+      padding: 16px 12px;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: middle;
+    }
+    
+    .results-table th {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .results-table tr:hover {
+      background-color: #f9fafb;
+    }
+    
+    .results-table td:first-child {
+      text-align: left;
+      max-width: 300px;
+      word-wrap: break-word;
+    }
+    
+    .correct { 
+      color: #059669; 
+      font-weight: 600;
+      background-color: #d1fae5;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    
+    .incorrect { 
+      color: #dc2626; 
+      font-weight: 600;
+      background-color: #fee2e2;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .container {
+        margin: 10px;
+        padding: 1.5rem !important;
+      }
+      
+      .quiz-option {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+      }
+      
+      .results-table th, .results-table td {
+        padding: 12px 8px;
+        font-size: 0.875rem;
+      }
+      
+      .results-table td:first-child {
+        max-width: 200px;
+      }
+    }
+    
+    @media print {
+      body {
+        background: white !important;
+        padding: 0;
+      }
+      .container {
+        background: white !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+      #results-container button {
+        display: none !important;
+      }
+      .results-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+      }
+      .results-table th, .results-table td {
+        border: 1px solid #ddd !important;
+        font-size: 12px !important;
+        padding: 8px 4px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="quiz-container" class="container p-8 rounded-xl shadow-xl">
+    <div class="flex justify-between items-center mb-6">
+      <a href="index.html" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 font-medium text-sm">
+        ← Back to Menu
+      </a>
+      <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">nGen Terminal System Quiz</h1>
+      <div class="w-24"></div> <!-- Spacer for centering -->
+    </div>
+    
+    <!-- Enhanced Progress Section -->
+    <div class="mb-6">
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+      </div>
+      
+      <!-- Quiz Stats -->
+      <div class="flex justify-between items-center mt-3 text-sm text-gray-600">
+        <div class="quiz-stats">
+          <span id="question-category" class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium"></span>
+        </div>
+        <div class="score-display">
+          Correct: <span id="current-score" class="font-bold text-purple-600">0</span> / 
+          <span id="total-questions">20</span>
+        </div>
+      </div>
+    </div>
+    
+    <div id="question-number" class="text-lg text-gray-600 mb-3 text-center font-medium"></div>
+    <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700 font-medium"></div>
+    <form id="options-form"></form>
+    
+    <!-- Feedback Section -->
+    <div id="feedback" class="mt-6 text-center">
+      <div id="answer-feedback" class="mb-4"></div>
+      <div id="explanation" class="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg hidden"></div>
+    </div>
+    
+    <div class="flex justify-center gap-4 mt-8">
+      <button id="back-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[100px] disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
+      <button id="show-explanation-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[140px] hidden">Show Explanation</button>
+      <button id="next-btn" class="px-6 py-3 bg-purple-700 text-white rounded-lg hover:bg-purple-800 transition-colors duration-200 font-medium min-w-[100px] shadow-lg hover:shadow-xl">Next</button>
+    </div>
+  </div>
+  <div id="results-container" class="container p-8 rounded-xl shadow-xl" style="display:none;">
+    <div class="flex justify-between items-center mb-6">
+      <a href="index.html" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 font-medium text-sm">
+        ← Back to Menu
+      </a>
+      <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">Quiz Results</h1>
+      <div class="w-24"></div> <!-- Spacer for centering -->
+    </div>
+    
+    <!-- Score Card -->
+    <div class="bg-gradient-to-br from-purple-50 to-violet-100 p-6 rounded-xl mb-8 border border-purple-200">
+      <div class="text-center">
+        <p class="text-xl mb-2 text-gray-700 font-medium">Your Final Score</p>
+        <p class="text-5xl font-bold text-purple-700 mb-2"><span id="final-score"></span>/<span>20</span></p>
+        <p class="text-xl text-purple-600 font-semibold"><span id="percentage"></span>% Complete</p>
+        
+        <!-- Performance Grade -->
+        <div class="mt-4">
+          <div id="performance-grade" class="text-2xl font-bold mb-2"></div>
+          <div id="performance-message" class="text-gray-600"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Category Performance -->
+    <div class="mb-6">
+      <h3 class="text-lg font-bold mb-4 text-gray-800">Performance by Category</h3>
+      <div id="category-performance" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+    </div>
+    
+    <div class="overflow-x-auto">
+      <table id="results-table" class="results-table"></table>
+    </div>
+    <div class="flex justify-center gap-4 mt-8">
+      <button id="print-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">📄 Print Results</button>
+      <button id="review-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">📚 Review Answers</button>
+      <button id="restart-btn" class="px-6 py-3 bg-purple-700 text-white rounded-lg hover:bg-purple-800 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">🔄 Restart Quiz</button>
+    </div>
+  </div>
+  <script>
+    const quizData = [
+      { 
+        question: "What is the primary purpose of the nGen system?", 
+        options: ["To manage ship maintenance", "To streamline terminal workflow and operations", "To handle passenger check-ins", "To design new shipping containers"], 
+        correct: "To streamline terminal workflow and operations",
+        explanation: "nGen is a comprehensive terminal management system designed to optimize and streamline all aspects of terminal workflow and operations, improving efficiency and coordination.",
+        category: "System Overview"
+      },
+      { 
+        question: "Who provides the export booking information to HIT via EDI in the pre-arrival process?", 
+        options: ["Tractor drivers", "Shipping lines", "Container inspectors", "Control tower staff"], 
+        correct: "Shipping lines",
+        explanation: "Shipping lines provide export booking information to HIT (Hong Kong International Terminals) via EDI (Electronic Data Interchange) as part of the pre-arrival process.",
+        category: "Pre-arrival Process"
+      },
+      { 
+        question: "What method do tractor drivers use to provide pre-advice or appointments?", 
+        options: ["Email", "IVRS", "Fax", "Manual logbook"], 
+        correct: "IVRS",
+        explanation: "IVRS (Interactive Voice Response System) is used by tractor drivers to provide pre-advice or make appointments, allowing for automated scheduling and communication.",
+        category: "Pre-arrival Process"
+      },
+      { 
+        question: "What is the first step in the gate operations process as described?", 
+        options: ["Validate and record charge", "Scan card through PCC scanner", "Send Tractor ID to nGen", "Update inspection results"], 
+        correct: "Scan card through PCC scanner",
+        explanation: "The first step in gate operations is scanning the card through the PCC (Port Card Computer) scanner, which initiates the identification and validation process.",
+        category: "Gate Operations"
+      },
+      { 
+        question: "What device is used by the container inspector to update inspection results at the exit gate?", 
+        options: ["Desktop computer", "Wireless handheld terminal", "Barcode scanner", "IVRS system"], 
+        correct: "Wireless handheld terminal",
+        explanation: "Container inspectors use wireless handheld terminals to update inspection results at the exit gate, providing real-time data entry and system updates.",
+        category: "Gate Operations"
+      },
+      { 
+        question: "What do tractor drivers receive when they swipe their card at the exit gate?", 
+        options: ["Terminal Receipt (TR)", "Export booking info", "Pre-advice confirmation", "Inspection report"], 
+        correct: "Terminal Receipt (TR)",
+        explanation: "When tractor drivers swipe their card at the exit gate, they receive a Terminal Receipt (TR) as confirmation of their transaction and exit from the terminal.",
+        category: "Gate Operations"
+      },
+      { 
+        question: "Which team is responsible for nGen quality and release control?", 
+        options: ["Gate operations team", "nGen Quality & Release Control Team", "Pre-arrival process team", "Control tower staff"], 
+        correct: "nGen Quality & Release Control Team",
+        explanation: "The nGen Quality & Release Control Team is specifically responsible for ensuring quality standards and managing release control within the nGen system.",
+        category: "System Management"
+      },
+      { 
+        question: "What role does the control tower play in nGen operations?", 
+        options: ["Loading and unloading containers", "Monitoring and deciding work sequence", "Processing export bookings", "Inspecting containers"], 
+        correct: "Monitoring and deciding work sequence",
+        explanation: "The control tower plays a crucial role in monitoring operations and deciding work sequences, coordinating terminal activities for optimal efficiency.",
+        category: "Control Tower"
+      },
+      { 
+        question: "Who prepared the ship planning operation document for nGen?", 
+        options: ["The control tower staff", "Annie", "The gate operations team", "The tractor drivers"], 
+        correct: "Annie",
+        explanation: "According to the document, Annie prepared the ship planning operation document for nGen, indicating specific authorship and responsibility.",
+        category: "Documentation"
+      },
+      { 
+        question: "What is the significance of the date \"24 July 2006\" in the document?", 
+        options: ["The launch date of nGen", "The date of the document pages", "The deadline for pre-arrival processes", "The inspection completion date"], 
+        correct: "The date of the document pages",
+        explanation: "The date \"24 July 2006\" represents the date when the document pages were created or published, serving as a reference point for the documentation.",
+        category: "Documentation"
+      },
+      { 
+        question: "What is the purpose of the PCC scanner in the gate operations?", 
+        options: ["To validate and record charges", "To scan container barcodes", "To monitor work sequences", "To process export bookings"], 
+        correct: "To validate and record charges",
+        explanation: "The PCC (Port Card Computer) scanner is used to validate and record charges associated with gate operations, ensuring proper billing and transaction recording.",
+        category: "Gate Operations"
+      },
+      { 
+        question: "Which process involves inputting data into the nGen system?", 
+        options: ["Pre-arrival process", "Document processing", "Exit gate operations", "Control tower monitoring"], 
+        correct: "Pre-arrival process",
+        explanation: "The pre-arrival process involves inputting data into the nGen system, including export booking information and pre-advice details from various stakeholders.",
+        category: "Data Management"
+      },
+      { 
+        question: "What happens after the tractor ID is sent to nGen during gate operations?", 
+        options: ["The container is inspected", "The driver receives a terminal receipt", "The work sequence is decided", "The export booking is confirmed"], 
+        correct: "The work sequence is decided",
+        explanation: "After the tractor ID is sent to nGen during gate operations, the system processes the information and the work sequence is decided by the control tower.",
+        category: "Gate Operations"
+      },
+      { 
+        question: "How does the wireless terminal contribute to nGen?", 
+        options: ["It acts as the eyes and ears to the main computer system", "It processes pre-advice appointments", "It scans cards at the gate", "It updates export bookings"], 
+        correct: "It acts as the eyes and ears to the main computer system",
+        explanation: "The wireless terminal serves as the eyes and ears to the main computer system, providing real-time field data and enabling remote interaction with the central nGen system.",
+        category: "Technology"
+      },
+      { 
+        question: "What is a key activity at the CMS office mentioned in the document?", 
+        options: ["Waiting for inspection results", "Scanning cards through PCC scanner", "Monitoring work sequences", "Processing terminal receipts"], 
+        correct: "Waiting for inspection results",
+        explanation: "At the CMS (Container Management System) office, a key activity mentioned is waiting for inspection results, indicating coordination between inspection and management functions.",
+        category: "CMS Operations"
+      },
+      { 
+        question: "Which organization is associated with the introduction of barcode technology as mentioned?", 
+        options: ["HIT", "nGen Quality Team", "Control Tower", "EDI Network"], 
+        correct: "HIT",
+        explanation: "HIT (Hong Kong International Terminals) is associated with the introduction of barcode technology, representing technological advancement in terminal operations.",
+        category: "Technology"
+      },
+      { 
+        question: "What is the final step for tractor drivers at the exit gate?", 
+        options: ["Scan their card", "Leave the terminal", "Validate charges", "Update inspection results"], 
+        correct: "Leave the terminal",
+        explanation: "The final step for tractor drivers at the exit gate is to leave the terminal after completing all required procedures and receiving their terminal receipt.",
+        category: "Gate Operations"
+      },
+      { 
+        question: "What does the nGen system integrate according to the overview?", 
+        options: ["Passenger and crew schedules", "Control tower and gate operations", "Ship design and maintenance", "Export and import tariffs"], 
+        correct: "Control tower and gate operations",
+        explanation: "The nGen system integrates control tower and gate operations, creating a unified platform for coordinating terminal activities and information flow.",
+        category: "System Integration"
+      },
+      { 
+        question: "What is the role of the shipping line in the pre-arrival process?", 
+        options: ["To inspect containers", "To provide export booking info via EDI", "To monitor work sequences", "To issue terminal receipts"], 
+        correct: "To provide export booking info via EDI",
+        explanation: "The shipping line's role in the pre-arrival process is to provide export booking information via EDI (Electronic Data Interchange) to facilitate advance planning.",
+        category: "Pre-arrival Process"
+      },
+      { 
+        question: "How does the nGen system support terminal workflow?", 
+        options: ["By automating document processing and gate operations", "By designing new containers", "By managing fuel supplies", "By training tractor drivers"], 
+        correct: "By automating document processing and gate operations",
+        explanation: "The nGen system supports terminal workflow by automating document processing and gate operations, reducing manual tasks and improving operational efficiency.",
+        category: "System Benefits"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let answers = [];
+    let currentScore = 0;
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function updateQuestionMeta(question) {
+      document.getElementById('question-category').textContent = question.category || 'General';
+      
+      document.getElementById('current-score').textContent = currentScore;
+      document.getElementById('total-questions').textContent = quizData.length;
+    }
+
+    function showFeedback(isCorrect, explanation) {
+      const feedbackEl = document.getElementById('answer-feedback');
+      const explanationEl = document.getElementById('explanation');
+      const showExplanationBtn = document.getElementById('show-explanation-btn');
+      
+      feedbackEl.innerHTML = isCorrect ? 
+        '<div class="text-purple-600 font-semibold">✓ Correct!</div>' :
+        '<div class="text-red-600 font-semibold">✗ Incorrect</div>';
+      
+      if (explanation) {
+        explanationEl.textContent = explanation;
+        showExplanationBtn.style.display = 'inline-block';
+      }
+    }
+
+    function startQuiz() {
+      shuffleArray(quizData);
+      answers = new Array(quizData.length).fill(null);
+      currentQuestion = 0;
+      currentScore = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = quizData[currentQuestion];
+      
+      // Update progress bar
+      const progressPercentage = ((currentQuestion + 1) / quizData.length) * 100;
+      document.getElementById('progress-bar').style.width = progressPercentage + '%';
+      
+      document.getElementById('question-number').textContent = `Question ${currentQuestion + 1} of ${quizData.length}:`;
+      document.getElementById('question-text').textContent = q.question;
+      
+      // Update question metadata
+      updateQuestionMeta(q);
+      
+      const optionsForm = document.getElementById('options-form');
+      optionsForm.innerHTML = '';
+      
+      q.options.forEach(option => {
+        const label = document.createElement('label');
+        label.className = 'quiz-option';
+        label.style.display = 'block';
+        label.style.width = '100%';
+        label.innerHTML = `<input type="radio" name="answer" value="${option}"> <span class="text-gray-700 text-lg font-medium">${option}</span>`;
+        
+        // Add click handler for enhanced interaction
+        label.addEventListener('click', function() {
+          document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+        
+        optionsForm.appendChild(label);
+      });
+      
+      // Clear previous feedback
+      document.getElementById('answer-feedback').innerHTML = '';
+      document.getElementById('explanation').classList.add('hidden');
+      document.getElementById('show-explanation-btn').style.display = 'none';
+      
+      // Restore previous selection if exists
+      document.querySelectorAll('input[name="answer"]').forEach(input => {
+        input.disabled = false;
+        if (answers[currentQuestion] && answers[currentQuestion].answer === input.value) {
+          input.checked = true;
+          input.closest('.quiz-option').classList.add('selected');
+          
+          // Show previous feedback if available
+          if (answers[currentQuestion].feedback) {
+            showFeedback(answers[currentQuestion].isCorrect, q.explanation);
+          }
+        }
+      });
+      
+      document.getElementById('back-btn').disabled = currentQuestion === 0;
+      document.getElementById('next-btn').textContent = currentQuestion === quizData.length - 1 ? 'Finish Quiz' : 'Next';
+      document.getElementById('next-btn').disabled = false;
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected && currentQuestion < quizData.length - 1) {
+        document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">Please select an answer!</div>';
+        return;
+      }
+      
+      if (selected) {
+        const isCorrect = selected.value === quizData[currentQuestion].correct;
+        
+        // Store answer with additional metadata
+        answers[currentQuestion] = {
+          answer: selected.value,
+          isCorrect: isCorrect,
+          feedback: true
+        };
+        
+        if (isCorrect) {
+          currentScore++;
+          document.getElementById('current-score').textContent = currentScore;
+        }
+        
+        // Show immediate feedback
+        showFeedback(isCorrect, quizData[currentQuestion].explanation);
+      }
+      
+      if (currentQuestion < quizData.length - 1) {
+        currentQuestion++;
+        showQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function backQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('results-container').style.display = 'block';
+      
+      let score = 0;
+      let categoryStats = {};
+      
+      // Calculate performance statistics
+      quizData.forEach((q, index) => {
+        const answer = answers[index];
+        const isCorrect = answer && answer.isCorrect;
+        if (isCorrect) score++;
+        
+        // Category performance tracking
+        const category = q.category || 'General';
+        if (!categoryStats[category]) {
+          categoryStats[category] = { correct: 0, total: 0 };
+        }
+        categoryStats[category].total++;
+        if (isCorrect) categoryStats[category].correct++;
+      });
+      
+      // Update score display
+      const percentage = Math.round((score / quizData.length) * 100);
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('percentage').textContent = percentage;
+      
+      // Show performance grade
+      const gradeEl = document.getElementById('performance-grade');
+      const messageEl = document.getElementById('performance-message');
+      
+      if (percentage >= 90) {
+        gradeEl.textContent = 'Excellent! 🏆';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-purple-600';
+        messageEl.textContent = 'Outstanding performance! You have mastered nGen terminal operations.';
+      } else if (percentage >= 80) {
+        gradeEl.textContent = 'Very Good! 🎯';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-blue-600';
+        messageEl.textContent = 'Great job! You have a strong understanding of nGen system concepts.';
+      } else if (percentage >= 70) {
+        gradeEl.textContent = 'Good 👍';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-yellow-600';
+        messageEl.textContent = 'Good work! Consider reviewing some nGen topics for improvement.';
+      } else {
+        gradeEl.textContent = 'Needs Review 📚';
+        gradeEl.className = 'text-2xl font-bold mb-2 text-red-600';
+        messageEl.textContent = 'Additional study recommended. Focus on the nGen areas you missed.';
+      }
+      
+      // Category performance
+      const categoryContainer = document.getElementById('category-performance');
+      categoryContainer.innerHTML = '';
+      Object.entries(categoryStats).forEach(([category, stats]) => {
+        const categoryCard = document.createElement('div');
+        const categoryPercentage = Math.round((stats.correct / stats.total) * 100);
+        categoryCard.className = 'bg-white p-4 rounded-lg border text-center';
+        categoryCard.innerHTML = `
+          <div class="font-semibold text-gray-800">${category}</div>
+          <div class="text-2xl font-bold ${categoryPercentage >= 80 ? 'text-purple-600' : categoryPercentage >= 60 ? 'text-yellow-600' : 'text-red-600'}">${stats.correct}/${stats.total}</div>
+          <div class="text-sm text-gray-600">${categoryPercentage}%</div>
+        `;
+        categoryContainer.appendChild(categoryCard);
+      });
+      
+      // Update results table
+      const table = document.getElementById('results-table');
+      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr>';
+      quizData.forEach((q, index) => {
+        const answer = answers[index];
+        const userAnswer = answer ? answer.answer : 'Not answered';
+        const isCorrect = answer ? answer.isCorrect : false;
+        html += `<tr>
+          <td>${q.question}</td>
+          <td><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">${q.category || 'General'}</span></td>
+          <td>${userAnswer}</td>
+          <td>${q.correct}</td>
+          <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
+        </tr>`;
+      });
+      table.innerHTML = html;
+    }
+
+    function restartQuiz() {
+      document.getElementById('results-container').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      startQuiz();
+    }
+
+    function printResults() { window.print(); }
+
+    function reviewAnswers() {
+      // Create a review modal or scroll to detailed results
+      alert('Review functionality: Study the detailed results table below to understand your performance in each category.');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('next-btn').addEventListener('click', nextQuestion);
+      document.getElementById('back-btn').addEventListener('click', backQuestion);
+      document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+      document.getElementById('print-btn').addEventListener('click', printResults);
+      
+      // Add new event handlers
+      document.getElementById('review-btn').addEventListener('click', reviewAnswers);
+      document.getElementById('show-explanation-btn').addEventListener('click', function() {
+        const explanationEl = document.getElementById('explanation');
+        explanationEl.classList.toggle('hidden');
+        this.textContent = explanationEl.classList.contains('hidden') ? 'Show Explanation' : 'Hide Explanation';
+      });
+      
+      startQuiz();
+    });
+  </script>
+</body>
+</html>

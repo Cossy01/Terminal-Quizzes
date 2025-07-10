@@ -65,7 +65,7 @@
     
     .quiz-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 1.5rem;
     }
     
@@ -130,6 +130,7 @@
     .vessels-icon { --accent-color: #f59e0b; }
     .equipment-icon { --accent-color: #8b5cf6; }
     .stowage-icon { --accent-color: #ef4444; }
+    .ngen-icon { --accent-color: #7c3aed; }
     
     .quiz-title {
       font-size: 1.5rem;
@@ -223,8 +224,11 @@
     }
     
     /* Responsive Design */
-    @media (max-width: 1200px) {
+    @media (max-width: 1400px) {
       .quiz-grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    }
+    @media (max-width: 1200px) {
+      .quiz-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
     }
     @media (max-width: 800px) {
       .quiz-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
@@ -361,6 +365,23 @@
           <div class="question-count">15 Questions</div>
         </div>
         <a href="port-stowage-instructions.html" class="quiz-button stowage-btn">
+          Begin Quiz
+        </a>
+      </div>
+
+      <!-- nGen Terminal System Quiz -->
+      <div class="quiz-card ngen-icon">
+        <div class="quiz-icon ngen-icon">
+          nGen
+        </div>
+        <h3 class="quiz-title">nGen System Quiz</h3>
+        <p class="quiz-description">
+          Master the nGen terminal management system, including workflow automation, gate operations, and integrated terminal control processes.
+        </p>
+        <div class="quiz-metadata">
+          <div class="question-count">20 Questions</div>
+        </div>
+        <a href="ngen-terminal-system.html" class="quiz-button ngen-btn">
           Begin Quiz
         </a>
       </div>
