@@ -467,6 +467,7 @@
     let answers = [];
     let currentMode = 'study'; // 'study' or 'quiz'
     let score = 0;
+    let currentScore = 0;
     let hintsRemaining = 3;
     let hintsUsed = 0;
     let hintsUsedInQuestions = {};
@@ -479,9 +480,11 @@
     }
 
     function startQuiz() {
+      currentScore = 0;
       shuffleArray(quizData);
       answers = new Array(quizData.length).fill(null);
       currentQuestion = 0;
+      document.getElementById('current-score').textContent = currentScore;
       showQuestion();
     }
 
@@ -520,7 +523,8 @@
               document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
               // Only increment score if this question hasn't been answered correctly before
               if (!answers[currentQuestion] || answers[currentQuestion] !== question.correct) {
-                score++;
+                currentScore++;
+                document.getElementById('current-score').textContent = currentScore;
               }
             } else {
               document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
@@ -558,7 +562,7 @@
     }
 
     function updateScoreDisplay() {
-      document.getElementById('current-score').textContent = score;
+      document.getElementById('current-score').textContent = currentScore;
       document.getElementById('total-questions').textContent = quizData.length;
     }
 
@@ -604,7 +608,8 @@
           document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
           // Only increment score if this question hasn't been answered correctly before
           if (!answers[currentQuestion] || answers[currentQuestion] !== currentQ.correct) {
-            score++;
+            currentScore++;
+            document.getElementById('current-score').textContent = currentScore;
           }
         } else {
           document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
@@ -650,7 +655,6 @@
       quizData.forEach((question, index) => {
         const userAnswer = answers[index] || 'Not answered';
         const isCorrect = userAnswer === question.correct;
-        if (isCorrect) finalScore++;
         
         const row = document.createElement('tr');
         row.innerHTML = `

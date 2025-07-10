@@ -258,6 +258,16 @@
       <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
     </div>
     
+    <!-- Live Score Counter -->
+    <div class="text-center mb-4">
+      <div class="inline-block bg-green-50 px-4 py-2 rounded-lg border border-green-200">
+        <span class="text-green-800 font-medium">
+          Correct: <span id="current-score" class="font-bold text-green-600">0</span> / 
+          <span id="total-questions" class="font-bold text-green-600">15</span>
+        </span>
+      </div>
+    </div>
+    
     <div id="question-number" class="text-lg text-gray-600 mb-3 text-center font-medium"></div>
     <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700 font-medium"></div>
     <form id="options-form"></form>
@@ -400,6 +410,7 @@
     ];
 
     let currentQuestion = 0;
+    let currentScore = 0;
     let answers = [];
     let currentMode = 'study';
     let studyModeAnswers = [];
@@ -414,6 +425,7 @@
 
     function startQuiz(mode) {
       currentMode = mode;
+      currentScore = 0;
       document.getElementById('mode-selection').style.display = 'none';
       document.getElementById('quiz-container').style.display = 'block';
       
@@ -422,7 +434,12 @@
       studyModeAnswers = new Array(quizData.length).fill(null);
       hintsUsed = new Array(quizData.length).fill(false);
       currentQuestion = 0;
+      updateScoreDisplay();
       showQuestion();
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById('current-score').textContent = currentScore;
     }
 
     function showQuestion() {
@@ -462,6 +479,23 @@
           
           if (currentMode === 'study') {
             // Immediate feedback without delay for smooth UI
+            const previousAnswer = answers[currentQuestion];
+            const question = quizData[currentQuestion];
+            
+            // Update score only if the answer changed
+            if (previousAnswer !== option) {
+              // Remove score if previous answer was correct
+              if (previousAnswer === question.correct) {
+                currentScore--;
+              }
+              // Add score if new answer is correct
+              if (option === question.correct) {
+                currentScore++;
+              }
+              updateScoreDisplay();
+            }
+            
+            answers[currentQuestion] = option;
             checkAnswerInStudyMode(option);
           }
         });
@@ -554,7 +588,24 @@
         return;
       }
       
-      answers[currentQuestion] = selectedAnswer.value;
+      const previousAnswer = answers[currentQuestion];
+      const newAnswer = selectedAnswer.value;
+      const question = quizData[currentQuestion];
+      
+      // Update score only if the answer changed
+      if (previousAnswer !== newAnswer) {
+        // Remove score if previous answer was correct
+        if (previousAnswer === question.correct) {
+          currentScore--;
+        }
+        // Add score if new answer is correct
+        if (newAnswer === question.correct) {
+          currentScore++;
+        }
+        updateScoreDisplay();
+      }
+      
+      answers[currentQuestion] = newAnswer;
       
       if (currentQuestion < quizData.length - 1) {
         currentQuestion++;

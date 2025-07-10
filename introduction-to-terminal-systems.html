@@ -473,7 +473,7 @@
     let currentQuestion = 0;
     let answers = new Array(quizData.length).fill(null);
     let currentMode = 'study'; // 'study' or 'quiz'
-    let score = 0;
+    let currentScore = 0;
     let hintsRemaining = 3;
     let hintsUsed = 0;
     let hintsUsedInQuestions = {};
@@ -513,7 +513,7 @@
               document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
               // Only increment score if this question hasn't been answered correctly before
               if (!answers[currentQuestion] || answers[currentQuestion] !== question.correct) {
-                score++;
+                currentScore++;
               }
             } else {
               document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
@@ -572,9 +572,11 @@
     }
     
     function startQuiz() {
+      currentScore = 0;
       shuffleArray(quizData);
       answers = new Array(quizData.length).fill(null);
       currentQuestion = 0;
+      document.getElementById('current-score').textContent = currentScore;
       showQuestion();
     }
     
@@ -631,7 +633,7 @@
       document.getElementById('results-container').style.display = 'block';
       
       // Use tracked score instead of recalculating
-      let finalScore = score;
+      let finalScore = currentScore;
       const resultsTable = document.getElementById('results-table');
       
       // Add hint usage column if in quiz mode
@@ -749,7 +751,7 @@
       // Reset all variables
       currentQuestion = 0;
       answers = new Array(quizData.length).fill(null);
-      score = 0;
+      currentScore = 0;
       hintsRemaining = 3;
       hintsUsed = 0;
       hintsUsedInQuestions = {};

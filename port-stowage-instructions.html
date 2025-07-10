@@ -681,14 +681,14 @@
       document.getElementById('quiz-container').style.display = 'none';
       document.getElementById('results-container').style.display = 'block';
       
-      let score = 0;
+      let finalScore = 0;
       let categoryStats = {};
       
       // Calculate performance statistics
       quizData.forEach((q, index) => {
         const answer = answers[index];
         const isCorrect = answer && answer.isCorrect;
-        if (isCorrect) score++;
+        if (isCorrect) finalScore++;
         
         // Category performance tracking
         const category = q.category || 'General';
@@ -700,8 +700,8 @@
       });
       
       // Update score display
-      const percentage = Math.round((score / quizData.length) * 100);
-      document.getElementById('final-score').textContent = score;
+      const percentage = Math.round((finalScore / quizData.length) * 100);
+      document.getElementById('final-score').textContent = finalScore;
       document.getElementById('percentage').textContent = percentage;
       
       // Show performance grade
