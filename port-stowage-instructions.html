@@ -49,12 +49,6 @@
       box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
     }
     
-    .timer-display {
-      color: #ef4444;
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-    
     .results-table {
       width: 100%;
       border-collapse: collapse;
@@ -191,19 +185,6 @@
     .category-stowage-planning { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
     .category-cargo-operations { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
     
-    .difficulty-badge {
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    
-    .difficulty-basic { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
-    .difficulty-intermediate { background: rgba(251, 191, 36, 0.1); color: #f59e0b; }
-    .difficulty-advanced { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
-    
     /* Mobile responsiveness */
     @media (max-width: 768px) {
       .container {
@@ -266,7 +247,7 @@
         ← Back to Menu
       </a>
       <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">Port Stowage Instructions</h1>
-      <div class="timer-display" id="timer-display">20:00</div>
+      <div class="w-24"></div> <!-- Spacer for centering -->
     </div>
     
     <!-- Enhanced Progress Section -->
@@ -280,7 +261,6 @@
       <div class="flex justify-between items-center mt-3 text-sm text-gray-600">
         <div class="quiz-stats">
           <span id="question-category" class="category-badge"></span>
-          <span id="question-difficulty" class="difficulty-badge"></span>
         </div>
         <div class="score-display">
           Correct: <span id="current-score" class="font-bold text-red-600">0</span> / 
@@ -327,12 +307,6 @@
           <div id="performance-grade" class="text-2xl font-bold mb-2"></div>
           <div id="performance-message" class="text-gray-600"></div>
         </div>
-        
-        <!-- Time Stats -->
-        <div class="mt-4 text-sm text-gray-600">
-          <div>Time Taken: <span id="time-taken" class="font-medium"></span></div>
-          <div>Average per Question: <span id="avg-time" class="font-medium"></span></div>
-        </div>
       </div>
     </div>
     
@@ -360,130 +334,111 @@
         options: ["United Nations headquarters", "A standardized code for identifying ports", "A type of shipping vessel", "A storage facility"],
         correct: "A standardized code for identifying ports",
         explanation: "UN Port codes are standardized international codes used to identify ports worldwide for shipping and logistics purposes.",
-        category: "Port Codes",
-        difficulty: "Basic"
+        category: "Port Codes"
       },
       {
         question: "Which of the following is a key component of stowage instructions?",
         options: ["Passenger seating arrangement", "Cargo placement and packing", "Crew scheduling", "Fuel management"],
         correct: "Cargo placement and packing",
         explanation: "Stowage instructions primarily focus on how cargo should be placed and packed within the vessel for safe and efficient transport.",
-        category: "Stowage Planning",
-        difficulty: "Basic"
+        category: "Stowage Planning"
       },
       {
         question: "What is the purpose of the \"Line Code\" in port operations?",
         options: ["To identify the shipping line", "To mark the port boundary", "To calculate shipping costs", "To schedule vessel maintenance"],
         correct: "To identify the shipping line",
         explanation: "Line codes are used to identify specific shipping companies or lines in port operations and logistics systems.",
-        category: "Service Structure",
-        difficulty: "Basic"
+        category: "Service Structure"
       },
       {
         question: "In the service port diagram, what does \"JPTYO\" represent?",
         options: ["A terminal code", "A local port in Japan", "A shipping route", "A cargo type"],
         correct: "A local port in Japan",
         explanation: "JPTYO represents Tokyo, Japan in the international port coding system used in maritime logistics.",
-        category: "Port Codes",
-        difficulty: "Basic"
+        category: "Port Codes"
       },
       {
         question: "What is the role of \"USLAX\" in the service port structure?",
         options: ["A hub code", "A destination port", "A stowage block", "A vessel identifier"],
         correct: "A destination port",
         explanation: "USLAX represents Los Angeles, USA and serves as a major destination port in the service port structure.",
-        category: "Terminal Layout",
-        difficulty: "Basic"
+        category: "Terminal Layout"
       },
       {
         question: "Which term is associated with the \"POD\" in logistics?",
         options: ["Point of Origin", "Port of Discharge", "Package Order Date", "Product Origin Data"],
         correct: "Port of Discharge",
         explanation: "POD stands for Port of Discharge, which is where cargo is unloaded from the vessel at its destination.",
-        category: "Service Structure",
-        difficulty: "Basic"
+        category: "Service Structure"
       },
       {
         question: "What does \"S.I.\" stand for in the context of port operations?",
         options: ["Shipping Index", "Stowage Instruction", "Safety Inspection", "Service Interval"],
         correct: "Stowage Instruction",
         explanation: "S.I. stands for Stowage Instruction, which provides detailed guidelines for cargo placement and handling.",
-        category: "Service Structure",
-        difficulty: "Basic"
+        category: "Service Structure"
       },
       {
         question: "Which of the following is a key activity in cargo handling?",
         options: ["Passenger check-in", "Loading and unloading", "Vehicle maintenance", "Office administration"],
         correct: "Loading and unloading",
         explanation: "Loading and unloading are fundamental cargo handling activities that involve moving cargo to and from vessels.",
-        category: "Cargo Operations",
-        difficulty: "Basic"
+        category: "Cargo Operations"
       },
       {
         question: "What is the significance of the \"Block\" in stowage planning?",
         options: ["A section of the ship for cargo storage", "A type of shipping container", "A port security measure", "A navigation route"],
         correct: "A section of the ship for cargo storage",
         explanation: "In stowage planning, a block refers to a designated section or area of the ship where cargo is stored and organized.",
-        category: "Stowage Planning",
-        difficulty: "Intermediate"
+        category: "Stowage Planning"
       },
       {
         question: "In the data entry example, what does \"FD\" represent?",
         options: ["Final Destination", "Freight Data", "Forwarding Direction", "Free Delivery"],
         correct: "Final Destination",
         explanation: "FD stands for Final Destination, indicating the ultimate destination port for the cargo shipment.",
-        category: "Data Entry",
-        difficulty: "Basic"
+        category: "Data Entry"
       },
       {
         question: "Which port code is mapped to \"LA3\" in the EDI/IES booking example?",
         options: ["USCHI", "USLAX", "USWDO", "USBOS"],
         correct: "USLAX",
         explanation: "LA3 is mapped to USLAX (Los Angeles) in the EDI/IES booking system for terminal operations.",
-        category: "Code Conversion",
-        difficulty: "Intermediate"
+        category: "Code Conversion"
       },
       {
         question: "What is the primary function of the \"IES\" system mentioned in the data entry?",
         options: ["Inventory tracking", "Electronic data interchange for shipping", "Employee scheduling", "Vessel design"],
         correct: "Electronic data interchange for shipping",
         explanation: "IES (Information Exchange System) facilitates electronic data interchange for shipping operations and port management.",
-        category: "Data Entry",
-        difficulty: "Intermediate"
+        category: "Data Entry"
       },
       {
         question: "Which of the following is a manual entry field in the data entry example?",
         options: ["Owner", "Mapping", "Bik/POD", "SI"],
         correct: "Bik/POD",
         explanation: "Bik/POD represents manual entry fields where operators can input booking and port of discharge information directly.",
-        category: "Data Entry",
-        difficulty: "Intermediate"
+        category: "Data Entry"
       },
       {
         question: "What does \"TWKAO\" indicate in the service port diagram?",
         options: ["A terminal in Taiwan", "A cargo handling method", "A shipping line code", "A port authority"],
         correct: "A terminal in Taiwan",
         explanation: "TWKAO represents Kaohsiung, Taiwan, which is a major port terminal in the Asian shipping network.",
-        category: "Port Codes",
-        difficulty: "Basic"
+        category: "Port Codes"
       },
       {
         question: "How is cargo stowage planning beneficial in port operations?",
         options: ["Reduces shipping costs", "Improves cargo safety and efficiency", "Increases passenger comfort", "Simplifies crew training"],
         correct: "Improves cargo safety and efficiency",
         explanation: "Proper cargo stowage planning ensures safe transport and efficient use of vessel space, reducing risks and optimizing operations.",
-        category: "Stowage Planning",
-        difficulty: "Intermediate"
+        category: "Stowage Planning"
       }
     ];
 
     let currentQuestion = 0;
     let answers = [];
-    let startTime = Date.now();
-    let timeLimit = 20 * 60 * 1000; // 20 minutes in milliseconds
-    let timerInterval;
     let currentScore = 0;
-    let questionStartTime = Date.now();
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -492,39 +447,11 @@
       }
     }
 
-    function startTimer() {
-      const timerDisplay = document.getElementById('timer-display');
-      timerInterval = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const remaining = timeLimit - elapsed;
-        
-        if (remaining <= 0) {
-          clearInterval(timerInterval);
-          showResults(); // Auto-submit when time runs out
-          return;
-        }
-        
-        const minutes = Math.floor(remaining / 60000);
-        const seconds = Math.floor((remaining % 60000) / 1000);
-        timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        
-        // Change color when time is running low
-        if (remaining < 5 * 60 * 1000) { // Last 5 minutes
-          timerDisplay.classList.add('text-red-800');
-          timerDisplay.classList.remove('text-red-600');
-        }
-      }, 1000);
-    }
-
     function updateQuestionMeta(question) {
       const categoryEl = document.getElementById('question-category');
-      const difficultyEl = document.getElementById('question-difficulty');
       
       categoryEl.textContent = question.category || 'General';
       categoryEl.className = `category-badge category-${question.category?.toLowerCase().replace(/\s+/g, '-') || 'general'}`;
-      
-      difficultyEl.textContent = question.difficulty || 'Basic';
-      difficultyEl.className = `difficulty-badge difficulty-${question.difficulty?.toLowerCase() || 'basic'}`;
       
       document.getElementById('current-score').textContent = currentScore;
       document.getElementById('total-questions').textContent = quizData.length;
@@ -550,13 +477,10 @@
       answers = new Array(quizData.length).fill(null);
       currentQuestion = 0;
       currentScore = 0;
-      startTime = Date.now();
-      startTimer();
       showQuestion();
     }
 
     function showQuestion() {
-      questionStartTime = Date.now();
       const q = quizData[currentQuestion];
       
       // Update progress bar
@@ -622,11 +546,10 @@
       if (selected) {
         const isCorrect = selected.value === quizData[currentQuestion].correct;
         
-        // Store answer with additional metadata
+        // Store answer
         answers[currentQuestion] = {
           answer: selected.value,
           isCorrect: isCorrect,
-          timeSpent: Date.now() - questionStartTime,
           feedback: true
         };
         
@@ -643,7 +566,6 @@
         currentQuestion++;
         showQuestion();
       } else {
-        clearInterval(timerInterval);
         showResults();
       }
     }
@@ -660,7 +582,6 @@
       document.getElementById('results-container').style.display = 'block';
       
       let score = 0;
-      let totalTime = Date.now() - startTime;
       let categoryStats = {};
       
       // Calculate performance statistics
@@ -690,28 +611,20 @@
       if (percentage >= 90) {
         gradeEl.textContent = 'Excellent! 🏆';
         gradeEl.className = 'text-2xl font-bold mb-2 text-green-600';
-        messageEl.textContent = 'Outstanding! You have mastered port stowage instructions.';
+        messageEl.textContent = 'Outstanding! You have a solid understanding of port stowage instructions.';
       } else if (percentage >= 80) {
         gradeEl.textContent = 'Very Good! 🎯';
         gradeEl.className = 'text-2xl font-bold mb-2 text-blue-600';
-        messageEl.textContent = 'Great job! You have a strong understanding of stowage operations.';
+        messageEl.textContent = 'Great job! You have a good grasp of stowage operations.';
       } else if (percentage >= 70) {
         gradeEl.textContent = 'Good 👍';
         gradeEl.className = 'text-2xl font-bold mb-2 text-yellow-600';
-        messageEl.textContent = 'Good work! Consider reviewing some stowage concepts for improvement.';
+        messageEl.textContent = 'Good work! Consider reviewing some concepts to strengthen your understanding.';
       } else {
-        gradeEl.textContent = 'Needs Review 📚';
+        gradeEl.textContent = 'Keep Learning 📚';
         gradeEl.className = 'text-2xl font-bold mb-2 text-red-600';
-        messageEl.textContent = 'Additional study recommended. Focus on port operations and stowage procedures.';
+        messageEl.textContent = 'Review the material and try again. Focus on understanding the key concepts.';
       }
-      
-      // Time statistics
-      const minutes = Math.floor(totalTime / 60000);
-      const seconds = Math.floor((totalTime % 60000) / 1000);
-      const avgTimePerQuestion = Math.floor(totalTime / quizData.length / 1000);
-      
-      document.getElementById('time-taken').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-      document.getElementById('avg-time').textContent = `${avgTimePerQuestion}s`;
       
       // Category performance
       const categoryContainer = document.getElementById('category-performance');
@@ -747,7 +660,6 @@
     }
 
     function restartQuiz() {
-      if (timerInterval) clearInterval(timerInterval);
       document.getElementById('results-container').style.display = 'none';
       document.getElementById('quiz-container').style.display = 'block';
       startQuiz();
@@ -756,7 +668,7 @@
     function printResults() { window.print(); }
 
     function reviewAnswers() {
-      alert('Review functionality: Study the detailed results table below to understand your performance in each category.');
+      alert('Review the detailed results table below to see your performance in each category and understand the correct answers.');
     }
 
     document.addEventListener('DOMContentLoaded', function() {
