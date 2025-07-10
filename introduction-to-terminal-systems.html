@@ -719,12 +719,20 @@
 
     // Hint system event handlers
     document.getElementById('hint-btn').addEventListener('click', function() {
-      if (hintsRemaining > 0) {
+      const hintText = document.getElementById('hint-text');
+      const hintBtn = document.getElementById('hint-btn');
+      
+      if (hintText.classList.contains('hidden')) {
         showHint();
-        hintsRemaining--;
-        hintsUsed++;
-        hintsUsedInQuestions[currentQuestion] = true;
-        updateHintDisplay();
+        hintText.classList.remove('hidden');
+        hintBtn.textContent = 'Hide Hint';
+        if (currentMode === 'quiz') {
+          hintsUsed++;
+          hintsUsedInQuestions[currentQuestion] = true;
+        }
+      } else {
+        hintText.classList.add('hidden');
+        hintBtn.textContent = '💡 Use Hint';
       }
     });
 
@@ -775,12 +783,9 @@
       if (currentMode === 'quiz') {
         hintsEl.textContent = `Hints: ${hintsRemaining}`;
         document.getElementById('hint-section').style.display = 'block';
-        hintBtn.disabled = hintsRemaining <= 0;
-        
-        if (hintsRemaining <= 0) {
-          hintBtn.textContent = 'No Hints Left';
-          hintBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        }
+        hintBtn.disabled = false;
+        hintBtn.textContent = '💡 Use Hint';
+        hintBtn.classList.remove('opacity-50', 'cursor-not-allowed');
       } else {
         hintsEl.textContent = '';
         document.getElementById('hint-section').style.display = 'block'; // Show hints in study mode too
@@ -833,10 +838,7 @@
       }
       
       hintText.textContent = hint;
-      hintText.classList.remove('hidden');
-      hintBtn.disabled = true;
-      hintBtn.textContent = 'Hint Used';
-      hintBtn.classList.add('opacity-50');
+      // Don't automatically show/hide or disable the button here - let the event handler control it
     }
 
     function showExplanation() {
