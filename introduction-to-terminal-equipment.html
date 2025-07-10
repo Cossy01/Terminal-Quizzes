@@ -789,18 +789,42 @@
       const hintText = document.getElementById('hint-text');
       const currentQ = quizData[currentQuestion];
       
-      // Generate contextual hint
+      // Generate specific contextual hints based on question content
       let hint = '';
-      if (currentQ.question.includes('crane')) {
-        hint = '🏗️ Think about the specific type of crane and its typical use in terminals...';
-      } else if (currentQ.question.includes('vehicle') || currentQ.question.includes('equipment')) {
-        hint = '🚛 Consider the primary function and operational characteristics of this equipment...';
-      } else if (currentQ.question.includes('container')) {
-        hint = '📦 Focus on container handling and terminal operations...';
-      } else if (currentQ.question.includes('safety')) {
-        hint = '⚠️ Think about safety protocols and best practices in terminal operations...';
+      const questionLower = currentQ.question.toLowerCase();
+      
+      if (questionLower.includes('rubber tyred gantry') || questionLower.includes('rtg')) {
+        hint = '🏗️ RTG cranes run on rubber tires and can move between container rows. They typically stack containers 1-over-6 high and can span 6-8 container rows. They\'re diesel-powered and very mobile.';
+      } else if (questionLower.includes('rail mounted gantry') || questionLower.includes('rmg')) {
+        hint = '🚄 RMG cranes run on fixed rails and are usually automated. They can stack higher than RTGs (often 1-over-7) and cover larger areas but can\'t move between different yard blocks.';
+      } else if (questionLower.includes('ship-to-shore') || questionLower.includes('quay crane')) {
+        hint = '🚢 Ship-to-shore cranes are the tall cranes at the quay that load/unload ships. They run on rails along the wharf and have very long outreach to reach across wide container ships.';
+      } else if (questionLower.includes('reach stacker')) {
+        hint = '🚛 Reach stackers are wheeled vehicles that can pick up containers from the top using a telescopic spreader. They\'re very flexible and can stack containers 3-4 high and move around the terminal.';
+      } else if (questionLower.includes('empty container handler') || questionLower.includes('ech')) {
+        hint = '� Empty container handlers specialize in handling empty containers. They can pick up containers from the side and stack them very high (8-10 high) since empty containers are much lighter.';
+      } else if (questionLower.includes('forklift')) {
+        hint = '🏗️ Forklifts use forks to lift containers from underneath. They need special container handling attachments and are typically used for lighter containers or in smaller terminals.';
+      } else if (questionLower.includes('terminal tractor') || questionLower.includes('yard truck')) {
+        hint = '🚚 Terminal tractors (yard trucks) are specialized trucks used to move trailers and chassis around the terminal. They have fifth wheels for coupling to trailers and are very maneuverable.';
+      } else if (questionLower.includes('mobile crane')) {
+        hint = '🏗️ Mobile cranes are versatile wheeled cranes that can move around the terminal. They\'re often used for handling project cargo, maintenance work, or in smaller terminals where specialized equipment isn\'t cost-effective.';
+      } else if (questionLower.includes('straddle carrier')) {
+        hint = '🚛 Straddle carriers literally straddle containers - they drive over them and lift them from above. They can stack containers and move them around, combining the functions of crane and transport vehicle.';
+      } else if (questionLower.includes('chassis') || questionLower.includes('trailer')) {
+        hint = '� Chassis are wheeled trailers specifically designed to carry containers. They have twist locks to secure containers and come in different lengths (20ft, 40ft, 45ft) to match container sizes.';
+      } else if (questionLower.includes('spreader')) {
+        hint = '🔗 Spreaders are the lifting frames that attach to containers. They have twist locks that engage with the container\'s corner castings and can extend/retract to handle different container sizes.';
+      } else if (questionLower.includes('reefer') || questionLower.includes('refrigerated')) {
+        hint = '❄️ Reefer equipment includes power outlets, monitoring systems, and pre-trip inspection tools for refrigerated containers. Temperature and humidity must be constantly monitored and controlled.';
+      } else if (questionLower.includes('safety') || questionLower.includes('hazard')) {
+        hint = '⚠️ Terminal safety involves lockout/tagout procedures, personal protective equipment, safe working loads, proper communication protocols, and regular equipment inspections to prevent accidents.';
+      } else if (questionLower.includes('capacity') || questionLower.includes('lifting')) {
+        hint = '📏 Lifting capacity depends on the equipment type and configuration. Always check the safe working load (SWL) and never exceed it. Consider the weight of the container plus cargo when determining capacity.';
+      } else if (questionLower.includes('maintenance')) {
+        hint = '� Equipment maintenance includes daily inspections, preventive maintenance schedules, lubrication, hydraulic system checks, and keeping detailed maintenance records to ensure safe operation.';
       } else {
-        hint = '💡 Consider the key operational requirements and typical terminal workflows...';
+        hint = '💡 Think about the specific operational characteristics, capabilities, and primary use case of each piece of terminal equipment.';
       }
       
       hintText.textContent = hint;

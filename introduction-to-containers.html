@@ -573,34 +573,34 @@
 
     function generateHint(question) {
       const hints = {
-        "What is a key feature of a general-purpose container?": "Think about what makes a container 'general-purpose' - it needs to protect cargo from weather.",
-        "Which container type is suitable for loading heavy items from overhead?": "Consider which container type would allow crane access from above.",
-        "What distinguishes a platform container from other container types?": "Platform containers are essentially just a floor - what's missing?",
-        "Which container is reinforced to carry extra-wide cargo?": "Think about containers designed for oversized loads that don't fit in standard boxes.",
-        "What is the primary use of a side door container?": "Consider situations where you can't access the rear of a container.",
-        "Which container is designed to prevent condensation for cargo like coffee?": "Coffee beans need air circulation to prevent moisture problems.",
-        "What type of cargo is a tank container designed to carry?": "Think about what shape is best for liquid storage and transport.",
-        "How are dry-bulk containers typically loaded?": "Bulk materials like grain need to be poured in from above.",
-        "What feature does a refrigerated container include for temperature control?": "Refrigerated containers need their own cooling system built in.",
-        "Which dangerous goods class includes explosives with a mass explosion hazard?": "Class 1 is for explosives, with subclasses for different risk levels.",
-        "What does the \"OOG\" attribute indicate in container handling?": "OOG refers to cargo that doesn't fit within standard container dimensions.",
-        "Which container type is best suited for carrying flammable liquids?": "Flammable liquids need specialized containment systems.",
-        "What is the purpose of the Equipment Code (E-Code) in ISO 6346?": "The E-Code helps identify what type of equipment/container it is.",
-        "Which dangerous goods subclass includes poisonous gases?": "Class 2 is for gases, with subclasses for different types of gas hazards.",
-        "What is a key feature of a flat rack container?": "Flat racks are designed for cargo that needs side loading access.",
-        "Which container type is used for free-flowing dry cargo like grain?": "Free-flowing materials need specialized containers for bulk handling.",
-        "What does the Special Handling Code (SP Code) indicate?": "SP codes specify special procedures needed for dangerous goods.",
-        "Which dangerous goods class includes corrosive substances?": "Class 8 substances can cause damage to living tissue and materials.",
-        "What is the primary benefit of a ventilated container?": "Ventilation prevents moisture buildup in organic cargo.",
-        "Which container type can be equipped with insulation for temperature-sensitive cargo?": "Tank containers can be insulated for thermal protection.",
-        "What does the Damage Code indicate in container management?": "Damage codes help assess the condition and repair needs of containers.",
-        "Which dangerous goods subclass includes substances dangerous when wet?": "Subclass 4.3 includes materials that react dangerously with water.",
-        "What is the role of the Hold Code in container operations?": "Hold codes specify where and how containers should be stored.",
-        "According to ISO 6346, what does the first character of the container identification code represent?": "The first characters in ISO 6346 identify the owner/operator.",
-        "Which UNECE dangerous goods class requires a biohazard symbol?": "Class 6.2 includes infectious substances that pose biological hazards."
+        "What is a key feature of a general-purpose container?": "General-purpose containers are the most common type - they're fully enclosed boxes with solid walls, roof, and doors at one end, designed to protect dry cargo from weather and theft.",
+        "Which container type is suitable for loading heavy items from overhead?": "Open-top containers have removable tarpaulin covers instead of solid roofs, allowing cranes to load heavy machinery, steel coils, or oversized equipment from above.",
+        "What distinguishes a platform container from other container types?": "Platform containers are basically just a flat deck with corner posts - no walls or roof at all. They're used when cargo is too wide, tall, or oddly shaped to fit in a box.",
+        "Which container is reinforced to carry extra-wide cargo?": "Flat rack containers have collapsible or fixed end walls but no side walls or roof. The end walls can often be folded down to accommodate extra-wide loads like construction equipment.",
+        "What is the primary use of a side door container?": "Side door containers have additional doors along the side walls. This is useful in tight spaces where trucks can't access the rear doors, or for partial unloading without moving other cargo.",
+        "Which container is designed to prevent condensation for cargo like coffee?": "Ventilated containers have passive ventilation holes or vents in the walls that allow air circulation to prevent moisture buildup that could spoil organic products like coffee beans or cocoa.",
+        "What type of cargo is a tank container designed to carry?": "Tank containers are essentially large steel tanks built into a container frame. They're specifically designed for liquids and gases - things like chemicals, food-grade liquids, or hazardous materials.",
+        "How are dry-bulk containers typically loaded?": "Dry-bulk containers have special hatches in the roof for loading and discharge systems at the bottom. Bulk materials like grain or cement are poured in from above and gravity-fed out below.",
+        "What feature does a refrigerated container include for temperature control?": "Refrigerated containers (reefers) have their own built-in refrigeration unit with compressor, condenser, and evaporator - like a giant refrigerator that plugs into ship or terminal power.",
+        "Which dangerous goods class includes explosives with a mass explosion hazard?": "Dangerous goods are classified into 9 classes. Class 1 is explosives, and Class 1.1 specifically means explosives that could cause a mass explosion affecting everything in the area.",
+        "What does the \"OOG\" attribute indicate in container handling?": "OOG stands for 'Out of Gauge' - meaning the cargo sticks out beyond the standard container dimensions. This requires special handling equipment and careful stowage planning.",
+        "Which container type is best suited for carrying flammable liquids?": "Flammable liquids need containment and safety systems. Tank containers are designed for this with pressure relief valves, specialized coatings, and leak-proof construction.",
+        "What is the purpose of the Equipment Code (E-Code) in ISO 6346?": "ISO 6346 is the international standard for container markings. The Equipment Code tells you what type of container it is - like 'GP' for general purpose or 'TN' for tank containers.",
+        "Which dangerous goods subclass includes poisonous gases?": "Class 2 covers all gases. Subclass 2.1 = flammable gases, 2.2 = non-flammable gases, 2.3 = poisonous/toxic gases that can harm or kill people.",
+        "What is a key feature of a flat rack container?": "Flat racks have solid end walls (which may fold down) but completely open sides. This allows side-loading of wide equipment and machinery that won't fit through container doors.",
+        "Which container type is used for free-flowing dry cargo like grain?": "Dry-bulk containers are specifically designed for loose, granular materials. They have reinforced floors, special discharge gates, and loading hatches for materials that flow like water.",
+        "What does the Special Handling Code (SP Code) indicate?": "SP codes are special provisions for dangerous goods that require specific handling, packaging, or transport conditions beyond the basic dangerous goods class requirements.",
+        "Which dangerous goods class includes corrosive substances?": "Class 8 dangerous goods are corrosives - substances that can destroy living tissue or severely damage metals and other materials through chemical action.",
+        "What is the primary benefit of a ventilated container?": "Ventilated containers prevent 'container sweat' - condensation that forms when temperature changes cause moisture to collect inside. The vents allow air circulation to prevent spoilage.",
+        "Which container type can be equipped with insulation for temperature-sensitive cargo?": "Tank containers can have thermal insulation wrapped around the tank to maintain temperature for products that need to stay warm (like molten sulfur) or cool (but not frozen).",
+        "What does the Damage Code indicate in container management?": "Damage codes describe what's wrong with a container and how severe it is - like dents, holes, or structural damage. This determines if it's safe to use and what repairs are needed.",
+        "Which dangerous goods subclass includes substances dangerous when wet?": "Subclass 4.3 includes materials that release flammable hydrogen gas when they contact water - like sodium, calcium carbide, or zinc powder.",
+        "What is the role of the Hold Code in container operations?": "Hold codes tell you where a container can be safely stowed on a ship - like whether it can go in a cargo hold, must stay on deck, or needs to be segregated from other cargo.",
+        "According to ISO 6346, what does the first character of the container identification code represent?": "The first 4 characters of a container number are the owner code - 3 letters identifying the shipping line or leasing company, plus 'U' to show it's a shipping container.",
+        "Which UNECE dangerous goods class requires a biohazard symbol?": "Class 6.2 covers infectious substances - materials containing pathogens (bacteria, viruses, etc.) that can cause disease in humans or animals. They need biohazard symbols and special handling."
       };
       
-      return hints[question] || "Consider the key characteristics and primary purpose of each option.";
+      return hints[question] || "Consider the specific purpose and design features of each container type.";
     }
 
     function useHint() {

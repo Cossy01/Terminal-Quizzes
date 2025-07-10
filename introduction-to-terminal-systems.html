@@ -796,18 +796,36 @@
       const hintText = document.getElementById('hint-text');
       const currentQ = quizData[currentQuestion];
       
-      // Generate contextual hint
+      // Generate specific contextual hints based on question content
       let hint = '';
-      if (currentQ.question.includes('TOS') || currentQ.question.includes('Terminal Operating System')) {
-        hint = '💻 Think about comprehensive software systems that manage terminal operations...';
-      } else if (currentQ.question.includes('EDI') || currentQ.question.includes('Electronic Data')) {
-        hint = '📡 Consider electronic communication standards between business partners...';
-      } else if (currentQ.question.includes('database') || currentQ.question.includes('data')) {
-        hint = '🗃️ Focus on systems that store and manage operational information...';
-      } else if (currentQ.question.includes('automation') || currentQ.question.includes('automatic')) {
-        hint = '🤖 Think about systems that reduce manual intervention in operations...';
+      const questionLower = currentQ.question.toLowerCase();
+      
+      if (questionLower.includes('tos') || questionLower.includes('terminal operating system')) {
+        hint = '💻 TOS is the brain of the terminal - it manages vessel schedules, equipment assignments, gate operations, billing, and coordinates all terminal activities in real-time.';
+      } else if (questionLower.includes('edi') || questionLower.includes('electronic data')) {
+        hint = '📡 EDI uses standardized message formats (like EDIFACT) to exchange business documents electronically between shipping lines, terminals, customs, and logistics companies without manual intervention.';
+      } else if (questionLower.includes('database') || questionLower.includes('data management')) {
+        hint = '🗃️ Terminal databases store container information, vessel details, equipment status, customer data, and operational records. They must be fast, reliable, and accessible 24/7.';
+      } else if (questionLower.includes('automation') || questionLower.includes('automated')) {
+        hint = '🤖 Automation systems control cranes, vehicles, and gates using GPS, sensors, and communication networks to reduce manual operations and improve efficiency and safety.';
+      } else if (questionLower.includes('gate') || questionLower.includes('access control')) {
+        hint = '� Gate systems manage truck entry/exit, verify appointments, check documentation, weigh vehicles, and track container movements using OCR, RFID, and database integration.';
+      } else if (questionLower.includes('planning') || questionLower.includes('vessel planning')) {
+        hint = '📋 Vessel planning systems create detailed stowage plans, calculate stability, optimize crane productivity, and coordinate with stevedoring operations for efficient vessel operations.';
+      } else if (questionLower.includes('yard') || questionLower.includes('yard management')) {
+        hint = '🏗️ Yard management systems track container locations, optimize stacking strategies, manage equipment assignments, and plan efficient moves to minimize reshuffling.';
+      } else if (questionLower.includes('billing') || questionLower.includes('invoicing')) {
+        hint = '💰 Terminal billing systems calculate charges for storage, handling, services, and demurrage based on tariffs, then generate invoices and integrate with accounting systems.';
+      } else if (questionLower.includes('integration') || questionLower.includes('interface')) {
+        hint = '🔗 System integration connects different software modules and external systems using APIs, web services, and data exchanges to ensure information flows seamlessly.';
+      } else if (questionLower.includes('real-time') || questionLower.includes('live')) {
+        hint = '⚡ Real-time systems provide instant updates on container movements, equipment status, and operational changes, enabling immediate decision-making and problem resolution.';
+      } else if (questionLower.includes('security') || questionLower.includes('access')) {
+        hint = '� Terminal security systems control user access, monitor activities, maintain audit trails, and protect sensitive operational and commercial data from unauthorized access.';
+      } else if (questionLower.includes('reporting') || questionLower.includes('analytics')) {
+        hint = '📊 Reporting systems generate operational statistics, performance metrics, financial reports, and business intelligence to help management make informed decisions.';
       } else {
-        hint = '💡 Consider the key technological components that enable modern terminal operations...';
+        hint = '💡 Consider how modern terminals use integrated technology systems to coordinate complex operations, manage data, and improve efficiency.';
       }
       
       hintText.textContent = hint;
