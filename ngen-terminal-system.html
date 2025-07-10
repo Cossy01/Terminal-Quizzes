@@ -594,11 +594,11 @@
       const hintSection = document.getElementById('hint-section');
       const hintContent = document.getElementById('hint-content');
       if (currentMode === 'study') {
-        hintSection.style.display = 'block';
+        hintSection.style.display = 'none'; // Hide hints in study mode since explanations are automatic
         hintContent.style.display = 'none';
         document.getElementById('hint-btn').textContent = 'Show Hint';
       } else {
-        hintSection.style.display = 'block'; // Show hints in quiz mode too
+        hintSection.style.display = 'block'; // Show hints in quiz mode
         hintContent.style.display = 'none';
         document.getElementById('hint-btn').textContent = 'Show Hint';
       }
