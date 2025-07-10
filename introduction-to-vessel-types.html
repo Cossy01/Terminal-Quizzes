@@ -209,7 +209,42 @@
   </style>
 </head>
 <body>
-  <div id="quiz-container" class="container p-8 rounded-xl shadow-xl">
+  <!-- Mode Selection Screen -->
+  <div id="mode-selection" class="container p-8 rounded-xl shadow-xl">
+    <div class="flex justify-between items-center mb-6">
+      <a href="index.html" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium text-sm">
+        ← Back to Menu
+      </a>
+      <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">Introduction to Vessel Types</h1>
+      <div class="w-24"></div> <!-- Spacer for centering -->
+    </div>
+
+    <div class="text-center mb-8">
+      <p class="text-lg text-gray-600 mb-6">Choose your learning mode:</p>
+      <div class="flex flex-col md:flex-row gap-6 justify-center">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="startQuiz('study')">
+          <div class="text-blue-600 mb-4">
+            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-blue-800 mb-2">Study Mode</h3>
+          <p class="text-blue-700">Learn with immediate feedback, hints, and explanations. Perfect for understanding new concepts.</p>
+        </div>
+        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="startQuiz('quiz')">
+          <div class="text-green-600 mb-4">
+            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-green-800 mb-2">Quiz Mode</h3>
+          <p class="text-green-700">Test your knowledge without hints. Get detailed results at the end to review your performance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="quiz-container" class="container p-8 rounded-xl shadow-xl" style="display: none;">
     <div class="flex justify-between items-center mb-6">
       <a href="index.html" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium text-sm">
         ← Back to Menu
@@ -227,6 +262,20 @@
     <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700 font-medium"></div>
     <form id="options-form"></form>
     <div id="feedback" class="mt-6 text-center font-medium text-red-600"></div>
+    
+    <!-- Hint System -->
+    <div id="hint-section" class="mt-4" style="display: none;">
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div class="flex items-center justify-between">
+          <h4 class="font-semibold text-yellow-800">💡 Hint</h4>
+          <button id="hint-btn" class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors duration-200 text-sm">
+            Show Hint
+          </button>
+        </div>
+        <div id="hint-content" class="mt-2 text-yellow-700" style="display: none;"></div>
+      </div>
+    </div>
+    
     <div class="flex justify-center gap-4 mt-8">
       <button id="back-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[100px] disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
       <button id="next-btn" class="px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors duration-200 font-medium min-w-[100px] shadow-lg hover:shadow-xl">Next</button>
@@ -247,6 +296,7 @@
         <p class="text-xl mb-2 text-gray-700 font-medium">Your Final Score</p>
         <p class="text-5xl font-bold text-green-700 mb-2"><span id="final-score"></span>/<span>15</span></p>
         <p class="text-xl text-green-600 font-semibold"><span id="percentage"></span>% Complete</p>
+        <p id="mode-indicator" class="text-sm text-gray-600 mt-2"></p>
       </div>
     </div>
     
@@ -265,82 +315,100 @@
       {
         question: "Which vessel type is designed specifically for carrying containers and fitted with cell guides?",
         options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
-        correct: "Cellular Vessel"
+        correct: "Cellular Vessel",
+        hint: "Think about vessels with built-in structural guides that help organize and secure container placement."
       },
       {
         question: "What equipment is a Self-Sustained Vessel equipped with for loading and unloading?",
         options: ["Cell guides", "Onboard lifting cranes", "Ramps", "Tugboats"],
-        correct: "Onboard lifting cranes"
+        correct: "Onboard lifting cranes",
+        hint: "The key word is 'self-sustained' - what equipment would make a vessel independent for cargo operations?"
       },
       {
         question: "For which type of ports is a Self-Sustained Vessel most suitable?",
         options: ["Ports with advanced quay cranes", "Ports with inadequate lifting equipment", "Ports with only ramps", "Ports with tugboats"],
-        correct: "Ports with inadequate lifting equipment"
+        correct: "Ports with inadequate lifting equipment",
+        hint: "Consider why a vessel would need to be self-sustained - what might be lacking at certain ports?"
       },
       {
         question: "Which vessel combines features of a Cellular Vessel with onboard lifting cranes?",
         options: ["Self-Sustained Non-Cellular Vessel", "Self-Sustained Cellular Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
-        correct: "Self-Sustained Cellular Vessel"
+        correct: "Self-Sustained Cellular Vessel",
+        hint: "Look for the option that mentions both cellular features and self-sustained capabilities."
       },
       {
         question: "What type of cargo does a Self-Sustained Non-Cellular Vessel typically carry?",
         options: ["Wheeled vehicles", "Containers with cell guides", "Dry bulk", "Light containers"],
-        correct: "Dry bulk"
+        correct: "Dry bulk",
+        hint: "Non-cellular vessels are not designed for containers - what other type of cargo might they handle?"
       },
       {
         question: "Which vessel type is designed for wheeled vehicles, chassis, or trailers and uses a ramp?",
         options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
-        correct: "Roll-On/Roll-Off Vessel"
+        correct: "Roll-On/Roll-Off Vessel",
+        hint: "The clue is in the name - vehicles need to 'roll' onto and off of the vessel."
       },
       {
         question: "Is a Roll-On/Roll-Off Vessel considered self-sustaining?",
         options: ["Yes", "No", "Only with tugboats", "Only with cell guides"],
-        correct: "Yes"
+        correct: "Yes",
+        hint: "Think about whether these vessels need external equipment for loading/unloading vehicles."
       },
       {
         question: "What is a key feature of a Hatchless Vessel or Ultimate Container Carrier?",
         options: ["Equipped with ramps", "No hatches for faster loading", "Uses tugboats", "Fitted with cell guides"],
-        correct: "No hatches for faster loading"
+        correct: "No hatches for faster loading",
+        hint: "The vessel name gives away the key feature - what structural element is missing?"
       },
       {
         question: "Which vessel uses waterways to carry cargo and containers?",
         options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
-        correct: "Barge/Lighter"
+        correct: "Barge/Lighter",
+        hint: "Think about vessels that operate in rivers, canals, and inland waterways rather than open ocean."
       },
       {
         question: "What type of barge carrier may use onboard cranes to load or move containers?",
         options: ["Lighter type", "Cellular type", "Roll-On type", "Hatchless type"],
-        correct: "Lighter type"
+        correct: "Lighter type",
+        hint: "Among barge types, which one would need equipment for handling containers?"
       },
       {
         question: "Which vessel type might require tugboats for movement?",
         options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
-        correct: "Barge/Lighter"
+        correct: "Barge/Lighter",
+        hint: "Consider which vessels might not have their own propulsion systems."
       },
       {
         question: "What is a primary advantage of a Self-Sustained Vessel in ports with limited equipment?",
         options: ["Faster ramp usage", "Independent loading and unloading", "Better cell guide fit", "Reduced tugboat need"],
-        correct: "Independent loading and unloading"
+        correct: "Independent loading and unloading",
+        hint: "The advantage relates to the vessel's ability to operate without relying on port infrastructure."
       },
       {
         question: "Which vessel type is most likely to carry dry bulk cargo instead of containers?",
         options: ["Self-Sustained Cellular Vessel", "Self-Sustained Non-Cellular Vessel", "Cellular Vessel", "Roll-On/Roll-Off Vessel"],
-        correct: "Self-Sustained Non-Cellular Vessel"
+        correct: "Self-Sustained Non-Cellular Vessel",
+        hint: "Focus on the 'non-cellular' aspect - what does this tell you about the cargo type?"
       },
       {
         question: "What allows vehicles to be driven off a Roll-On/Roll-Off Vessel?",
         options: ["Onboard cranes", "Cell guides", "A ramp", "Tugboats"],
-        correct: "A ramp"
+        correct: "A ramp",
+        hint: "Think about the physical structure needed for vehicles to move on and off the vessel."
       },
       {
         question: "Which vessel type is designed to optimize container handling speed with no hatches?",
         options: ["Ultimate Container Carrier/Hatchless Vessel", "Self-Sustained Vessel", "Barge/Lighter", "Cellular Vessel"],
-        correct: "Ultimate Container Carrier/Hatchless Vessel"
+        correct: "Ultimate Container Carrier/Hatchless Vessel",
+        hint: "Look for the option that specifically mentions the absence of hatches for speed optimization."
       }
     ];
 
     let currentQuestion = 0;
     let answers = [];
+    let currentMode = 'study';
+    let studyModeAnswers = [];
+    let hintsUsed = [];
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -349,9 +417,15 @@
       }
     }
 
-    function startQuiz() {
+    function startQuiz(mode) {
+      currentMode = mode;
+      document.getElementById('mode-selection').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      
       shuffleArray(quizData);
       answers = new Array(quizData.length).fill(null);
+      studyModeAnswers = new Array(quizData.length).fill(null);
+      hintsUsed = new Array(quizData.length).fill(false);
       currentQuestion = 0;
       showQuestion();
     }
@@ -361,9 +435,20 @@
       const questionNumber = document.getElementById('question-number');
       const questionText = document.getElementById('question-text');
       const optionsForm = document.getElementById('options-form');
+      const hintSection = document.getElementById('hint-section');
+      const hintContent = document.getElementById('hint-content');
       
       questionNumber.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
       questionText.textContent = question.question;
+      
+      // Show/hide hint section based on mode
+      if (currentMode === 'study') {
+        hintSection.style.display = 'block';
+        hintContent.style.display = 'none';
+        document.getElementById('hint-btn').textContent = 'Show Hint';
+      } else {
+        hintSection.style.display = 'none';
+      }
       
       optionsForm.innerHTML = '';
       question.options.forEach((option, index) => {
@@ -377,6 +462,12 @@
         label.addEventListener('click', function() {
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
+          
+          if (currentMode === 'study') {
+            setTimeout(() => {
+              checkAnswerInStudyMode(option);
+            }, 300);
+          }
         });
         
         optionsForm.appendChild(label);
@@ -396,6 +487,20 @@
       clearFeedback();
     }
 
+    function checkAnswerInStudyMode(selectedAnswer) {
+      const question = quizData[currentQuestion];
+      const feedback = document.getElementById('feedback');
+      const isCorrect = selectedAnswer === question.correct;
+      
+      studyModeAnswers[currentQuestion] = selectedAnswer;
+      
+      if (isCorrect) {
+        feedback.innerHTML = '<div class="text-green-600 font-medium">✓ Correct! Well done.</div>';
+      } else {
+        feedback.innerHTML = `<div class="text-red-600 font-medium">✗ Incorrect. The correct answer is: ${question.correct}</div>`;
+      }
+    }
+
     function updateProgress() {
       const progress = ((currentQuestion + 1) / quizData.length) * 100;
       document.getElementById('progress-bar').style.width = `${progress}%`;
@@ -412,6 +517,22 @@
     function clearFeedback() {
       document.getElementById('feedback').innerHTML = '';
     }
+
+    // Hint system
+    document.getElementById('hint-btn').addEventListener('click', function() {
+      const hintContent = document.getElementById('hint-content');
+      const hintBtn = document.getElementById('hint-btn');
+      
+      if (hintContent.style.display === 'none') {
+        hintContent.textContent = quizData[currentQuestion].hint;
+        hintContent.style.display = 'block';
+        hintBtn.textContent = 'Hide Hint';
+        hintsUsed[currentQuestion] = true;
+      } else {
+        hintContent.style.display = 'none';
+        hintBtn.textContent = 'Show Hint';
+      }
+    });
 
     document.getElementById('back-btn').addEventListener('click', function() {
       if (currentQuestion > 0) {
@@ -444,14 +565,25 @@
       
       let score = 0;
       const resultsTable = document.getElementById('results-table');
-      resultsTable.innerHTML = `
+      const modeIndicator = document.getElementById('mode-indicator');
+      
+      // Set mode indicator
+      modeIndicator.textContent = currentMode === 'study' ? 'Study Mode Results' : 'Quiz Mode Results';
+      
+      let tableHeaders = `
         <tr>
           <th>Question</th>
           <th>Your Answer</th>
           <th>Correct Answer</th>
           <th>Status</th>
-        </tr>
       `;
+      
+      if (currentMode === 'study') {
+        tableHeaders += `<th>Hint Used</th>`;
+      }
+      
+      tableHeaders += `</tr>`;
+      resultsTable.innerHTML = tableHeaders;
       
       quizData.forEach((question, index) => {
         const userAnswer = answers[index] || 'Not answered';
@@ -459,12 +591,18 @@
         if (isCorrect) score++;
         
         const row = document.createElement('tr');
-        row.innerHTML = `
+        let rowContent = `
           <td>${question.question}</td>
           <td>${userAnswer}</td>
           <td>${question.correct}</td>
           <td><span class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</span></td>
         `;
+        
+        if (currentMode === 'study') {
+          rowContent += `<td>${hintsUsed[index] ? '💡 Yes' : 'No'}</td>`;
+        }
+        
+        row.innerHTML = rowContent;
         resultsTable.appendChild(row);
       });
       
@@ -478,12 +616,12 @@
 
     document.getElementById('restart-btn').addEventListener('click', function() {
       document.getElementById('results-container').style.display = 'none';
-      document.getElementById('quiz-container').style.display = 'block';
-      startQuiz();
+      document.getElementById('mode-selection').style.display = 'block';
+      document.getElementById('quiz-container').style.display = 'none';
     });
 
-    // Start the quiz
-    startQuiz();
+    // Initialize the quiz
+    // Quiz starts with mode selection screen
   </script>
 </body>
 </html>
