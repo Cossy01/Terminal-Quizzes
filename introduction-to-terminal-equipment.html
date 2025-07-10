@@ -494,6 +494,9 @@
       questionNumber.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
       questionText.textContent = question.question;
       
+      // Set question category
+      document.getElementById('question-category').textContent = 'Terminal Equipment';
+      
       optionsForm.innerHTML = '';
       question.options.forEach((option, index) => {
         const label = document.createElement('label');
@@ -852,12 +855,10 @@
       document.getElementById('hint-text').classList.add('hidden');
       
       // Reset hint button for new question
-      if (currentMode === 'quiz' && hintsRemaining > 0 && !hintsUsedInQuestions[currentQuestion]) {
-        const hintBtn = document.getElementById('hint-btn');
-        hintBtn.disabled = false;
-        hintBtn.textContent = '💡 Use Hint';
-        hintBtn.classList.remove('opacity-50');
-      }
+      const hintBtn = document.getElementById('hint-btn');
+      hintBtn.disabled = false;
+      hintBtn.textContent = '💡 Use Hint';
+      hintBtn.classList.remove('opacity-50');
     }
 
     function showExplanation() {
