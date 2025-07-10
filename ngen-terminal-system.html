@@ -285,16 +285,11 @@
     </div>
     
     <!-- Hint System -->
-    <div id="hint-section" class="mt-4" style="display: none;">
-      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-        <div class="flex items-center justify-between">
-          <h4 class="font-semibold text-yellow-800">💡 Hint</h4>
-          <button id="hint-btn" class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors duration-200 text-sm">
-            Show Hint
-          </button>
-        </div>
-        <div id="hint-content" class="mt-2 text-yellow-700" style="display: none;"></div>
-      </div>
+    <div id="hint-section" class="mt-4 text-center" style="display: none;">
+      <button id="hint-btn" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors duration-200 font-medium">
+        💡 Use Hint
+      </button>
+      <div id="hint-text" class="mt-2 text-sm text-gray-600 bg-yellow-50 p-3 rounded-lg hidden"></div>
     </div>
     
     <div class="flex justify-center gap-4 mt-8">
@@ -592,15 +587,15 @@
       
       // Show/hide hint section based on mode
       const hintSection = document.getElementById('hint-section');
-      const hintContent = document.getElementById('hint-content');
+      const hintContent = document.getElementById('hint-text');
       if (currentMode === 'study') {
-        hintSection.style.display = 'none'; // Hide hints in study mode since explanations are automatic
-        hintContent.style.display = 'none';
-        document.getElementById('hint-btn').textContent = 'Show Hint';
+        hintSection.style.display = 'block'; // Show hints in study mode too
+        hintContent.classList.add('hidden');
+        document.getElementById('hint-btn').textContent = '💡 Use Hint';
       } else {
         hintSection.style.display = 'block'; // Show hints in quiz mode
-        hintContent.style.display = 'none';
-        document.getElementById('hint-btn').textContent = 'Show Hint';
+        hintContent.classList.add('hidden');
+        document.getElementById('hint-btn').textContent = '💡 Use Hint';
       }
       
       const optionsForm = document.getElementById('options-form');
@@ -843,17 +838,17 @@
       
       // Hint system
       document.getElementById('hint-btn').addEventListener('click', function() {
-        const hintContent = document.getElementById('hint-content');
+        const hintContent = document.getElementById('hint-text');
         const hintBtn = document.getElementById('hint-btn');
         
-        if (hintContent.style.display === 'none') {
+        if (hintContent.classList.contains('hidden')) {
           hintContent.textContent = quizData[currentQuestion].hint;
-          hintContent.style.display = 'block';
+          hintContent.classList.remove('hidden');
           hintBtn.textContent = 'Hide Hint';
           hintsUsed[currentQuestion] = true;
         } else {
-          hintContent.style.display = 'none';
-          hintBtn.textContent = 'Show Hint';
+          hintContent.classList.add('hidden');
+          hintBtn.textContent = '💡 Use Hint';
         }
       });
       
