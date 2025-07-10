@@ -297,179 +297,179 @@
   <script>
     const quizData = [
       { 
-        question: "Which container type is the standard design with fixed walls and roof?", 
-        options: ["General-Purpose", "Open-Top", "Platform", "Tank"], 
-        correct: "General-Purpose",
-        explanation: "General-Purpose containers are the most common type, featuring a rigid structure with fixed walls and roof, suitable for dry cargo that doesn't require special handling.",
+        question: "What is a key feature of a general-purpose container?", 
+        options: ["It has no rigid roof", "It is totally enclosed and weatherproof", "It is designed for bulk liquids", "It has no side walls"], 
+        correct: "It is totally enclosed and weatherproof",
+        explanation: "General-purpose containers are fully enclosed structures with rigid walls and roof, providing complete weatherproofing for dry cargo protection.",
         category: "Container Types"
       },
       { 
-        question: "Which container type has a removable flexible roof for loading heavy or oversized cargo?", 
-        options: ["General-Purpose", "Open-Top", "Platform", "Tank"], 
-        correct: "Open-Top",
-        explanation: "Open-Top containers feature removable tarpaulin roofs that allow loading from above using cranes, perfect for oversized or heavy cargo that won't fit through standard doors.",
+        question: "Which container type is suitable for loading heavy items from overhead?", 
+        options: ["General-purpose Container", "Open-top Container", "Platform Container", "Flat Rack Container"], 
+        correct: "Open-top Container",
+        explanation: "Open-top containers have removable tops that allow crane loading from above, making them ideal for heavy machinery and oversized cargo.",
         category: "Container Types"
       },
       { 
-        question: "What is the primary use of a Platform Container?", 
-        options: ["Transporting liquids", "Carrying oversized cargo that doesn't fit in standard containers", "Storing frozen goods", "Transporting clothing on hangers"], 
-        correct: "Carrying oversized cargo that doesn't fit in standard containers",
+        question: "What distinguishes a platform container from other container types?", 
+        options: ["It has a rigid roof and side walls", "It consists only of a floor structure with corner fittings", "It includes a refrigeration unit", "It has side doors for access"], 
+        correct: "It consists only of a floor structure with corner fittings",
         explanation: "Platform containers are essentially flat bases without walls or roof, designed specifically for cargo that exceeds standard container dimensions.",
         category: "Container Types"
       },
       { 
-        question: "Which container is designed for transporting heavy machinery with fixed or collapsible end walls?", 
-        options: ["Flat Rack", "Side-Door", "Ventilation", "Dry-Bulk"], 
-        correct: "Flat Rack",
+        question: "Which container is reinforced to carry extra-wide cargo?", 
+        options: ["Side Door Container", "Flat Rack Container", "Ventilated Container", "Tank Container"], 
+        correct: "Flat Rack Container",
         explanation: "Flat Rack containers have collapsible or fixed end walls and are specifically engineered to handle heavy machinery and oversized equipment that requires side loading.",
         category: "Container Types"
       },
       { 
-        question: "What feature makes a Side-Door Container easier to load when rear access isn't possible?", 
-        options: ["Pivoting or lifting doors on the side", "Removable roof", "Collapsible walls", "Built-in cooling unit"], 
-        correct: "Pivoting or lifting doors on the side",
-        explanation: "Side-Door containers feature additional doors along the side panels, providing access when rear loading is restricted or impractical in tight terminal spaces.",
+        question: "What is the primary use of a side door container?", 
+        options: ["To carry bulk liquids", "To provide easy access when rear doors are inaccessible", "To transport refrigerated goods", "To stack heavy machinery"], 
+        correct: "To provide easy access when rear doors are inaccessible",
+        explanation: "Side door containers feature additional doors along the side panels, providing access when rear loading is restricted or impractical in tight terminal spaces.",
         category: "Container Features"
       },
       { 
-        question: "Which container is ideal for coffee or cocoa beans due to ventilation slots?", 
-        options: ["Ventilation Container", "Reefer Container", "Garment Container", "Dry-Bulk Container"], 
-        correct: "Ventilation Container",
-        explanation: "Ventilation containers have specially designed air circulation slots that prevent moisture buildup and spoilage in organic commodities like coffee and cocoa beans.",
+        question: "Which container is designed to prevent condensation for cargo like coffee?", 
+        options: ["Ventilated Container", "Dry-Bulk Container", "Refrigerated Container", "Tank Container"], 
+        correct: "Ventilated Container",
+        explanation: "Ventilated containers have specially designed air circulation slots that prevent moisture buildup and spoilage in organic commodities like coffee and cocoa beans.",
         category: "Specialized Containers"
       },
       { 
-        question: "What type of cargo is a Tank Container designed to transport?", 
-        options: ["Heavy machinery", "Liquids or gases", "Clothing on hangers", "Loose unpackaged goods"], 
-        correct: "Liquids or gases",
+        question: "What type of cargo is a tank container designed to carry?", 
+        options: ["General cargo", "Bulk liquids and gases", "Heavy machinery", "Extra-wide loads"], 
+        correct: "Bulk liquids and gases",
         explanation: "Tank containers are pressure vessels specifically designed for liquid and gaseous cargo, featuring specialized fittings, valves, and safety systems.",
         category: "Specialized Containers"
       },
       { 
-        question: "Which container is suited for heavy, free-flowing cargo like cement or steel pipes?", 
-        options: ["Dry-Bulk Container", "Insulated Container", "Open-Top Container", "Garment Container"], 
-        correct: "Dry-Bulk Container",
-        explanation: "Dry-Bulk containers feature specialized discharge systems and reinforced structures to handle loose, granular materials and heavy industrial cargo.",
+        question: "How are dry-bulk containers typically loaded?", 
+        options: ["Through side doors", "Through hatchways in the roof", "Through the rear doors", "Through a flexible cover"], 
+        correct: "Through hatchways in the roof",
+        explanation: "Dry-bulk containers feature specialized discharge systems and reinforced structures to handle loose, granular materials and heavy industrial cargo.",
         category: "Specialized Containers"
       },
       { 
-        question: "Which container is essentially a giant refrigerator for frozen or cold cargo?", 
-        options: ["Insulated Container", "Reefer Container", "Open-Top Container", "Bulk Cargo Container"], 
-        correct: "Reefer Container",
-        explanation: "Reefer (Refrigerated) containers have built-in cooling systems with compressors and condensers, maintaining precise temperature control for perishable goods.",
+        question: "What feature does a refrigerated container include for temperature control?", 
+        options: ["Movable roof-bows", "An integral refrigeration unit", "Ventilation holes", "High loading capacity floor"], 
+        correct: "An integral refrigeration unit",
+        explanation: "Refrigerated containers have built-in cooling systems with compressors and condensers, maintaining precise temperature control for perishable goods.",
         category: "Temperature-Controlled"
       },
       { 
-        question: "What is the primary feature of an Insulated Container?", 
-        options: ["Built-in cooling unit", "Reliance on external cold-air source", "Removable roof", "Side doors"], 
-        correct: "Reliance on external cold-air source",
-        explanation: "Insulated containers depend on external refrigeration systems (clip-on units) rather than built-in cooling, making them more cost-effective for certain routes.",
-        category: "Temperature-Controlled"
-      },
-      { 
-        question: "Which container is designed specifically for transporting clothing on hangers?", 
-        options: ["Garment Container", "Reefer Container", "Ventilation Container", "Platform Container"], 
-        correct: "Garment Container",
-        explanation: "Garment containers feature internal rail systems that allow clothing to be transported while hanging, preventing wrinkles and reducing handling damage.",
-        category: "Specialized Containers"
-      },
-      { 
-        question: "What type of cargo is a Bulk Cargo Container ideal for?", 
-        options: ["Liquids", "Loose or unpackaged goods like boats or sugar", "Frozen goods", "Clothing on hangers"], 
-        correct: "Loose or unpackaged goods like boats or sugar",
-        explanation: "Bulk Cargo containers are designed for loose, granular, or irregularly shaped cargo that doesn't require individual packaging or special environmental controls.",
-        category: "Specialized Containers"
-      },
-      { 
-        question: "According to the ISO 6346 standard, what does the size code '45G1' indicate about a container?", 
-        options: ["A 20-foot general-purpose container", "A 45-foot high-cube container", "A 45-foot general-purpose container", "A 40-foot refrigerated container"], 
-        correct: "A 45-foot general-purpose container",
-        explanation: "In ISO 6346, the first two digits (45) indicate length, 'G' indicates general-purpose type, and '1' indicates standard height, totaling a 45-foot standard container.",
-        category: "Standards & Codes"
-      },
-      { 
-        question: "Which UNDG classification applies to dangerous goods that may liquefy if their moisture content exceeds the Transportable Moisture Limit?", 
-        options: ["Group A", "Group B", "Group C", "Group D"], 
-        correct: "Group A",
-        explanation: "Group A dangerous goods under UNDG can liquefy during transport if moisture exceeds limits, potentially causing cargo shift and vessel stability issues.",
+        question: "Which dangerous goods class includes explosives with a mass explosion hazard?", 
+        options: ["Class 2", "Class 1.1", "Class 4.1", "Class 5.1"], 
+        correct: "Class 1.1",
+        explanation: "Class 1.1 dangerous goods are explosives with a mass explosion hazard, requiring special handling and safety procedures during transport.",
         category: "Dangerous Goods"
       },
       { 
-        question: "What does an 'OOG' designation signify for a container?", 
-        options: ["Overloaded cargo", "Out-of-gauge or over-dimension cargo", "Operational off-grid", "Optimized open-gate"], 
-        correct: "Out-of-gauge or over-dimension cargo",
+        question: "What does the \"OOG\" attribute indicate in container handling?", 
+        options: ["Over-dimension (Out of Gauge)", "Optimal Operating Gear", "Operational Output Grade", "Outward Open Gate"], 
+        correct: "Over-dimension (Out of Gauge)",
         explanation: "OOG (Out-of-Gauge) indicates cargo that exceeds standard container dimensions, requiring special handling equipment and operational procedures.",
         category: "Operational Terms"
       },
       { 
-        question: "In the ISO 6346 standard, what is the purpose of the E-code or equipment category identifier?", 
-        options: ["To indicate the container's weight limit", "To specify the type of container or related equipment", "To mark the country of origin", "To assign a unique serial number"], 
-        correct: "To specify the type of container or related equipment",
+        question: "Which container type is best suited for carrying flammable liquids?", 
+        options: ["Tank Container", "Open-top Container", "Ventilated Container", "Platform Container"], 
+        correct: "Tank Container",
+        explanation: "Tank containers are specifically designed for hazardous liquids including flammable substances, with proper safety systems and containment features.",
+        category: "Specialized Containers"
+      },
+      { 
+        question: "What is the purpose of the Equipment Code (E-Code) in ISO 6346?", 
+        options: ["To identify the container's owner", "To classify the type of container", "To indicate damage status", "To specify handling instructions"], 
+        correct: "To classify the type of container",
         explanation: "The E-code in ISO 6346 classifies container types (like dry cargo, tank, refrigerated) ensuring proper handling and equipment matching at terminals.",
         category: "Standards & Codes"
       },
       { 
-        question: "What does an SP code typically indicate for a container requiring special handling?", 
-        options: ["Standard packing instructions", "Special procedures for hazardous materials", "Structural performance rating", "Scheduled port clearance"], 
-        correct: "Special procedures for hazardous materials",
+        question: "Which dangerous goods subclass includes poisonous gases?", 
+        options: ["Subclass 2.1", "Subclass 2.2", "Subclass 2.3", "Subclass 3"], 
+        correct: "Subclass 2.3",
+        explanation: "Subclass 2.3 includes poisonous gases that pose serious health risks and require special handling and safety procedures during transport.",
+        category: "Dangerous Goods"
+      },
+      { 
+        question: "What is a key feature of a flat rack container?", 
+        options: ["It has a rigid roof", "It has fixed ends and no side walls", "It includes a refrigeration unit", "It has ventilation holes"], 
+        correct: "It has fixed ends and no side walls",
+        explanation: "Flat rack containers have collapsible or fixed end walls but no side walls, designed for oversized cargo that requires side loading.",
+        category: "Container Types"
+      },
+      { 
+        question: "Which container type is used for free-flowing dry cargo like grain?", 
+        options: ["Dry-Bulk Container", "General-purpose Container", "Side Door Container", "Tank Container"], 
+        correct: "Dry-Bulk Container",
+        explanation: "Dry-bulk containers feature specialized discharge systems and reinforced structures to handle loose, granular materials like grain and cement.",
+        category: "Specialized Containers"
+      },
+      { 
+        question: "What does the Special Handling Code (SP Code) indicate?", 
+        options: ["The container's weight", "Specific handling requirements", "The container's destination", "The type of cargo"], 
+        correct: "Specific handling requirements",
         explanation: "SP (Special Provisions) codes mandate specific safety procedures for dangerous goods, including packaging, marking, and handling requirements.",
         category: "Dangerous Goods"
       },
       { 
-        question: "What is the maximum gross weight for a standard 20-foot container according to ISO specifications?", 
-        options: ["24,000 kg", "30,480 kg", "26,330 kg", "20,320 kg"], 
-        correct: "30,480 kg",
-        explanation: "ISO standards specify 30,480 kg (67,200 lbs) as the maximum gross weight for 20-foot containers, including container tare weight and cargo.",
-        category: "Specifications"
+        question: "Which dangerous goods class includes corrosive substances?", 
+        options: ["Class 6", "Class 7", "Class 8", "Class 9"], 
+        correct: "Class 8",
+        explanation: "Class 8 dangerous goods are corrosive substances that can cause severe damage to living tissue, metals, and other materials.",
+        category: "Dangerous Goods"
       },
       { 
-        question: "Which temperature range is typically maintained in a reefer container for frozen cargo?", 
-        options: ["+2°C to +8°C", "-18°C to -25°C", "-5°C to +5°C", "+10°C to +15°C"], 
-        correct: "-18°C to -25°C",
-        explanation: "Frozen cargo requires temperatures between -18°C to -25°C to maintain product integrity and prevent spoilage during long-distance transport.",
+        question: "What is the primary benefit of a ventilated container?", 
+        options: ["Protection from rain", "Continuous ventilation for cargo", "High payload capacity", "Temperature control"], 
+        correct: "Continuous ventilation for cargo",
+        explanation: "Ventilated containers provide continuous air circulation to prevent moisture buildup and spoilage in organic commodities.",
+        category: "Specialized Containers"
+      },
+      { 
+        question: "Which container type can be equipped with insulation for temperature-sensitive cargo?", 
+        options: ["Tank Container", "Platform Container", "Open-top Container", "Flat Rack Container"], 
+        correct: "Tank Container",
+        explanation: "Tank containers can be equipped with insulation systems for temperature-sensitive liquids requiring thermal protection during transport.",
         category: "Temperature-Controlled"
       },
       { 
-        question: "What is the internal cubic capacity of a standard 40-foot high-cube container?", 
-        options: ["67.7 m³", "76.3 m³", "86.1 m³", "59.3 m³"], 
-        correct: "76.3 m³",
-        explanation: "A 40-foot high-cube container provides 76.3 m³ of internal volume, offering additional height compared to standard containers for voluminous cargo.",
-        category: "Specifications"
+        question: "What does the Damage Code indicate in container management?", 
+        options: ["The container's age", "The extent of damage", "The loading capacity", "The shipping route"], 
+        correct: "The extent of damage",
+        explanation: "Damage codes classify the type and severity of container damage, helping determine repair requirements and operational fitness.",
+        category: "Container Management"
       },
       { 
-        question: "Which marking on a container indicates it has passed CSC (Container Safety Convention) inspection?", 
-        options: ["ISO certification plate", "CSC approval plate", "IMDG compliance label", "Terminal inspection sticker"], 
-        correct: "CSC approval plate",
-        explanation: "The CSC approval plate certifies that containers meet international safety standards and are approved for international transport under the Container Safety Convention.",
-        category: "Safety & Inspection"
+        question: "Which dangerous goods subclass includes substances dangerous when wet?", 
+        options: ["Subclass 4.1", "Subclass 4.2", "Subclass 4.3", "Subclass 5.1"], 
+        correct: "Subclass 4.3",
+        explanation: "Subclass 4.3 includes substances that become dangerous when wet, emitting flammable gases upon contact with water.",
+        category: "Dangerous Goods"
       },
       { 
-        question: "What is the purpose of corner castings on shipping containers?", 
-        options: ["Decoration and branding", "Structural reinforcement and lifting points", "Ventilation and drainage", "Lock mechanisms only"], 
-        correct: "Structural reinforcement and lifting points",
-        explanation: "Corner castings are critical structural elements that distribute lifting forces and provide standardized connection points for handling equipment and securing systems.",
-        category: "Container Design"
+        question: "What is the role of the Hold Code in container operations?", 
+        options: ["To specify storage location", "To indicate the container's weight", "To classify dangerous goods", "To mark the owner"], 
+        correct: "To specify storage location",
+        explanation: "Hold codes indicate specific storage requirements and restrictions for containers, particularly for dangerous goods requiring special positioning.",
+        category: "Container Management"
       },
       { 
-        question: "Which container modification allows for temperature monitoring during transport?", 
-        options: ["Data logger installation", "GPS tracking device", "RFID tag placement", "Barcode enhancement"], 
-        correct: "Data logger installation",
-        explanation: "Data loggers continuously monitor and record temperature, humidity, and other environmental conditions, providing evidence of proper cargo care during transport.",
-        category: "Technology"
+        question: "According to ISO 6346, what does the first character of the container identification code represent?", 
+        options: ["The container size", "The owner code", "The equipment category", "The serial number"], 
+        correct: "The owner code",
+        explanation: "In ISO 6346, the first three characters represent the owner code, identifying the company or organization that owns the container.",
+        category: "Standards & Codes"
       },
       { 
-        question: "What does the term 'demurrage' refer to in container operations?", 
-        options: ["Container cleaning costs", "Storage fees for containers held beyond free time", "Transportation insurance", "Loading equipment rental"], 
-        correct: "Storage fees for containers held beyond free time",
-        explanation: "Demurrage charges apply when containers remain at terminals or depots beyond the agreed free time period, encouraging efficient cargo movement and terminal space utilization.",
-        category: "Commercial Terms"
-      },
-      { 
-        question: "Which factor is most critical when determining container stacking height in a terminal yard?", 
-        options: ["Container color coding", "Ground bearing capacity and equipment reach", "Alphabetical organization", "Customer preference"], 
-        correct: "Ground bearing capacity and equipment reach",
-        explanation: "Safe stacking depends on ground conditions that can support the weight and equipment capabilities to reach higher tiers safely and efficiently.",
-        category: "Terminal Operations"
+        question: "Which UNECE dangerous goods class requires a biohazard symbol?", 
+        options: ["Class 6.1", "Class 6.2", "Class 7", "Class 9"], 
+        correct: "Class 6.2",
+        explanation: "Class 6.2 dangerous goods are infectious substances that require biohazard symbols and special handling procedures to prevent disease transmission.",
+        category: "Dangerous Goods"
       }
     ];
 
