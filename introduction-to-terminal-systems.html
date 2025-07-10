@@ -220,19 +220,79 @@
       <div class="w-24"></div> <!-- Spacer for centering -->
     </div>
     
-    <!-- Progress Bar -->
-    <div class="progress-container">
-      <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+    <!-- Mode Selection -->
+    <div id="mode-selection" class="mb-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">Choose Your Learning Mode:</h3>
+      <div class="flex justify-center gap-4">
+        <button id="study-mode-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[140px] shadow-lg">
+          📚 Study Mode
+        </button>
+        <button id="quiz-mode-btn" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium min-w-[140px] shadow-lg">
+          🎯 Quiz Mode
+        </button>
+      </div>
+      <div class="mt-4 text-sm text-gray-600 max-w-2xl mx-auto">
+        <p><strong>Study Mode:</strong> See explanations immediately, no pressure, perfect for learning</p>
+        <p><strong>Quiz Mode:</strong> Test your knowledge, track performance, hints available</p>
+      </div>
+    </div>
+    
+    <!-- Quiz Content (initially hidden) -->
+    <div id="quiz-content" style="display: none;">
+      <!-- Mode Indicator -->
+      <div class="flex justify-between items-center mb-4">
+        <div id="mode-indicator" class="px-3 py-1 rounded-full text-sm font-medium"></div>
+        <div class="flex items-center gap-2">
+          <span id="hints-remaining" class="text-sm text-gray-600"></span>
+          <button id="reset-mode-btn" class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors text-sm">
+            Change Mode
+          </button>
+        </div>
+      </div>
+    
+    <!-- Enhanced Progress Section -->
+    <div class="mb-6">
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+      </div>
+      
+      <!-- Quiz Stats -->
+      <div class="flex justify-between items-center mt-3 text-sm text-gray-600">
+        <div class="quiz-stats">
+          <span id="question-category" class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium"></span>
+        </div>
+        <div class="score-display">
+          Correct: <span id="current-score" class="font-bold text-green-600">0</span> / 
+          <span id="total-questions">25</span>
+        </div>
+      </div>
     </div>
     
     <div id="question-number" class="text-lg text-gray-600 mb-3 text-center font-medium"></div>
     <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700 font-medium"></div>
     <form id="options-form"></form>
-    <div id="feedback" class="mt-6 text-center font-medium text-red-600"></div>
+    
+    <!-- Hint System -->
+    <div id="hint-section" class="mt-4 text-center" style="display: none;">
+      <button id="hint-btn" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors duration-200 font-medium">
+        💡 Use Hint
+      </button>
+      <div id="hint-text" class="mt-2 text-sm text-gray-600 bg-yellow-50 p-3 rounded-lg hidden"></div>
+    </div>
+    
+    <!-- Feedback Section -->
+    <div id="feedback" class="mt-6 text-center">
+      <div id="answer-feedback" class="mb-4"></div>
+      <div id="explanation" class="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg hidden"></div>
+    </div>
+    
     <div class="flex justify-center gap-4 mt-8">
       <button id="back-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[100px] disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
+      <button id="show-explanation-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[140px] hidden">Show Explanation</button>
       <button id="next-btn" class="px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors duration-200 font-medium min-w-[100px] shadow-lg hover:shadow-xl">Next</button>
     </div>
+    </div> <!-- End quiz-content -->
   </div>
   <div id="results-container" class="container p-8 rounded-xl shadow-xl" style="display:none;">
     <div class="flex justify-between items-center mb-6">
@@ -250,6 +310,12 @@
         <p class="text-5xl font-bold text-green-700 mb-2"><span id="final-score"></span>/<span>25</span></p>
         <p class="text-xl text-green-600 font-semibold"><span id="percentage"></span>% Complete</p>
       </div>
+    </div>
+    
+    <!-- Performance Summary -->
+    <div class="text-center mb-8">
+      <div id="performance-summary" class="text-3xl font-bold text-green-600 mb-4"></div>
+      <p id="performance-message" class="text-gray-600 text-lg"></p>
     </div>
     
     <div class="overflow-x-auto">
@@ -398,6 +464,11 @@
     
     let currentQuestion = 0;
     let answers = new Array(quizData.length).fill(null);
+    let currentMode = 'study'; // 'study' or 'quiz'
+    let score = 0;
+    let hintsRemaining = 3;
+    let hintsUsed = 0;
+    let hintsUsedInQuestions = {};
     
     function showQuestion() {
       const question = quizData[currentQuestion];
@@ -420,6 +491,22 @@
         label.addEventListener('click', function() {
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
+          
+          // In study mode, show explanation immediately
+          if (currentMode === 'study') {
+            const selectedValue = this.querySelector('input').value;
+            const isCorrect = selectedValue === question.correct;
+            
+            setTimeout(() => {
+              if (isCorrect) {
+                document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
+                if (!answers[currentQuestion]) score++;
+              } else {
+                document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
+              }
+              showExplanation();
+            }, 100);
+          }
         });
         
         optionsForm.appendChild(label);
@@ -437,6 +524,7 @@
       updateProgress();
       updateButtons();
       clearFeedback();
+      updateScoreDisplay();
     }
 
     function updateProgress() {
@@ -453,7 +541,18 @@
     }
 
     function clearFeedback() {
-      document.getElementById('feedback').innerHTML = '';
+      document.getElementById('answer-feedback').textContent = '';
+      document.getElementById('explanation').classList.add('hidden');
+      document.getElementById('show-explanation-btn').classList.add('hidden');
+      document.getElementById('hint-text').classList.add('hidden');
+      
+      // Reset hint button for new question
+      if (currentMode === 'quiz' && hintsRemaining > 0 && !hintsUsedInQuestions[currentQuestion]) {
+        const hintBtn = document.getElementById('hint-btn');
+        hintBtn.disabled = false;
+        hintBtn.textContent = '💡 Use Hint';
+        hintBtn.classList.remove('opacity-50');
+      }
     }
     
     function startQuiz() {
@@ -474,12 +573,34 @@
       const selectedAnswer = document.querySelector('input[name="answer"]:checked');
       
       if (!selectedAnswer) {
-        document.getElementById('feedback').innerHTML = '<div class="text-red-600 font-medium">Please select an answer!</div>';
+        document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">Please select an answer!</div>';
         return;
       }
       
-      answers[currentQuestion] = selectedAnswer.value;
+      const selectedValue = selectedAnswer.value;
+      const currentQ = quizData[currentQuestion];
+      const isCorrect = selectedValue === currentQ.correct;
       
+      // Store the answer
+      answers[currentQuestion] = selectedValue;
+      
+      // In quiz mode, show feedback and explanation button
+      if (currentMode === 'quiz') {
+        if (isCorrect) {
+          document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
+          if (!answers[currentQuestion] || answers[currentQuestion] !== selectedValue) {
+            score++;
+          }
+        } else {
+          document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
+        }
+        
+        // Show explanation button in quiz mode
+        document.getElementById('show-explanation-btn').classList.remove('hidden');
+        updateScoreDisplay();
+      }
+      
+      // Move to next question or show results
       if (currentQuestion < quizData.length - 1) {
         currentQuestion++;
         showQuestion();
@@ -492,21 +613,25 @@
       document.getElementById('quiz-container').style.display = 'none';
       document.getElementById('results-container').style.display = 'block';
       
-      let score = 0;
+      // Use tracked score instead of recalculating
+      let finalScore = score;
       const resultsTable = document.getElementById('results-table');
-      resultsTable.innerHTML = `
+      
+      // Add hint usage column if in quiz mode
+      let tableHeaders = `
         <tr>
           <th>Question</th>
           <th>Your Answer</th>
           <th>Correct Answer</th>
           <th>Status</th>
+          ${currentMode === 'quiz' ? '<th>Hint Used</th>' : ''}
         </tr>
       `;
+      resultsTable.innerHTML = tableHeaders;
       
       quizData.forEach((question, index) => {
         const userAnswer = answers[index] || 'Not answered';
         const isCorrect = userAnswer === question.correct;
-        if (isCorrect) score++;
         
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -514,12 +639,39 @@
           <td>${userAnswer}</td>
           <td>${question.correct}</td>
           <td><span class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</span></td>
+          ${currentMode === 'quiz' ? `<td>${hintsUsedInQuestions[index] ? 'Yes' : 'No'}</td>` : ''}
         `;
         resultsTable.appendChild(row);
       });
       
-      document.getElementById('final-score').textContent = score;
-      document.getElementById('percentage').textContent = Math.round((score / quizData.length) * 100);
+      document.getElementById('final-score').textContent = finalScore;
+      document.getElementById('percentage').textContent = Math.round((finalScore / quizData.length) * 100);
+      
+      // Add performance summary
+      const performanceEl = document.getElementById('performance-summary');
+      const percentage = Math.round((finalScore / quizData.length) * 100);
+      const messageEl = document.getElementById('performance-message');
+      
+      let modeBonus = currentMode === 'study' ? ' (Study Mode)' : '';
+      let hintPenalty = currentMode === 'quiz' && hintsUsed > 0 ? ` (${hintsUsed} hint${hintsUsed > 1 ? 's' : ''} used)` : '';
+      
+      if (percentage >= 90) {
+        performanceEl.textContent = 'Outstanding! 🌟';
+        performanceEl.className = 'text-3xl font-bold text-green-600 mb-4';
+        messageEl.textContent = 'Excellent mastery of terminal systems concepts!' + modeBonus + hintPenalty;
+      } else if (percentage >= 80) {
+        performanceEl.textContent = 'Great Job! 👍';
+        performanceEl.className = 'text-3xl font-bold text-green-600 mb-4';
+        messageEl.textContent = 'Strong understanding of terminal systems!' + modeBonus + hintPenalty;
+      } else if (percentage >= 70) {
+        performanceEl.textContent = 'Good Work! 📈';
+        performanceEl.className = 'text-3xl font-bold text-yellow-600 mb-4';
+        messageEl.textContent = 'Solid foundation, review missed topics for improvement.' + modeBonus + hintPenalty;
+      } else {
+        performanceEl.textContent = 'Keep Learning! 📚';
+        performanceEl.className = 'text-3xl font-bold text-orange-600 mb-4';
+        messageEl.textContent = 'Additional study recommended. Try Study Mode to learn without pressure.' + hintPenalty;
+      }
     }
 
     document.getElementById('print-btn').addEventListener('click', function() {
@@ -529,11 +681,150 @@
     document.getElementById('restart-btn').addEventListener('click', function() {
       document.getElementById('results-container').style.display = 'none';
       document.getElementById('quiz-container').style.display = 'block';
-      startQuiz();
+      initializeQuiz();
     });
 
-    // Start the quiz
-    startQuiz();
+    // Mode selection event handlers
+    document.getElementById('study-mode-btn').addEventListener('click', function() {
+      currentMode = 'study';
+      startQuizMode();
+    });
+
+    document.getElementById('quiz-mode-btn').addEventListener('click', function() {
+      currentMode = 'quiz';
+      startQuizMode();
+    });
+
+    document.getElementById('reset-mode-btn').addEventListener('click', function() {
+      initializeQuiz();
+    });
+
+    // Hint system event handlers
+    document.getElementById('hint-btn').addEventListener('click', function() {
+      if (hintsRemaining > 0) {
+        showHint();
+        hintsRemaining--;
+        hintsUsed++;
+        hintsUsedInQuestions[currentQuestion] = true;
+        updateHintDisplay();
+      }
+    });
+
+    document.getElementById('show-explanation-btn').addEventListener('click', function() {
+      showExplanation();
+    });
+
+    function initializeQuiz() {
+      // Reset all variables
+      currentQuestion = 0;
+      answers = new Array(quizData.length).fill(null);
+      score = 0;
+      hintsRemaining = 3;
+      hintsUsed = 0;
+      hintsUsedInQuestions = {};
+      
+      // Show mode selection, hide quiz content
+      document.getElementById('mode-selection').style.display = 'block';
+      document.getElementById('quiz-content').style.display = 'none';
+    }
+
+    function startQuizMode() {
+      // Hide mode selection, show quiz content
+      document.getElementById('mode-selection').style.display = 'none';
+      document.getElementById('quiz-content').style.display = 'block';
+      
+      // Update mode indicator
+      const modeIndicator = document.getElementById('mode-indicator');
+      if (currentMode === 'study') {
+        modeIndicator.textContent = '📚 Study Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
+      } else {
+        modeIndicator.textContent = '🎯 Quiz Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
+      }
+      
+      // Update hint display
+      updateHintDisplay();
+      
+      // Start quiz
+      startQuiz();
+    }
+
+    function updateHintDisplay() {
+      const hintsEl = document.getElementById('hints-remaining');
+      const hintBtn = document.getElementById('hint-btn');
+      
+      if (currentMode === 'quiz') {
+        hintsEl.textContent = `Hints: ${hintsRemaining}`;
+        document.getElementById('hint-section').style.display = 'block';
+        hintBtn.disabled = hintsRemaining <= 0;
+        
+        if (hintsRemaining <= 0) {
+          hintBtn.textContent = 'No Hints Left';
+          hintBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+      } else {
+        hintsEl.textContent = '';
+        document.getElementById('hint-section').style.display = 'none';
+      }
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById('current-score').textContent = score;
+      document.getElementById('total-questions').textContent = quizData.length;
+    }
+
+    function showHint() {
+      const hintBtn = document.getElementById('hint-btn');
+      const hintText = document.getElementById('hint-text');
+      const currentQ = quizData[currentQuestion];
+      
+      // Generate contextual hint
+      let hint = '';
+      if (currentQ.question.includes('TOS') || currentQ.question.includes('Terminal Operating System')) {
+        hint = '💻 Think about comprehensive software systems that manage terminal operations...';
+      } else if (currentQ.question.includes('EDI') || currentQ.question.includes('Electronic Data')) {
+        hint = '📡 Consider electronic communication standards between business partners...';
+      } else if (currentQ.question.includes('database') || currentQ.question.includes('data')) {
+        hint = '🗃️ Focus on systems that store and manage operational information...';
+      } else if (currentQ.question.includes('automation') || currentQ.question.includes('automatic')) {
+        hint = '🤖 Think about systems that reduce manual intervention in operations...';
+      } else {
+        hint = '💡 Consider the key technological components that enable modern terminal operations...';
+      }
+      
+      hintText.textContent = hint;
+      hintText.classList.remove('hidden');
+      hintBtn.disabled = true;
+      hintBtn.textContent = 'Hint Used';
+      hintBtn.classList.add('opacity-50');
+    }
+
+    function showExplanation() {
+      const explanation = document.getElementById('explanation');
+      const currentQ = quizData[currentQuestion];
+      
+      // Generate explanation based on the correct answer
+      let explanationText = '';
+      if (currentQ.correct.includes('Terminal Operating System')) {
+        explanationText = 'Terminal Operating Systems (TOS) are comprehensive software platforms that manage all terminal operations, from vessel planning to equipment coordination and cargo tracking.';
+      } else if (currentQ.correct.includes('EDI')) {
+        explanationText = 'Electronic Data Interchange (EDI) enables standardized electronic communication between trading partners, reducing manual processes and improving data accuracy.';
+      } else if (currentQ.correct.includes('database')) {
+        explanationText = 'Database management systems are crucial for storing, retrieving, and managing the vast amounts of operational data generated in terminal operations.';
+      } else if (currentQ.correct.includes('automation')) {
+        explanationText = 'Automation systems reduce human error, increase efficiency, and provide better control over terminal operations through integrated technology solutions.';
+      } else {
+        explanationText = `The correct answer is "${currentQ.correct}". This system plays a vital role in modern terminal operations and logistics management.`;
+      }
+      
+      explanation.textContent = explanationText;
+      explanation.classList.remove('hidden');
+      document.getElementById('show-explanation-btn').classList.add('hidden');
+    }
+
+    // Initialize the quiz
+    initializeQuiz();
   </script>
 </body>
 </html>

@@ -220,6 +220,36 @@
       <div class="w-24"></div> <!-- Spacer for centering -->
     </div>
     
+    <!-- Mode Selection -->
+    <div id="mode-selection" class="mb-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">Choose Your Learning Mode:</h3>
+      <div class="flex justify-center gap-4">
+        <button id="study-mode-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[140px] shadow-lg">
+          📚 Study Mode
+        </button>
+        <button id="quiz-mode-btn" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium min-w-[140px] shadow-lg">
+          🎯 Quiz Mode
+        </button>
+      </div>
+      <div class="mt-4 text-sm text-gray-600 max-w-2xl mx-auto">
+        <p><strong>Study Mode:</strong> See explanations immediately, no pressure, perfect for learning</p>
+        <p><strong>Quiz Mode:</strong> Test your knowledge, track performance, hints available</p>
+      </div>
+    </div>
+    
+    <!-- Quiz Content (initially hidden) -->
+    <div id="quiz-content" style="display: none;">
+      <!-- Mode Indicator -->
+      <div class="flex justify-between items-center mb-4">
+        <div id="mode-indicator" class="px-3 py-1 rounded-full text-sm font-medium"></div>
+        <div class="flex items-center gap-2">
+          <span id="hints-remaining" class="text-sm text-gray-600"></span>
+          <button id="reset-mode-btn" class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors text-sm">
+            Change Mode
+          </button>
+        </div>
+      </div>
+    
     <!-- Enhanced Progress Section -->
     <div class="mb-6">
       <!-- Progress Bar -->
@@ -243,6 +273,14 @@
     <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700 font-medium"></div>
     <form id="options-form"></form>
     
+    <!-- Hint System -->
+    <div id="hint-section" class="mt-4 text-center" style="display: none;">
+      <button id="hint-btn" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors duration-200 font-medium">
+        💡 Use Hint
+      </button>
+      <div id="hint-text" class="mt-2 text-sm text-gray-600 bg-yellow-50 p-3 rounded-lg hidden"></div>
+    </div>
+    
     <!-- Feedback Section -->
     <div id="feedback" class="mt-6 text-center">
       <div id="answer-feedback" class="mb-4"></div>
@@ -254,6 +292,7 @@
       <button id="show-explanation-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[140px] hidden">Show Explanation</button>
       <button id="next-btn" class="px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors duration-200 font-medium min-w-[100px] shadow-lg hover:shadow-xl">Next</button>
     </div>
+    </div> <!-- End quiz-content -->
   </div>
   <div id="results-container" class="container p-8 rounded-xl shadow-xl" style="display:none;">
     <div class="flex justify-between items-center mb-6">
@@ -476,6 +515,9 @@
     let currentQuestion = 0;
     let answers = [];
     let currentScore = 0;
+    let currentMode = 'quiz'; // 'study' or 'quiz'
+    let hintsRemaining = 3;
+    let hintsUsed = [];
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -484,11 +526,93 @@
       }
     }
 
+    function setMode(mode) {
+      currentMode = mode;
+      const modeIndicator = document.getElementById('mode-indicator');
+      const hintsRemainingEl = document.getElementById('hints-remaining');
+      const hintSection = document.getElementById('hint-section');
+      
+      if (mode === 'study') {
+        modeIndicator.textContent = '📚 Study Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
+        hintsRemainingEl.style.display = 'none';
+        hintSection.style.display = 'none';
+      } else {
+        modeIndicator.textContent = '🎯 Quiz Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
+        hintsRemainingEl.style.display = 'block';
+        hintsRemainingEl.textContent = `💡 Hints: ${hintsRemaining}`;
+        hintSection.style.display = 'block';
+      }
+    }
+
+    function generateHint(question) {
+      const hints = {
+        "What is a key feature of a general-purpose container?": "Think about what makes a container 'general-purpose' - it needs to protect cargo from weather.",
+        "Which container type is suitable for loading heavy items from overhead?": "Consider which container type would allow crane access from above.",
+        "What distinguishes a platform container from other container types?": "Platform containers are essentially just a floor - what's missing?",
+        "Which container is reinforced to carry extra-wide cargo?": "Think about containers designed for oversized loads that don't fit in standard boxes.",
+        "What is the primary use of a side door container?": "Consider situations where you can't access the rear of a container.",
+        "Which container is designed to prevent condensation for cargo like coffee?": "Coffee beans need air circulation to prevent moisture problems.",
+        "What type of cargo is a tank container designed to carry?": "Think about what shape is best for liquid storage and transport.",
+        "How are dry-bulk containers typically loaded?": "Bulk materials like grain need to be poured in from above.",
+        "What feature does a refrigerated container include for temperature control?": "Refrigerated containers need their own cooling system built in.",
+        "Which dangerous goods class includes explosives with a mass explosion hazard?": "Class 1 is for explosives, with subclasses for different risk levels.",
+        "What does the \"OOG\" attribute indicate in container handling?": "OOG refers to cargo that doesn't fit within standard container dimensions.",
+        "Which container type is best suited for carrying flammable liquids?": "Flammable liquids need specialized containment systems.",
+        "What is the purpose of the Equipment Code (E-Code) in ISO 6346?": "The E-Code helps identify what type of equipment/container it is.",
+        "Which dangerous goods subclass includes poisonous gases?": "Class 2 is for gases, with subclasses for different types of gas hazards.",
+        "What is a key feature of a flat rack container?": "Flat racks are designed for cargo that needs side loading access.",
+        "Which container type is used for free-flowing dry cargo like grain?": "Free-flowing materials need specialized containers for bulk handling.",
+        "What does the Special Handling Code (SP Code) indicate?": "SP codes specify special procedures needed for dangerous goods.",
+        "Which dangerous goods class includes corrosive substances?": "Class 8 substances can cause damage to living tissue and materials.",
+        "What is the primary benefit of a ventilated container?": "Ventilation prevents moisture buildup in organic cargo.",
+        "Which container type can be equipped with insulation for temperature-sensitive cargo?": "Tank containers can be insulated for thermal protection.",
+        "What does the Damage Code indicate in container management?": "Damage codes help assess the condition and repair needs of containers.",
+        "Which dangerous goods subclass includes substances dangerous when wet?": "Subclass 4.3 includes materials that react dangerously with water.",
+        "What is the role of the Hold Code in container operations?": "Hold codes specify where and how containers should be stored.",
+        "According to ISO 6346, what does the first character of the container identification code represent?": "The first characters in ISO 6346 identify the owner/operator.",
+        "Which UNECE dangerous goods class requires a biohazard symbol?": "Class 6.2 includes infectious substances that pose biological hazards."
+      };
+      
+      return hints[question] || "Consider the key characteristics and primary purpose of each option.";
+    }
+
+    function useHint() {
+      if (hintsRemaining <= 0 || currentMode === 'study') return;
+      
+      const currentQ = quizData[currentQuestion];
+      const hintText = generateHint(currentQ.question);
+      
+      document.getElementById('hint-text').textContent = hintText;
+      document.getElementById('hint-text').classList.remove('hidden');
+      
+      hintsRemaining--;
+      hintsUsed.push(currentQuestion);
+      
+      document.getElementById('hints-remaining').textContent = `💡 Hints: ${hintsRemaining}`;
+      document.getElementById('hint-btn').disabled = hintsRemaining <= 0;
+      
+      if (hintsRemaining <= 0) {
+        document.getElementById('hint-btn').textContent = 'No Hints Left';
+        document.getElementById('hint-btn').classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
     function updateQuestionMeta(question) {
       document.getElementById('question-category').textContent = question.category || 'General';
       
       document.getElementById('current-score').textContent = currentScore;
       document.getElementById('total-questions').textContent = quizData.length;
+      
+      // Update hint button state
+      const hintBtn = document.getElementById('hint-btn');
+      const hintText = document.getElementById('hint-text');
+      
+      if (currentMode === 'quiz') {
+        hintBtn.disabled = hintsRemaining <= 0;
+        hintText.classList.add('hidden');
+      }
     }
 
     function showFeedback(isCorrect, explanation) {
@@ -502,16 +626,40 @@
       
       if (explanation) {
         explanationEl.textContent = explanation;
-        showExplanationBtn.style.display = 'inline-block';
+        if (currentMode === 'study') {
+          // In study mode, show explanation immediately
+          explanationEl.classList.remove('hidden');
+          showExplanationBtn.style.display = 'none';
+        } else {
+          // In quiz mode, show button to reveal explanation
+          showExplanationBtn.style.display = 'inline-block';
+        }
       }
     }
 
     function startQuiz() {
+      document.getElementById('mode-selection').style.display = 'none';
+      document.getElementById('quiz-content').style.display = 'block';
+      
       shuffleArray(quizData);
       answers = new Array(quizData.length).fill(null);
       currentQuestion = 0;
       currentScore = 0;
+      hintsRemaining = 3;
+      hintsUsed = [];
+      
+      // Reset hint button
+      const hintBtn = document.getElementById('hint-btn');
+      hintBtn.disabled = false;
+      hintBtn.textContent = '💡 Use Hint';
+      hintBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      
       showQuestion();
+    }
+
+    function resetMode() {
+      document.getElementById('mode-selection').style.display = 'block';
+      document.getElementById('quiz-content').style.display = 'none';
     }
 
     function showQuestion() {
@@ -584,16 +732,22 @@
         answers[currentQuestion] = {
           answer: selected.value,
           isCorrect: isCorrect,
-          feedback: true
+          feedback: true,
+          hintUsed: hintsUsed.includes(currentQuestion)
         };
         
-        if (isCorrect) {
+        if (isCorrect && currentMode === 'quiz') {
           currentScore++;
           document.getElementById('current-score').textContent = currentScore;
         }
         
         // Show immediate feedback
         showFeedback(isCorrect, quizData[currentQuestion].explanation);
+        
+        // In study mode, always show explanation immediately
+        if (currentMode === 'study') {
+          document.getElementById('explanation').classList.remove('hidden');
+        }
       }
       
       if (currentQuestion < quizData.length - 1) {
@@ -638,26 +792,29 @@
       document.getElementById('final-score').textContent = score;
       document.getElementById('percentage').textContent = percentage;
       
-      // Show performance grade
+      // Show performance grade with mode consideration
       const gradeEl = document.getElementById('performance-grade');
       const messageEl = document.getElementById('performance-message');
       
+      let modeBonus = currentMode === 'study' ? ' (Study Mode)' : '';
+      let hintPenalty = hintsUsed.length > 0 ? ` (${hintsUsed.length} hints used)` : '';
+      
       if (percentage >= 90) {
-        gradeEl.textContent = 'Excellent! 🏆';
+        gradeEl.textContent = 'Excellent! 🏆' + modeBonus;
         gradeEl.className = 'text-2xl font-bold mb-2 text-green-600';
-        messageEl.textContent = 'Outstanding performance! You have mastered container operations.';
+        messageEl.textContent = 'Outstanding performance! You have mastered container operations.' + hintPenalty;
       } else if (percentage >= 80) {
-        gradeEl.textContent = 'Very Good! 🎯';
+        gradeEl.textContent = 'Very Good! 🎯' + modeBonus;
         gradeEl.className = 'text-2xl font-bold mb-2 text-blue-600';
-        messageEl.textContent = 'Great job! You have a strong understanding of container concepts.';
+        messageEl.textContent = 'Great job! You have a strong understanding of container concepts.' + hintPenalty;
       } else if (percentage >= 70) {
-        gradeEl.textContent = 'Good 👍';
+        gradeEl.textContent = 'Good 👍' + modeBonus;
         gradeEl.className = 'text-2xl font-bold mb-2 text-yellow-600';
-        messageEl.textContent = 'Good work! Consider reviewing some topics for improvement.';
+        messageEl.textContent = 'Good work! Consider reviewing some topics for improvement.' + hintPenalty;
       } else {
-        gradeEl.textContent = 'Needs Review 📚';
+        gradeEl.textContent = 'Needs Review 📚' + modeBonus;
         gradeEl.className = 'text-2xl font-bold mb-2 text-red-600';
-        messageEl.textContent = 'Additional study recommended. Focus on the areas you missed.';
+        messageEl.textContent = 'Additional study recommended. Try Study Mode to learn without pressure.' + hintPenalty;
       }
       
       // Category performance
@@ -675,19 +832,21 @@
         categoryContainer.appendChild(categoryCard);
       });
       
-      // Update results table
+      // Update results table with hint usage
       const table = document.getElementById('results-table');
-      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr>';
+      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th><th>Hints</th></tr>';
       quizData.forEach((q, index) => {
         const answer = answers[index];
         const userAnswer = answer ? answer.answer : 'Not answered';
         const isCorrect = answer ? answer.isCorrect : false;
+        const hintUsed = answer && answer.hintUsed ? '💡' : '';
         html += `<tr>
           <td>${q.question}</td>
           <td><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">${q.category || 'General'}</span></td>
           <td>${userAnswer}</td>
           <td>${q.correct}</td>
           <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
+          <td class="text-center">${hintUsed}</td>
         </tr>`;
       });
       table.innerHTML = html;
@@ -696,7 +855,7 @@
     function restartQuiz() {
       document.getElementById('results-container').style.display = 'none';
       document.getElementById('quiz-container').style.display = 'block';
-      startQuiz();
+      resetMode();
     }
 
     function printResults() { window.print(); }
