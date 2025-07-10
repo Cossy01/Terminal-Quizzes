@@ -234,7 +234,7 @@
         </div>
         <div class="score-display">
           Correct: <span id="current-score" class="font-bold text-purple-600">0</span> / 
-          <span id="total-questions">20</span>
+          <span id="total-questions">25</span>
         </div>
       </div>
     </div>
@@ -268,7 +268,7 @@
     <div class="bg-gradient-to-br from-purple-50 to-violet-100 p-6 rounded-xl mb-8 border border-purple-200">
       <div class="text-center">
         <p class="text-xl mb-2 text-gray-700 font-medium">Your Final Score</p>
-        <p class="text-5xl font-bold text-purple-700 mb-2"><span id="final-score"></span>/<span>20</span></p>
+        <p class="text-5xl font-bold text-purple-700 mb-2"><span id="final-score"></span>/<span>25</span></p>
         <p class="text-xl text-purple-600 font-semibold"><span id="percentage"></span>% Complete</p>
         
         <!-- Performance Grade -->
@@ -435,6 +435,41 @@
         correct: "By automating document processing and gate operations",
         explanation: "The nGen system supports terminal workflow by automating document processing and gate operations, reducing manual tasks and improving operational efficiency.",
         category: "System Benefits"
+      },
+      { 
+        question: "What does EDI stand for in the context of terminal operations?", 
+        options: ["Electronic Data Integration", "Electronic Data Interchange", "Electronic Document Interface", "Electronic Display Information"], 
+        correct: "Electronic Data Interchange",
+        explanation: "EDI stands for Electronic Data Interchange, which enables computer-to-computer exchange of standardized business documents between trading partners without human intervention.",
+        category: "EDI Technology"
+      },
+      { 
+        question: "Which international EDI standard is predominantly used outside of North America?", 
+        options: ["ANSI X12", "UN/EDIFACT", "GS1 EDI", "TRADACOMS"], 
+        correct: "UN/EDIFACT",
+        explanation: "UN/EDIFACT (United Nations/Electronic Data Interchange for Administration, Commerce and Transport) is the only international EDI standard and is predominant outside of North America.",
+        category: "EDI Standards"
+      },
+      { 
+        question: "What is the primary benefit of EDI in terminal operations?", 
+        options: ["Reduces paper handling and manual data entry errors", "Increases container storage capacity", "Improves crane lifting speed", "Reduces fuel consumption"], 
+        correct: "Reduces paper handling and manual data entry errors",
+        explanation: "EDI eliminates the need for paper documents and manual data re-entry, significantly reducing errors and processing time while improving data accuracy in terminal operations.",
+        category: "EDI Benefits"
+      },
+      { 
+        question: "Which EDI transmission protocol is commonly used for secure internet-based EDI?", 
+        options: ["FTP", "AS2", "SMTP", "HTTP"], 
+        correct: "AS2",
+        explanation: "AS2 (Applicability Statement 2) is a widely adopted secure internet protocol for EDI transmission, particularly pushed by major retailers like Walmart for supply chain communications.",
+        category: "EDI Technology"
+      },
+      { 
+        question: "What type of EDI document is used for advance shipment notifications in port operations?", 
+        options: ["Purchase Order", "Invoice", "ASN (Advanced Shipment Notice)", "Receipt Confirmation"], 
+        correct: "ASN (Advanced Shipment Notice)",
+        explanation: "ASN (Advanced Shipment Notice) is an EDI document that informs terminals about incoming shipments, cargo details, and packaging information, enabling better stowage planning and resource allocation.",
+        category: "EDI Documents"
       }
     ];
 
