@@ -779,7 +779,10 @@
         }
       } else {
         hintsEl.textContent = '';
-        document.getElementById('hint-section').style.display = 'none';
+        document.getElementById('hint-section').style.display = 'block'; // Show hints in study mode too
+        hintBtn.disabled = false;
+        hintBtn.textContent = '💡 Use Hint';
+        hintBtn.classList.remove('opacity-50', 'cursor-not-allowed');
       }
     }
 

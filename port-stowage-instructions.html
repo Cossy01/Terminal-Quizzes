@@ -562,7 +562,9 @@
         hintContent.style.display = 'none';
         document.getElementById('hint-btn').textContent = 'Show Hint';
       } else {
-        hintSection.style.display = 'none';
+        hintSection.style.display = 'block'; // Show hints in quiz mode too
+        hintContent.style.display = 'none';
+        document.getElementById('hint-btn').textContent = 'Show Hint';
       }
       
       const optionsForm = document.getElementById('options-form');

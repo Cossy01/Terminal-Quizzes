@@ -561,13 +561,13 @@
         modeIndicator.textContent = '📚 Study Mode';
         modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
         hintsRemainingEl.style.display = 'none';
-        hintSection.style.display = 'none';
+        hintSection.style.display = 'block'; // Show hints in study mode
       } else {
         modeIndicator.textContent = '🎯 Quiz Mode';
         modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
         hintsRemainingEl.style.display = 'block';
         hintsRemainingEl.textContent = `💡 Hints: ${hintsRemaining}`;
-        hintSection.style.display = 'block';
+        hintSection.style.display = 'block'; // Show hints in quiz mode
       }
     }
 
@@ -1020,21 +1020,31 @@
       
       // Hint system event handler
       document.getElementById('hint-btn').addEventListener('click', function() {
-        if (hintsRemaining > 0) {
+        if (currentMode === 'study' || hintsRemaining > 0) {
           const hint = generateHint(quizData[currentQuestion]);
           document.getElementById('hint-text').textContent = hint;
           document.getElementById('hint-text').classList.remove('hidden');
           
-          hintsRemaining--;
-          hintsUsed.push(currentQuestion);
-          
-          // Update hint button
-          this.disabled = true;
-          this.textContent = 'Hint Used';
-          this.classList.add('opacity-50', 'cursor-not-allowed');
-          
-          // Update hints remaining display
-          document.getElementById('hints-remaining').textContent = `💡 Hints: ${hintsRemaining}`;
+          if (currentMode === 'quiz') {
+            hintsRemaining--;
+            hintsUsed.push(currentQuestion);
+            
+            // Update hint button
+            this.disabled = true;
+            this.textContent = 'Hint Used';
+            this.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            // Update hints remaining display
+            document.getElementById('hints-remaining').textContent = `💡 Hints: ${hintsRemaining}`;
+          } else {
+            // In study mode, allow multiple hint uses
+            this.textContent = 'Hide Hint';
+            this.onclick = function() {
+              document.getElementById('hint-text').classList.add('hidden');
+              this.textContent = '💡 Use Hint';
+              this.onclick = null;
+            };
+          }
         }
       });
       
