@@ -396,14 +396,20 @@
         color: #f8fafc !important;
       }
       
-      /* Category badges - force override */
+      /* Category badges - standardize to blue theme */
       .px-2.py-1, .px-3.py-1 {
         background: rgba(59, 130, 246, 0.8) !important;
         color: #f8fafc !important;
       }
       
-      /* Hint and mode buttons */
-      .bg-gray-500, .bg-yellow-500, .bg-blue-500 {
+      /* Hint and mode buttons - standardize to blue theme */
+      .bg-gray-500, .bg-yellow-500, .bg-blue-500, .bg-green-500 {
+        background: rgba(59, 130, 246, 0.8) !important;
+        color: #f8fafc !important;
+      }
+      
+      /* Standardize all buttons to blue theme */
+      button:not(.bg-red-600):not(.bg-green-600) {
         background: rgba(59, 130, 246, 0.8) !important;
         color: #f8fafc !important;
       }

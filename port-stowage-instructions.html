@@ -383,14 +383,20 @@
         color: #f8fafc !important;
       }
       
-      /* Category badges - force override */
+      /* Category badges - standardize to blue theme */
       .px-2.py-1, .px-3.py-1 {
         background: rgba(59, 130, 246, 0.8) !important;
         color: #f8fafc !important;
       }
       
-      /* Hint and mode buttons */
-      .bg-gray-500, .bg-yellow-500, .bg-blue-500 {
+      /* Hint and mode buttons - standardize to blue theme */
+      .bg-gray-500, .bg-yellow-500, .bg-blue-500, .bg-green-500 {
+        background: rgba(59, 130, 246, 0.8) !important;
+        color: #f8fafc !important;
+      }
+      
+      /* Standardize all buttons to blue theme */
+      button:not(.bg-red-600):not(.bg-green-600) {
         background: rgba(59, 130, 246, 0.8) !important;
         color: #f8fafc !important;
       }
@@ -570,6 +576,17 @@
       </a>
       <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">Port Stowage Instructions</h1>
       <div class="w-24"></div> <!-- Spacer for centering -->
+    </div>
+    
+    <!-- Mode Indicator -->
+    <div class="flex justify-between items-center mb-4">
+      <div id="mode-indicator" class="px-3 py-1 rounded-full text-sm font-medium"></div>
+      <div class="flex items-center gap-2">
+        <span id="hints-remaining" class="text-sm text-gray-600"></span>
+        <button id="reset-mode-btn" class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors text-sm">
+          Change Mode
+        </button>
+      </div>
     </div>
     
     <!-- Enhanced Progress Section -->
@@ -1155,6 +1172,11 @@
           hintContent.classList.add('hidden');
           hintBtn.textContent = '💡 Use Hint';
         }
+      });
+      
+      // Reset mode button
+      document.getElementById('reset-mode-btn').addEventListener('click', function() {
+        location.reload();
       });
       
       // Start with mode selection screen
