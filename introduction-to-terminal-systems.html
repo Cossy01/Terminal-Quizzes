@@ -723,9 +723,12 @@
             const selectedValue = this.querySelector('input').value;
             const isCorrect = selectedValue === question.correct;
             
-            // Immediate feedback without delay for smooth UI
-            // Store answer immediately for smooth navigation
-            answers[currentQuestion] = selectedValue;
+            // Store answer as object for consistency
+            answers[currentQuestion] = {
+              answer: selectedValue,
+              isCorrect: isCorrect,
+              feedback: true
+            };
             
             // Calculate and update score
             calculateCurrentScore();
@@ -747,15 +750,14 @@
       
       // Restore previous selection and feedback
       if (answers[currentQuestion]) {
-        const selectedOption = document.querySelector(`input[value="${answers[currentQuestion]}"]`);
+        const selectedOption = document.querySelector(`input[value="${answers[currentQuestion].answer}"]`);
         if (selectedOption) {
           selectedOption.checked = true;
           selectedOption.closest('.quiz-option').classList.add('selected');
           
           // In study mode, restore the feedback for the previous answer
           if (currentMode === 'study') {
-            const isCorrect = answers[currentQuestion] === question.correct;
-            if (isCorrect) {
+            if (answers[currentQuestion].isCorrect) {
               document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
             } else {
               document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
@@ -1162,7 +1164,7 @@
     function calculateCurrentScore() {
       let score = 0;
       for (let i = 0; i < answers.length; i++) {
-        if (answers[i] === quizData[i].correct) {
+        if (answers[i] && answers[i].isCorrect) {
           score++;
         }
       }

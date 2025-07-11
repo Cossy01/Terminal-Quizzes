@@ -716,18 +716,37 @@
         optionsForm.appendChild(label);
       });
       
-      // Restore previous selection
+      // Restore previous selection and feedback
       if (answers[currentQuestion]) {
-        const selectedOption = document.querySelector(`input[value="${answers[currentQuestion]}"]`);
+        const selectedOption = document.querySelector(`input[value="${answers[currentQuestion].answer}"]`);
         if (selectedOption) {
           selectedOption.checked = true;
           selectedOption.closest('.quiz-option').classList.add('selected');
+          
+          // In study mode, restore the feedback for the previous answer
+          if (currentMode === 'study') {
+            const feedbackEl = document.getElementById('answer-feedback');
+            const explanationEl = document.getElementById('explanation');
+            
+            if (answers[currentQuestion].isCorrect) {
+              feedbackEl.innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
+            } else {
+              feedbackEl.innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect. The correct answer is: ' + question.correct + '</div>';
+            }
+            
+            explanationEl.textContent = question.explanation || 'This equipment plays a crucial role in terminal operations.';
+            explanationEl.classList.remove('hidden');
+          }
         }
       }
       
       updateProgress();
       updateButtons();
-      clearFeedback();
+      
+      // Only clear feedback if no previous answer exists
+      if (!answers[currentQuestion]) {
+        clearFeedback();
+      }
       updateScoreDisplay();
     }
 
