@@ -930,14 +930,39 @@
 
     document.getElementById('restart-btn').addEventListener('click', function() {
       document.getElementById('results-container').style.display = 'none';
+      document.getElementById('mode-selection').style.display = 'block';
       document.getElementById('quiz-container').style.display = 'block';
-      initializeQuiz();
     });
 
     // Mode selection function
     function selectMode(mode) {
       currentMode = mode;
+      setMode(mode);
       startQuiz();
+    }
+
+    // Make selectMode globally accessible
+    window.selectMode = selectMode;
+
+    function setMode(mode) {
+      const modeIndicator = document.getElementById('mode-indicator');
+      const hintsRemainingEl = document.getElementById('hints-remaining');
+      const hintSection = document.getElementById('hint-section');
+      
+      if (mode === 'study') {
+        modeIndicator.textContent = '📚 Study Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
+        if (hintsRemainingEl) hintsRemainingEl.style.display = 'none';
+        if (hintSection) hintSection.style.display = 'none';
+      } else {
+        modeIndicator.textContent = '🎯 Quiz Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
+        if (hintsRemainingEl) {
+          hintsRemainingEl.style.display = 'block';
+          hintsRemainingEl.textContent = `💡 Hints: ${hintsRemaining}`;
+        }
+        if (hintSection) hintSection.style.display = 'block';
+      }
     }
 
     // Mode selection event handlers (keeping for backward compatibility)
@@ -997,21 +1022,14 @@
       document.getElementById('mode-selection').style.display = 'none';
       document.getElementById('quiz-content').style.display = 'block';
       
-      // Update mode indicator
-      const modeIndicator = document.getElementById('mode-indicator');
-      if (currentMode === 'study') {
-        modeIndicator.textContent = '📚 Study Mode';
-        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
-      } else {
-        modeIndicator.textContent = '🎯 Quiz Mode';
-        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
-      }
+      shuffleArray(quizData);
+      answers = new Array(quizData.length).fill(null);
+      currentQuestion = 0;
+      currentScore = 0;
+      hintsRemaining = 3;
+      hintsUsed = [];
       
-      // Update hint display
-      updateHintDisplay();
-      
-      // Start quiz
-      startQuiz();
+      showQuestion();
     }
 
     function updateHintDisplay() {
@@ -1114,7 +1132,10 @@
     }
 
     // Initialize the quiz
-    initializeQuiz();
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('mode-selection').style.display = 'block';
+      document.getElementById('quiz-content').style.display = 'none';
+    });
   </script>
 </body>
 </html>

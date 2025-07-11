@@ -531,27 +531,32 @@
       {
         question: "Which crane moves on wheels or rails and is used for stacking or loading/unloading containers in yards?",
         options: ["Gantry Crane", "Jib Crane", "Reach Stacker", "Automatic Guided Vehicle"],
-        correct: "Gantry Crane"
+        correct: "Gantry Crane",
+        explanation: "Gantry cranes are large, powerful cranes that move on rails or wheels and are essential for container yard operations, providing high stacking capacity and efficient container handling."
       },
       {
         question: "What type of crane has a horizontal boom and is commonly used for loading/unloading ships?",
         options: ["Gantry Crane", "Jib Crane", "Reach Stacker", "Mobile Crane"],
-        correct: "Jib Crane"
+        correct: "Jib Crane",
+        explanation: "Jib cranes have a horizontal boom that can rotate and are commonly used for ship loading/unloading operations, providing efficient reach and lifting capabilities."
       },
       {
         question: "Which vehicle can lift and transport containers short distances, often used for stacking in yards?",
         options: ["Reach Stacker", "Gantry Crane", "Fork Lift", "Automatic Guided Vehicle"],
-        correct: "Reach Stacker"
+        correct: "Reach Stacker",
+        explanation: "Reach stackers are versatile mobile equipment that can lift, transport, and stack containers in yards, offering flexibility for container positioning and short-distance transport."
       },
       {
         question: "What type of vehicle operates without human intervention using pre-programmed routes?",
         options: ["Reach Stacker", "Fork Lift", "Automatic Guided Vehicle", "Terminal Tractor"],
-        correct: "Automatic Guided Vehicle"
+        correct: "Automatic Guided Vehicle",
+        explanation: "AGVs operate autonomously using pre-programmed routes and navigation systems, increasing efficiency and reducing human error in container transport operations."
       },
       {
         question: "Which equipment is primarily used for lifting and moving palletized cargo?",
         options: ["Fork Lift", "Reach Stacker", "Gantry Crane", "Terminal Tractor"],
-        correct: "Fork Lift"
+        correct: "Fork Lift",
+        explanation: "Forklifts are essential for handling palletized cargo and smaller loads, providing precision lifting and maneuverability in warehouse operations."
       },
       {
         question: "What is the main purpose of a Terminal Tractor?",
@@ -696,26 +701,31 @@
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
           
-          // In study mode, show explanation immediately
           if (currentMode === 'study') {
             const selectedValue = this.querySelector('input').value;
             const isCorrect = selectedValue === question.correct;
             
-            // Store answer immediately for smooth navigation
-            answers[currentQuestion] = selectedValue;
+            const feedbackEl = document.getElementById('answer-feedback');
+            const explanationEl = document.getElementById('explanation');
             
-            // Calculate and update score
-            calculateCurrentScore();
-            
-            // Immediate feedback without delay for smooth UI
             if (isCorrect) {
-              document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
+              feedbackEl.innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
+              if (!answers[currentQuestion] || !answers[currentQuestion].isCorrect) {
+                currentScore++;
+                document.getElementById('current-score').textContent = currentScore;
+              }
             } else {
-              document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
+              feedbackEl.innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect. The correct answer is: ' + question.correct + '</div>';
             }
             
-            // Show explanation immediately without delay
-            showExplanation();
+            explanationEl.textContent = question.explanation || 'This equipment plays a crucial role in terminal operations.';
+            explanationEl.classList.remove('hidden');
+            
+            answers[currentQuestion] = {
+              answer: selectedValue,
+              isCorrect: isCorrect,
+              feedback: true
+            };
           }
         });
         
@@ -790,33 +800,29 @@
 
     function nextQuestion() {
       const selected = document.querySelector('input[name="answer"]:checked');
-      if (!selected && currentQuestion < quizData.length - 1) {
+      if (!selected) {
         document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">Please select an answer!</div>';
         return;
       }
       
-      if (selected) {
-        const isCorrect = selected.value === quizData[currentQuestion].correct;
-        
-        // Store answer with additional metadata (if not already stored in study mode)
-        if (!answers[currentQuestion]) {
-          answers[currentQuestion] = {
-            answer: selected.value,
-            isCorrect: isCorrect,
-            feedback: true,
-            hintUsed: hintsUsed.includes(currentQuestion)
-          };
+      const isCorrect = selected.value === quizData[currentQuestion].correct;
+      
+      if (!answers[currentQuestion]) {
+        answers[currentQuestion] = {
+          answer: selected.value,
+          isCorrect: isCorrect,
+          feedback: true
+        };
+      }
+      
+      if (currentMode === 'quiz') {
+        currentScore = 0;
+        for (let i = 0; i < answers.length; i++) {
+          if (answers[i] && answers[i].isCorrect) {
+            currentScore++;
+          }
         }
-        
-        // Calculate current score for quiz mode
-        if (currentMode === 'quiz') {
-          calculateCurrentScore();
-        }
-        
-        // Show immediate feedback only in quiz mode (study mode handles this on click)
-        if (currentMode === 'quiz') {
-          showFeedback(isCorrect, quizData[currentQuestion].explanation);
-        }
+        document.getElementById('current-score').textContent = currentScore;
       }
       
       if (currentQuestion < quizData.length - 1) {
@@ -905,21 +911,18 @@
         });
       }
       
-      // Update results table with hint usage
+      // Update results table
       const table = document.getElementById('results-table');
-      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th><th>Hints</th></tr>';
+      let html = '<tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr>';
       quizData.forEach((q, index) => {
         const answer = answers[index];
         const userAnswer = answer ? answer.answer : 'Not answered';
         const isCorrect = answer ? answer.isCorrect : false;
-        const hintUsed = answer && answer.hintUsed ? '💡' : '';
         html += `<tr>
           <td>${q.question}</td>
-          <td><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">${q.category || 'General'}</span></td>
           <td>${userAnswer}</td>
           <td>${q.correct}</td>
           <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
-          <td class="text-center">${hintUsed}</td>
         </tr>`;
       });
       table.innerHTML = html;
@@ -931,14 +934,39 @@
 
     document.getElementById('restart-btn').addEventListener('click', function() {
       document.getElementById('results-container').style.display = 'none';
+      document.getElementById('mode-selection').style.display = 'block';
       document.getElementById('quiz-container').style.display = 'block';
-      initializeQuiz();
     });
 
     // Mode selection function
     function selectMode(mode) {
       currentMode = mode;
+      setMode(mode);
       startQuiz();
+    }
+
+    // Make selectMode globally accessible
+    window.selectMode = selectMode;
+
+    function setMode(mode) {
+      const modeIndicator = document.getElementById('mode-indicator');
+      const hintsRemainingEl = document.getElementById('hints-remaining');
+      const hintSection = document.getElementById('hint-section');
+      
+      if (mode === 'study') {
+        modeIndicator.textContent = '📚 Study Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
+        if (hintsRemainingEl) hintsRemainingEl.style.display = 'none';
+        if (hintSection) hintSection.style.display = 'none';
+      } else {
+        modeIndicator.textContent = '🎯 Quiz Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
+        if (hintsRemainingEl) {
+          hintsRemainingEl.style.display = 'block';
+          hintsRemainingEl.textContent = `💡 Hints: ${hintsRemaining}`;
+        }
+        if (hintSection) hintSection.style.display = 'block';
+      }
     }
 
     // Mode selection event handlers (keeping for backward compatibility)
@@ -998,23 +1026,13 @@
       document.getElementById('mode-selection').style.display = 'none';
       document.getElementById('quiz-content').style.display = 'block';
       
-      // Update mode indicator
-      const modeIndicator = document.getElementById('mode-indicator');
-      if (currentMode === 'study') {
-        modeIndicator.textContent = '📚 Study Mode';
-        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
-      } else {
-        modeIndicator.textContent = '🎯 Quiz Mode';
-        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
-      }
-      
-      // Update hint display
-      updateHintDisplay();
-      
-      // Shuffle and start quiz
       shuffleArray(quizData);
       answers = new Array(quizData.length).fill(null);
       currentQuestion = 0;
+      currentScore = 0;
+      hintsRemaining = 3;
+      hintsUsed = [];
+      
       showQuestion();
     }
 
@@ -1132,7 +1150,10 @@
     }
 
     // Initialize the quiz
-    initializeQuiz();
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('mode-selection').style.display = 'block';
+      document.getElementById('quiz-content').style.display = 'none';
+    });
   </script>
 </body>
 </html>
