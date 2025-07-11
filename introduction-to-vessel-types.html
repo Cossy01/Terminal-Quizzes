@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Test your knowledge of vessel types and their characteristics with this interactive quiz. Learn about container vessels, bulk carriers, tankers, and more.">
   <title>Introduction to Vessel Types</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -152,7 +151,6 @@
       border-radius: 50%;
       background: white;
     }
-    
     .results-table th, .results-table td {
       padding: 16px 12px;
       text-align: center;
@@ -392,7 +390,6 @@
         max-width: 200px;
       }
     }
-    
     @media print {
       body {
         background: white !important;
@@ -434,7 +431,7 @@
     <div id="mode-selection" class="mb-6 text-center">
       <p class="text-lg text-gray-600 mb-6">Choose your learning mode:</p>
       <div class="flex flex-col md:flex-row gap-6 justify-center">
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('study')">
+        <div id="study-mode-card" class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('study')">
           <div class="text-blue-600 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -443,7 +440,7 @@
           <h3 class="text-xl font-bold text-blue-800 mb-2">Study Mode</h3>
           <p class="text-blue-700">Learn with immediate feedback, hints, and explanations. Perfect for understanding new concepts.</p>
         </div>
-        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('quiz')">
+        <div id="quiz-mode-card" class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('quiz')">
           <div class="text-green-600 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -452,6 +449,9 @@
           <h3 class="text-xl font-bold text-green-800 mb-2">Quiz Mode</h3>
           <p class="text-green-700">Test your knowledge with limited hints available. Get detailed results at the end to review your performance.</p>
         </div>
+      </div>
+      <div class="mt-6">
+        <button id="reset-mode-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[120px] hidden">🔄 Change Mode</button>
       </div>
     </div>
     
@@ -482,7 +482,7 @@
         </div>
         <div class="score-display" style="display: none;">
           Correct: <span id="current-score" class="font-bold text-green-600">0</span> / 
-          <span id="total-questions">25</span>
+          <span id="total-questions">15</span>
         </div>
       </div>
     </div>
@@ -525,7 +525,7 @@
     <div class="bg-gradient-to-br from-green-50 to-emerald-100 p-6 rounded-xl mb-8 border border-green-200">
       <div class="text-center">
         <p class="text-xl mb-2 text-gray-700 font-medium">Your Final Score</p>
-        <p class="text-5xl font-bold text-green-700 mb-2"><span id="final-score"></span>/<span>25</span></p>
+        <p class="text-5xl font-bold text-green-700 mb-2"><span id="final-score"></span>/<span>15</span></p>
         <p class="text-xl text-green-600 font-semibold"><span id="percentage"></span>% Complete</p>
         
         <!-- Performance Grade -->
@@ -554,164 +554,163 @@
     const quizData = [
       {
         question: "Which vessel type is designed specifically for carrying containers and fitted with cell guides?",
-        options: ["Cellular Vessel", "Self-Sustained Vessel", "Barge/Lighter", "Roll-On/Roll-Off Vessel"],
+        options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
         correct: "Cellular Vessel",
-        explanation: "Cellular vessels are purpose-built for containers with fixed cell guides that hold containers in place, maximizing cargo capacity and loading efficiency."
+        hint: "Cellular vessels have built-in cell guides - vertical steel structures that create 'slots' for containers. These guides secure containers during ocean transport and prevent them from shifting in rough seas."
       },
       {
         question: "What equipment is a Self-Sustained Vessel equipped with for loading and unloading?",
-        options: ["Cell guides", "Onboard cranes", "Ramps", "Conveyor belts"],
-        correct: "Onboard cranes",
-        explanation: "Self-sustained vessels have their own cargo handling equipment (cranes) allowing them to operate independently of port infrastructure."
+        options: ["Cell guides", "Onboard lifting cranes", "Ramps", "Tugboats"],
+        correct: "Onboard lifting cranes",
+        hint: "Self-sustained vessels have their own cargo handling equipment - usually their own cranes or derricks. This means they can load/unload at ports that don't have shore cranes."
       },
       {
         question: "For which type of ports is a Self-Sustained Vessel most suitable?",
-        options: ["Major container ports", "Ports with limited equipment", "Automated terminals", "Bulk cargo ports"],
-        correct: "Ports with limited equipment",
-        explanation: "Self-sustained vessels are ideal for smaller ports or developing regions that lack sophisticated cargo handling equipment."
+        options: ["Ports with advanced quay cranes", "Ports with inadequate lifting equipment", "Ports with only ramps", "Ports with tugboats"],
+        correct: "Ports with inadequate lifting equipment",
+        hint: "Self-sustained vessels are essential for smaller ports or developing countries that don't have expensive container cranes. The ship brings its own lifting equipment."
       },
       {
         question: "Which vessel combines features of a Cellular Vessel with onboard lifting cranes?",
-        options: ["Self-Sustained Cellular Vessel", "Barge/Lighter", "Roll-On/Roll-Off Vessel", "General Cargo Vessel"],
+        options: ["Self-Sustained Non-Cellular Vessel", "Self-Sustained Cellular Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
         correct: "Self-Sustained Cellular Vessel",
-        explanation: "These vessels combine the container organization of cellular design with the independence of onboard cranes."
+        hint: "You need a vessel that has both cellular container guides for secure stowage AND its own cranes for ports without shore equipment. Think about combining both features."
       },
       {
         question: "What type of cargo does a Self-Sustained Non-Cellular Vessel typically carry?",
-        options: ["Containers only", "Bulk cargo", "Vehicles", "Liquid cargo"],
-        correct: "Bulk cargo",
-        explanation: "Non-cellular vessels don't have container guides and are designed for bulk commodities like grain, coal, or general cargo."
+        options: ["Wheeled vehicles", "Containers with cell guides", "Dry bulk", "Light containers"],
+        correct: "Dry bulk",
+        hint: "Non-cellular vessels have open cargo holds without container guides. They're designed for break-bulk cargo like steel, timber, machinery, or bagged goods - not containers."
       },
       {
         question: "Which vessel type is designed for wheeled vehicles, chassis, or trailers and uses a ramp?",
         options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
         correct: "Roll-On/Roll-Off Vessel",
-        explanation: "RoRo vessels have ramps allowing vehicles to drive on/off under their own power, making loading/unloading very efficient."
+        hint: "RoRo = Roll-on/Roll-off. These vessels have ramps that allow vehicles (cars, trucks, trailers) to drive on and off the ship under their own power - no cranes needed."
       },
       {
         question: "Is a Roll-On/Roll-Off Vessel considered self-sustaining?",
-        options: ["Yes, it has cranes", "No, it relies on port ramps", "Yes, vehicles drive themselves", "No, it needs special equipment"],
-        correct: "Yes, vehicles drive themselves",
-        explanation: "RoRo vessels are considered self-sustaining because vehicles can board and disembark under their own power via ramps."
+        options: ["Yes", "No", "Only with tugboats", "Only with cell guides"],
+        correct: "Yes",
+        hint: "RoRo vessels are self-contained - they have built-in ramps and don't need shore-based equipment. Vehicles can drive directly from the dock onto the ship."
       },
       {
         question: "What is a key feature of a Hatchless Vessel or Ultimate Container Carrier?",
-        options: ["No container guides", "No hatch covers", "No onboard cranes", "No ramps"],
-        correct: "No hatch covers",
-        explanation: "Hatchless vessels eliminate hatch covers to speed up container operations, though they sacrifice some weather protection."
+        options: ["Equipped with ramps", "No hatches for faster loading", "Uses tugboats", "Fitted with cell guides"],
+        correct: "No hatches for faster loading",
+        hint: "Open-hatch vessels have removable hatch covers, allowing access to the entire cargo hold. This is perfect for loading large, awkward cargo that won't fit through normal hatch openings."
       },
       {
         question: "Which vessel uses waterways to carry cargo and containers?",
-        options: ["Cellular Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter", "Self-Sustained Vessel"],
+        options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
         correct: "Barge/Lighter",
-        explanation: "Barges and lighters operate on inland waterways, rivers, and coastal areas for short-sea shipping and feeder services."
+        hint: "Barges are flat-bottomed vessels designed for shallow waters like rivers and canals. They have low profiles and can navigate where deep-draft ships cannot go."
       },
       {
         question: "What type of barge carrier may use onboard cranes to load or move containers?",
-        options: ["Standard barge", "Self-Sustained Barge", "Cellular barge", "Roll-on barge"],
-        correct: "Self-Sustained Barge",
-        explanation: "Self-sustained barges have their own cranes for independent container handling operations."
+        options: ["Lighter type", "Cellular type", "Roll-On type", "Hatchless type"],
+        correct: "Lighter type",
+        hint: "Container barges need cell guides (like cellular vessels) to secure containers during river transport. Regular barges are just flat decks for general cargo."
       },
       {
         question: "Which vessel type might require tugboats for movement?",
-        options: ["Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter", "Cellular Vessel"],
+        options: ["Cellular Vessel", "Self-Sustained Vessel", "Roll-On/Roll-Off Vessel", "Barge/Lighter"],
         correct: "Barge/Lighter",
-        explanation: "Many barges don't have their own propulsion and rely on tugboats for movement, especially in port areas."
+        hint: "Lighters are non-powered barges that are towed or pushed by tugboats. They're used for transferring cargo from large ships to shore when the ship can't reach the dock."
       },
       {
         question: "What is a primary advantage of a Self-Sustained Vessel in ports with limited equipment?",
-        options: ["Faster loading", "Lower costs", "Independent operation", "More cargo space"],
-        correct: "Independent operation",
-        explanation: "Self-sustained vessels can operate without relying on port cranes or equipment, making them valuable for less-equipped ports."
+        options: ["Faster ramp usage", "Independent loading and unloading", "Better cell guide fit", "Reduced tugboat need"],
+        correct: "Independent loading and unloading",
+        hint: "Self-sustained vessels have their own cranes and derricks built-in, so they can load and unload cargo without needing expensive shore-based cranes. This is essential for smaller ports or developing countries that can't afford container cranes."
       },
       {
         question: "Which vessel type is most likely to carry dry bulk cargo instead of containers?",
-        options: ["Cellular Vessel", "Self-Sustained Non-Cellular Vessel", "Roll-On/Roll-Off Vessel", "Hatchless Vessel"],
+        options: ["Self-Sustained Cellular Vessel", "Self-Sustained Non-Cellular Vessel", "Cellular Vessel", "Roll-On/Roll-Off Vessel"],
         correct: "Self-Sustained Non-Cellular Vessel",
-        explanation: "Non-cellular vessels lack container guides and are designed for bulk commodities rather than containerized cargo."
+        hint: "Non-cellular vessels don't have container guides - they have open cargo holds perfect for bulk cargo like grain, coal, iron ore, or steel. Self-sustained means they also have their own cranes for loading/unloading this bulk cargo."
       },
       {
         question: "What allows vehicles to be driven off a Roll-On/Roll-Off Vessel?",
         options: ["Onboard cranes", "Cell guides", "A ramp", "Tugboats"],
         correct: "A ramp",
-        explanation: "RoRo vessels have built-in ramps that extend to the dock, allowing vehicles to drive directly on and off the vessel."
+        hint: "RoRo vessels have built-in ramps (like a car ferry) that extend from the ship to the dock. Vehicles drive directly on/off under their own power - no cranes needed. The ramp can be at the stern, bow, or side of the vessel."
       },
       {
         question: "Which vessel type is designed to optimize container handling speed with no hatches?",
         options: ["Ultimate Container Carrier/Hatchless Vessel", "Self-Sustained Vessel", "Barge/Lighter", "Cellular Vessel"],
         correct: "Ultimate Container Carrier/Hatchless Vessel",
-        explanation: "Hatchless vessels eliminate time-consuming hatch operations, significantly speeding up container loading and unloading."
+        hint: "Ultimate Container Carriers (UCCs) have no hatch covers - they're completely open-top with container guides. This eliminates the time needed to open/close hatches during loading, making container operations much faster. The lack of hatches is the key design feature."
       },
       {
         question: "What type of vessel typically has the largest container carrying capacity?",
         options: ["Ultra Large Container Vessel (ULCV)", "Self-Sustained Vessel", "Barge/Lighter", "Roll-On/Roll-Off Vessel"],
         correct: "Ultra Large Container Vessel (ULCV)",
-        explanation: "ULCVs are the largest container ships, capable of carrying 14,000+ TEU, designed for maximum capacity on major trade routes."
+        hint: "Ultra Large Container Vessels (ULCVs) are the largest container ships, capable of carrying 14,000+ TEU. They're designed purely for maximum container capacity and rely entirely on port equipment for loading/unloading."
       },
       {
         question: "Which vessel feature allows for faster turnaround times in automated terminals?",
         options: ["Standardized bay plans", "Onboard cranes", "Vehicle ramps", "Bulk cargo holds"],
         correct: "Standardized bay plans",
-        explanation: "Standardized bay plans enable automated cranes and systems to work more efficiently with predictable container positioning."
+        hint: "Standardized bay plans mean containers are positioned in predictable, uniform patterns. This allows automated cranes and systems to work more efficiently since they know exactly where each container position is located."
       },
       {
         question: "What is the main advantage of a Multi-Purpose Vessel?",
         options: ["Can carry different types of cargo", "Fastest loading speed", "Largest container capacity", "Most fuel efficient"],
         correct: "Can carry different types of cargo",
-        explanation: "Multi-purpose vessels have flexible cargo holds that can accommodate containers, breakbulk, vehicles, and sometimes bulk cargo."
+        hint: "Multi-Purpose Vessels are designed with flexible cargo holds that can accommodate containers, breakbulk cargo, vehicles, and sometimes even bulk cargo - all on the same voyage. This flexibility is their main advantage."
       },
       {
         question: "Which vessel type would be most suitable for serving small island ports?",
         options: ["Self-Sustained Vessel", "Ultra Large Container Vessel", "Hatchless Vessel", "Specialized Bulk Carrier"],
         correct: "Self-Sustained Vessel",
-        explanation: "Small island ports often lack sophisticated equipment, making self-sustained vessels with onboard cranes ideal."
+        hint: "Small island ports often lack sophisticated port equipment like large gantry cranes. Self-sustained vessels with their own cranes can serve these ports independently, making them ideal for smaller, less equipped destinations."
       },
       {
         question: "What does 'TEU' stand for in vessel capacity measurements?",
         options: ["Twenty-foot Equivalent Unit", "Terminal Equipment Unit", "Transport Efficiency Unit", "Total Export Unit"],
         correct: "Twenty-foot Equivalent Unit",
-        explanation: "TEU is the standard measurement for container ship capacity, representing how many 20-foot containers a vessel can carry."
+        hint: "TEU is the standard measurement for container ship capacity. It represents how many 20-foot containers a vessel can carry. A 40-foot container equals 2 TEU."
       },
       {
         question: "Which vessel design feature helps reduce fuel consumption during ocean voyages?",
         options: ["Optimized hull shape", "More onboard cranes", "Additional ramps", "Larger hatch covers"],
         correct: "Optimized hull shape",
-        explanation: "Modern hull designs reduce water resistance and improve hydrodynamics, leading to significant fuel savings on long voyages."
+        hint: "Hull design significantly affects fuel efficiency. Modern container vessels use optimized hull shapes that reduce water resistance and improve hydrodynamics, leading to substantial fuel savings during long ocean voyages."
       },
       {
         question: "What is the primary limitation of Barge/Lighter vessels?",
         options: ["Limited to inland waterways and short sea routes", "Cannot carry containers", "Too expensive to operate", "Require special port equipment"],
         correct: "Limited to inland waterways and short sea routes",
-        explanation: "Barges are designed for calm waters and cannot handle rough ocean conditions, limiting them to protected waterways."
+        hint: "Barges and lighters are designed for calm waters - rivers, canals, and protected coastal areas. They cannot handle the rough seas of ocean voyages, limiting them to inland waterways and short sea shipping."
       },
       {
         question: "Which vessel type typically requires the least port infrastructure investment?",
         options: ["Self-Sustained Vessel", "Hatchless Vessel", "Ultra Large Container Vessel", "Specialized Reefer Vessel"],
         correct: "Self-Sustained Vessel",
-        explanation: "Self-sustained vessels bring their own equipment, requiring minimal port infrastructure beyond basic berth facilities."
+        hint: "Self-sustained vessels bring their own cargo handling equipment (cranes), so ports need minimal infrastructure - just a berth and basic utilities. Other vessel types require expensive port cranes and specialized equipment."
       },
       {
         question: "What distinguishes a Feeder Vessel from a Main Line Vessel?",
         options: ["Smaller size, serves regional routes", "Has onboard cranes", "Carries only bulk cargo", "Uses special fuel type"],
         correct: "Smaller size, serves regional routes",
-        explanation: "Feeder vessels are smaller ships that collect cargo from regional ports and transport it to hub ports for main line vessels."
+        hint: "Feeder vessels are smaller container ships that collect cargo from smaller ports and transport it to major hub ports where it's transferred to larger main line vessels for long-haul ocean transport."
       },
       {
         question: "Which safety feature is most critical for vessels carrying dangerous goods?",
         options: ["Specialized cargo segregation systems", "Extra lifeboats", "Reinforced hull plating", "Additional crew quarters"],
         correct: "Specialized cargo segregation systems",
-        explanation: "Dangerous goods must be properly separated and contained to prevent hazardous interactions between incompatible materials."
+        hint: "Dangerous goods must be properly separated from incompatible materials. Vessels carrying such cargo need specialized segregation systems, fire suppression, and containment areas to prevent dangerous interactions between different chemical classes."
       }
     ];
 
     let currentQuestion = 0;
-    let answers = [];
-    let currentMode = 'study'; // 'study' or 'quiz'
-    let score = 0;
     let currentScore = 0;
+    let answers = [];
+    let currentMode = 'study';
+    let studyModeAnswers = [];
+    let hintsUsed = [];
     let hintsRemaining = 3;
-    let hintsUsed = 0;
-    let hintsUsedInQuestions = {};
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -720,17 +719,92 @@
       }
     }
 
+    function selectMode(mode) {
+      currentMode = mode;
+      setMode(mode);
+      startQuiz();
+    }
+
+    // Make selectMode globally accessible immediately
+    window.selectMode = selectMode;
+
+    function setMode(mode) {
+      currentMode = mode;
+      const modeIndicator = document.getElementById('mode-indicator');
+      const hintsRemainingEl = document.getElementById('hints-remaining');
+      const hintSection = document.getElementById('hint-section');
+      
+      if (mode === 'study') {
+        modeIndicator.textContent = '📚 Study Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
+        if (hintsRemainingEl) hintsRemainingEl.style.display = 'none';
+        if (hintSection) hintSection.style.display = 'block'; // Show hints in study mode too
+      } else {
+        modeIndicator.textContent = '🎯 Quiz Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
+        if (hintsRemainingEl) {
+          hintsRemainingEl.style.display = 'block';
+          hintsRemainingEl.textContent = `💡 Hints: ${hintsRemaining}`;
+        }
+        if (hintSection) hintSection.style.display = 'block'; // Show hints in quiz mode
+      }
+    }
+
+    function startQuiz() {
+      // Hide mode selection, show quiz content
+      document.getElementById('mode-selection').style.display = 'none';
+      document.getElementById('quiz-content').style.display = 'block';
+      
+      shuffleArray(quizData);
+      answers = new Array(quizData.length).fill(null);
+      currentQuestion = 0;
+      currentScore = 0;
+      hintsRemaining = 3;
+      hintsUsed = [];
+      
+      showQuestion();
+    }
+
+
+    function updateScoreDisplay() {
+      document.getElementById('current-score').textContent = currentScore;
+    }
+
+    function calculateCurrentScore() {
+      let score = 0;
+      for (let i = 0; i < answers.length; i++) {
+        if (answers[i] === quizData[i].correct) {
+          score++;
+        }
+      }
+      currentScore = score;
+      updateScoreDisplay();
+    }
+
     function showQuestion() {
       const question = quizData[currentQuestion];
       const questionNumber = document.getElementById('question-number');
       const questionText = document.getElementById('question-text');
       const optionsForm = document.getElementById('options-form');
+      const hintSection = document.getElementById('hint-section');
+      const hintContent = document.getElementById('hint-text');
       
       questionNumber.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
       questionText.textContent = question.question;
       
       // Set question category
       document.getElementById('question-category').textContent = 'Vessel Types';
+      
+      // Show/hide hint section based on mode
+      if (currentMode === 'study') {
+        hintSection.style.display = 'block'; // Show hints in study mode too
+        hintContent.classList.add('hidden');
+        document.getElementById('hint-btn').textContent = '💡 Use Hint';
+      } else {
+        hintSection.style.display = 'block'; // Show hints in quiz mode
+        hintContent.classList.add('hidden');
+        document.getElementById('hint-btn').textContent = '💡 Use Hint';
+      }
       
       optionsForm.innerHTML = '';
       question.options.forEach((option, index) => {
@@ -746,30 +820,11 @@
           this.classList.add('selected');
           
           if (currentMode === 'study') {
-            const selectedValue = this.querySelector('input').value;
-            const isCorrect = selectedValue === question.correct;
+            // Store the answer 
+            answers[currentQuestion] = option;
+            calculateCurrentScore();
             
-            const feedbackEl = document.getElementById('answer-feedback');
-            const explanationEl = document.getElementById('explanation');
-            
-            if (isCorrect) {
-              feedbackEl.innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
-              if (!answers[currentQuestion] || !answers[currentQuestion].isCorrect) {
-                currentScore++;
-                document.getElementById('current-score').textContent = currentScore;
-              }
-            } else {
-              feedbackEl.innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect. The correct answer is: ' + question.correct + '</div>';
-            }
-            
-            explanationEl.textContent = question.explanation || 'This equipment plays a crucial role in terminal operations.';
-            explanationEl.classList.remove('hidden');
-            
-            answers[currentQuestion] = {
-              answer: selectedValue,
-              isCorrect: isCorrect,
-              feedback: true
-            };
+            checkAnswerInStudyMode(option);
           }
         });
         
@@ -788,17 +843,34 @@
       updateProgress();
       updateButtons();
       clearFeedback();
-      updateScoreDisplay();
+    }
+
+    function checkAnswerInStudyMode(selectedAnswer) {
+      const question = quizData[currentQuestion];
+      const feedback = document.getElementById('feedback');
+      const isCorrect = selectedAnswer === question.correct;
+      
+      studyModeAnswers[currentQuestion] = selectedAnswer;
+      
+      if (isCorrect) {
+        feedback.innerHTML = '<div class="text-green-600 font-medium">✓ Correct! Well done.</div>';
+      } else {
+        feedback.innerHTML = `<div class="text-red-600 font-medium">✗ Incorrect. The correct answer is: ${question.correct}</div>`;
+      }
+      
+      // Always show hint/explanation in study mode for any selection
+      if (question.hint) {
+        const hintText = document.getElementById('hint-text');
+        if (hintText) {
+          hintText.textContent = question.hint;
+          hintText.classList.remove('hidden');
+        }
+      }
     }
 
     function updateProgress() {
       const progress = ((currentQuestion + 1) / quizData.length) * 100;
       document.getElementById('progress-bar').style.width = `${progress}%`;
-    }
-
-    function updateScoreDisplay() {
-      document.getElementById('current-score').textContent = currentScore;
-      document.getElementById('total-questions').textContent = quizData.length;
     }
 
     function updateButtons() {
@@ -810,13 +882,24 @@
     }
 
     function clearFeedback() {
-      // Don't clear feedback in study mode if there's already an answer
-      if (currentMode === 'study' && answers[currentQuestion]) {
-        return;
-      }
-      document.getElementById('answer-feedback').innerHTML = '';
-      document.getElementById('explanation').classList.add('hidden');
+      document.getElementById('feedback').innerHTML = '';
     }
+
+    // Hint system
+    document.getElementById('hint-btn').addEventListener('click', function() {
+      const hintContent = document.getElementById('hint-text');
+      const hintBtn = document.getElementById('hint-btn');
+      
+      if (hintContent.classList.contains('hidden')) {
+        hintContent.textContent = quizData[currentQuestion].hint;
+        hintContent.classList.remove('hidden');
+        hintBtn.textContent = 'Hide Hint';
+        hintsUsed[currentQuestion] = true;
+      } else {
+        hintContent.classList.add('hidden');
+        hintBtn.textContent = '💡 Use Hint';
+      }
+    });
 
     document.getElementById('back-btn').addEventListener('click', backQuestion);
 
@@ -844,29 +927,28 @@
 
     function nextQuestion() {
       const selected = document.querySelector('input[name="answer"]:checked');
-      if (!selected) {
+      if (!selected && currentQuestion < quizData.length - 1) {
         document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">Please select an answer!</div>';
         return;
       }
       
-      const isCorrect = selected.value === quizData[currentQuestion].correct;
-      
-      if (!answers[currentQuestion]) {
-        answers[currentQuestion] = {
-          answer: selected.value,
-          isCorrect: isCorrect,
-          feedback: true
-        };
-      }
-      
-      if (currentMode === 'quiz') {
-        currentScore = 0;
-        for (let i = 0; i < answers.length; i++) {
-          if (answers[i] && answers[i].isCorrect) {
-            currentScore++;
-          }
+      if (selected) {
+        const isCorrect = selected.value === quizData[currentQuestion].correct;
+        
+        // Store answer (if not already stored in study mode)
+        if (!answers[currentQuestion]) {
+          answers[currentQuestion] = selected.value;
         }
-        document.getElementById('current-score').textContent = currentScore;
+        
+        // Calculate current score for quiz mode
+        if (currentMode === 'quiz') {
+          calculateCurrentScore();
+        }
+        
+        // Show immediate feedback only in quiz mode (study mode handles this on click)
+        if (currentMode === 'quiz') {
+          showFeedback(isCorrect, quizData[currentQuestion].hint);
+        }
       }
       
       if (currentQuestion < quizData.length - 1) {
@@ -896,11 +978,11 @@
       // Calculate performance statistics
       quizData.forEach((q, index) => {
         const answer = answers[index];
-        const isCorrect = answer && answer.isCorrect;
+        const isCorrect = answer === q.correct;
         if (isCorrect) finalScore++;
         
         // Category performance tracking
-        const category = q.category || 'General';
+        const category = q.category || 'Vessel Types';
         if (!categoryStats[category]) {
           categoryStats[category] = { correct: 0, total: 0 };
         }
@@ -918,18 +1000,19 @@
       const messageEl = document.getElementById('performance-message');
       
       let modeBonus = currentMode === 'study' ? ' (Study Mode)' : '';
-      let hintPenalty = hintsUsed.length > 0 ? ` (${hintsUsed.length} hints used)` : '';
+      let hintsUsedCount = hintsUsed.filter(used => used).length;
+      let hintPenalty = hintsUsedCount > 0 ? ` (${hintsUsedCount} hints used)` : '';
       
       if (percentage >= 90) {
-        gradeEl.textContent = 'Excellent! �' + modeBonus;
+        gradeEl.textContent = 'Excellent! 🏆' + modeBonus;
         gradeEl.className = 'text-2xl font-bold mb-2 text-green-600';
-        messageEl.textContent = 'Outstanding performance! You have mastered terminal equipment concepts.' + hintPenalty;
+        messageEl.textContent = 'Outstanding performance! You have mastered vessel types concepts.' + hintPenalty;
       } else if (percentage >= 80) {
         gradeEl.textContent = 'Very Good! 🎯' + modeBonus;
         gradeEl.className = 'text-2xl font-bold mb-2 text-blue-600';
-        messageEl.textContent = 'Great job! You have a strong understanding of terminal equipment.' + hintPenalty;
+        messageEl.textContent = 'Great job! You have a strong understanding of vessel types.' + hintPenalty;
       } else if (percentage >= 70) {
-        gradeEl.textContent = 'Good �' + modeBonus;
+        gradeEl.textContent = 'Good 👍' + modeBonus;
         gradeEl.className = 'text-2xl font-bold mb-2 text-yellow-600';
         messageEl.textContent = 'Good work! Consider reviewing some topics for improvement.' + hintPenalty;
       } else {
@@ -955,18 +1038,21 @@
         });
       }
       
-      // Update results table
+      // Update results table with hint usage
       const table = document.getElementById('results-table');
-      let html = '<tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr>';
+      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th><th>Hints</th></tr>';
       quizData.forEach((q, index) => {
         const answer = answers[index];
-        const userAnswer = answer ? answer.answer : 'Not answered';
-        const isCorrect = answer ? answer.isCorrect : false;
+        const userAnswer = answer || 'Not answered';
+        const isCorrect = answer === q.correct;
+        const hintUsed = hintsUsed[index] ? '💡' : '';
         html += `<tr>
           <td>${q.question}</td>
+          <td><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">${q.category || 'Vessel Types'}</span></td>
           <td>${userAnswer}</td>
           <td>${q.correct}</td>
           <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
+          <td class="text-center">${hintUsed}</td>
         </tr>`;
       });
       table.innerHTML = html;
@@ -982,221 +1068,83 @@
       document.getElementById('quiz-container').style.display = 'block';
     });
 
-    // Mode selection function
-    function selectMode(mode) {
-      currentMode = mode;
-      setMode(mode);
-      startQuiz();
-    }
-
-    // Make selectMode globally accessible
-    window.selectMode = selectMode;
-
-    function setMode(mode) {
-      const modeIndicator = document.getElementById('mode-indicator');
-      const hintsRemainingEl = document.getElementById('hints-remaining');
-      const hintSection = document.getElementById('hint-section');
-      
-      if (mode === 'study') {
-        modeIndicator.textContent = '📚 Study Mode';
-        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
-        if (hintsRemainingEl) hintsRemainingEl.style.display = 'none';
-        if (hintSection) hintSection.style.display = 'none';
-      } else {
-        modeIndicator.textContent = '🎯 Quiz Mode';
-        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
-        if (hintsRemainingEl) {
-          hintsRemainingEl.style.display = 'block';
-          hintsRemainingEl.textContent = `💡 Hints: ${hintsRemaining}`;
-        }
-        if (hintSection) hintSection.style.display = 'block';
-      }
-    }
-
-    // Mode selection event handlers (keeping for backward compatibility)
-    // document.getElementById('study-mode-btn').addEventListener('click', function() {
-    //   currentMode = 'study';
-    //   startQuiz();
-    // });
-
-    // document.getElementById('quiz-mode-btn').addEventListener('click', function() {
-    //   currentMode = 'quiz';
-    //   startQuiz();
-    // });
-
-    document.getElementById('reset-mode-btn').addEventListener('click', function() {
-      initializeQuiz();
-    });
-
-    // Hint system event handlers
-    document.getElementById('hint-btn').addEventListener('click', function() {
-      const hintText = document.getElementById('hint-text');
-      const hintBtn = document.getElementById('hint-btn');
-      
-      if (hintText.classList.contains('hidden')) {
-        showHint();
-        hintText.classList.remove('hidden');
-        hintBtn.textContent = 'Hide Hint';
-        if (currentMode === 'quiz') {
-          hintsUsed++;
-          hintsUsedInQuestions[currentQuestion] = true;
-        }
-      } else {
-        hintText.classList.add('hidden');
-        hintBtn.textContent = '💡 Use Hint';
-      }
-    });
-
-    document.getElementById('show-explanation-btn').addEventListener('click', function() {
-      showExplanation();
-    });
-
-    function initializeQuiz() {
-      // Reset all variables
-      currentQuestion = 0;
-      answers = [];
-      score = 0;
-      hintsRemaining = 3;
-      hintsUsed = 0;
-      hintsUsedInQuestions = {};
-      
-      // Show mode selection, hide quiz content
-      document.getElementById('mode-selection').style.display = 'block';
-      document.getElementById('quiz-content').style.display = 'none';
-    }
-
-    function startQuiz() {
-      // Hide mode selection, show quiz content
-      document.getElementById('mode-selection').style.display = 'none';
-      document.getElementById('quiz-content').style.display = 'block';
-      
-      shuffleArray(quizData);
-      answers = new Array(quizData.length).fill(null);
-      currentQuestion = 0;
-      currentScore = 0;
-      hintsRemaining = 3;
-      hintsUsed = [];
-      
-      showQuestion();
-    }
-
-    function updateHintDisplay() {
-      const hintsEl = document.getElementById('hints-remaining');
-      const hintBtn = document.getElementById('hint-btn');
-      
-      if (currentMode === 'quiz') {
-        hintsEl.textContent = `Hints: ${hintsRemaining}`;
-        document.getElementById('hint-section').style.display = 'block';
-        hintBtn.disabled = false;
-        hintBtn.textContent = '💡 Use Hint';
-        hintBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-      } else {
-        hintsEl.textContent = '';
-        document.getElementById('hint-section').style.display = 'block'; // Show hints in study mode too
-        hintBtn.disabled = false;
-        hintBtn.textContent = '💡 Use Hint';
-        hintBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-      }
-    }
-
-    function showHint() {
-      const hintBtn = document.getElementById('hint-btn');
-      const hintText = document.getElementById('hint-text');
-      const currentQ = quizData[currentQuestion];
-      
-      // Generate specific contextual hints based on question content
-      let hint = '';
-      const questionLower = currentQ.question.toLowerCase();
-      
-      if (questionLower.includes('rubber tyred gantry') || questionLower.includes('rtg')) {
-        hint = '🏗️ RTG cranes run on rubber tires and can move between container rows. They typically stack containers 1-over-6 high and can span 6-8 container rows. They\'re diesel-powered and very mobile.';
-      } else if (questionLower.includes('rail mounted gantry') || questionLower.includes('rmg')) {
-        hint = '🚄 RMG cranes run on fixed rails and are usually automated. They can stack higher than RTGs (often 1-over-7) and cover larger areas but can\'t move between different yard blocks.';
-      } else if (questionLower.includes('ship-to-shore') || questionLower.includes('quay crane')) {
-        hint = '🚢 Ship-to-shore cranes are the tall cranes at the quay that load/unload ships. They run on rails along the wharf and have very long outreach to reach across wide container ships.';
-      } else if (questionLower.includes('reach stacker')) {
-        hint = '🚛 Reach stackers are wheeled vehicles that can pick up containers from the top using a telescopic spreader. They\'re very flexible and can stack containers 3-4 high and move around the terminal.';
-      } else if (questionLower.includes('empty container handler') || questionLower.includes('ech')) {
-        hint = '� Empty container handlers specialize in handling empty containers. They can pick up containers from the side and stack them very high (8-10 high) since empty containers are much lighter.';
-      } else if (questionLower.includes('forklift')) {
-        hint = '🏗️ Forklifts use forks to lift containers from underneath. They need special container handling attachments and are typically used for lighter containers or in smaller terminals.';
-      } else if (questionLower.includes('terminal tractor') || questionLower.includes('yard truck')) {
-        hint = '🚚 Terminal tractors (yard trucks) are specialized trucks used to move trailers and chassis around the terminal. They have fifth wheels for coupling to trailers and are very maneuverable.';
-      } else if (questionLower.includes('mobile crane')) {
-        hint = '🏗️ Mobile cranes are versatile wheeled cranes that can move around the terminal. They\'re often used for handling project cargo, maintenance work, or in smaller terminals where specialized equipment isn\'t cost-effective.';
-      } else if (questionLower.includes('straddle carrier')) {
-        hint = '🚛 Straddle carriers literally straddle containers - they drive over them and lift them from above. They can stack containers and move them around, combining the functions of crane and transport vehicle.';
-      } else if (questionLower.includes('chassis') || questionLower.includes('trailer')) {
-        hint = '� Chassis are wheeled trailers specifically designed to carry containers. They have twist locks to secure containers and come in different lengths (20ft, 40ft, 45ft) to match container sizes.';
-      } else if (questionLower.includes('spreader')) {
-        hint = '🔗 Spreaders are the lifting frames that attach to containers. They have twist locks that engage with the container\'s corner castings and can extend/retract to handle different container sizes.';
-      } else if (questionLower.includes('reefer') || questionLower.includes('refrigerated')) {
-        hint = '❄️ Reefer equipment includes power outlets, monitoring systems, and pre-trip inspection tools for refrigerated containers. Temperature and humidity must be constantly monitored and controlled.';
-      } else if (questionLower.includes('safety') || questionLower.includes('hazard')) {
-        hint = '⚠️ Terminal safety involves lockout/tagout procedures, personal protective equipment, safe working loads, proper communication protocols, and regular equipment inspections to prevent accidents.';
-      } else if (questionLower.includes('capacity') || questionLower.includes('lifting')) {
-        hint = '📏 Lifting capacity depends on the equipment type and configuration. Always check the safe working load (SWL) and never exceed it. Consider the weight of the container plus cargo when determining capacity.';
-      } else if (questionLower.includes('maintenance')) {
-        hint = '� Equipment maintenance includes daily inspections, preventive maintenance schedules, lubrication, hydraulic system checks, and keeping detailed maintenance records to ensure safe operation.';
-      } else {
-        hint = '💡 Think about the specific operational characteristics, capabilities, and primary use case of each piece of terminal equipment.';
-      }
-      
-      hintText.textContent = hint;
-      // Don't automatically show/hide or disable the button here - let the event handler control it
-    }
-
-    function clearFeedback() {
-      document.getElementById('answer-feedback').textContent = '';
-      document.getElementById('explanation').classList.add('hidden');
-      document.getElementById('show-explanation-btn').classList.add('hidden');
-      document.getElementById('hint-text').classList.add('hidden');
-      
-      // Reset hint button for new question
-      const hintBtn = document.getElementById('hint-btn');
-      hintBtn.disabled = false;
-      hintBtn.textContent = '💡 Use Hint';
-      hintBtn.classList.remove('opacity-50');
-    }
-
-    function showExplanation() {
-      const explanation = document.getElementById('explanation');
-      const currentQ = quizData[currentQuestion];
-      
-      // Generate explanation based on the correct answer
-      let explanationText = '';
-      if (currentQ.correct === 'Gantry Crane') {
-        explanationText = 'Gantry cranes are large, powerful cranes that move on rails or wheels and are essential for container yard operations, providing high stacking capacity and efficient container handling.';
-      } else if (currentQ.correct === 'Reach Stacker') {
-        explanationText = 'Reach stackers are versatile mobile equipment that can lift, transport, and stack containers in yards, offering flexibility for container positioning and short-distance transport.';
-      } else if (currentQ.correct === 'Automatic Guided Vehicle') {
-        explanationText = 'AGVs operate autonomously using pre-programmed routes and navigation systems, increasing efficiency and reducing human error in container transport operations.';
-      } else if (currentQ.correct === 'Fork Lift') {
-        explanationText = 'Forklifts are essential for handling palletized cargo and smaller loads, providing precision lifting and maneuverability in warehouse operations.';
-      } else {
-        explanationText = `The correct answer is "${currentQ.correct}". This equipment plays a crucial role in terminal operations with specific operational advantages.`;
-      }
-      
-      explanation.textContent = explanationText;
-      explanation.classList.remove('hidden');
-      document.getElementById('show-explanation-btn').classList.add('hidden');
-    }
-
-    function calculateCurrentScore() {
-      let score = 0;
-      for (let i = 0; i < answers.length; i++) {
-        if (answers[i] === quizData[i].correct) {
-          score++;
-        }
-      }
-      currentScore = score;
-      document.getElementById('current-score').textContent = currentScore;
-    }
-
     // Initialize the quiz
     document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('mode-selection').style.display = 'block';
-      document.getElementById('quiz-content').style.display = 'none';
+      // Ensure all elements are available before setting up event listeners
+      console.log('DOM loaded, initializing quiz...');
+      
+      document.getElementById('next-btn').addEventListener('click', nextQuestion);
+      document.getElementById('back-btn').addEventListener('click', backQuestion);
+      document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+      document.getElementById('print-btn').addEventListener('click', printResults);
+      
+      // Add click event listeners as fallback for mode selection
+      document.addEventListener('click', function(event) {
+        if (event.target.closest('[onclick*="selectMode"]')) {
+          console.log('Click detected on mode selection element');
+          const element = event.target.closest('[onclick*="selectMode"]');
+          const onclickAttr = element.getAttribute('onclick');
+          console.log('onclick attribute:', onclickAttr);
+          
+          if (onclickAttr.includes("selectMode('study')")) {
+            console.log('Study mode clicked');
+            selectMode('study');
+          } else if (onclickAttr.includes("selectMode('quiz')")) {
+            console.log('Quiz mode clicked');
+            selectMode('quiz');
+          }
+        }
+      });
+      
+      // Add direct event listeners to mode cards
+      const studyModeCard = document.getElementById('study-mode-card');
+      const quizModeCard = document.getElementById('quiz-mode-card');
+      
+      if (studyModeCard) {
+        studyModeCard.addEventListener('click', function(e) {
+          console.log('Study mode card clicked directly');
+          e.preventDefault();
+          selectMode('study');
+        });
+      }
+      
+      if (quizModeCard) {
+        quizModeCard.addEventListener('click', function(e) {
+          console.log('Quiz mode card clicked directly');
+          e.preventDefault();
+          selectMode('quiz');
+        });
+      }
+      
+      document.getElementById('reset-mode-btn').addEventListener('click', function() {
+        console.log('Reset mode clicked');
+        resetMode();
+      });
+      
+      // Hint system event handler
+      document.getElementById('hint-btn').addEventListener('click', function() {
+        if (currentMode === 'study' || hintsRemaining > 0) {
+          showHint();
+        }
+      });
+      
+      // Add new event handlers
+      document.getElementById('show-explanation-btn').addEventListener('click', function() {
+        const explanationEl = document.getElementById('explanation');
+        explanationEl.classList.toggle('hidden');
+        this.textContent = explanationEl.classList.contains('hidden') ? 'Show Explanation' : 'Hide Explanation';
+      });
+      
+      // Initialize with mode selection
+      console.log('Initializing with mode selection...');
+      console.log('DOM elements check:');
+      console.log('mode-selection:', document.getElementById('mode-selection'));
+      console.log('quiz-content:', document.getElementById('quiz-content'));
+      
+      // Test if onclick works
+      console.log('Testing selectMode function availability:', typeof window.selectMode);
+      
+      resetMode();
     });
   </script>
 </body>
