@@ -831,18 +831,27 @@
         optionsForm.appendChild(label);
       });
       
-      // Restore previous selection
+      // Restore previous selection and feedback
       if (answers[currentQuestion]) {
         const selectedOption = document.querySelector(`input[value="${answers[currentQuestion]}"]`);
         if (selectedOption) {
           selectedOption.checked = true;
           selectedOption.closest('.quiz-option').classList.add('selected');
+          
+          // In study mode, restore the feedback for the previous answer
+          if (currentMode === 'study') {
+            checkAnswerInStudyMode(answers[currentQuestion]);
+          }
         }
       }
       
       updateProgress();
       updateButtons();
-      clearFeedback();
+      
+      // Only clear feedback if no previous answer exists
+      if (!answers[currentQuestion]) {
+        clearFeedback();
+      }
     }
 
     function checkAnswerInStudyMode(selectedAnswer) {

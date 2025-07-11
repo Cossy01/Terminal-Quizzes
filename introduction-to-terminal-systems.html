@@ -745,18 +745,34 @@
         optionsForm.appendChild(label);
       });
       
-      // Restore previous selection
+      // Restore previous selection and feedback
       if (answers[currentQuestion]) {
         const selectedOption = document.querySelector(`input[value="${answers[currentQuestion]}"]`);
         if (selectedOption) {
           selectedOption.checked = true;
           selectedOption.closest('.quiz-option').classList.add('selected');
+          
+          // In study mode, restore the feedback for the previous answer
+          if (currentMode === 'study') {
+            const isCorrect = answers[currentQuestion] === question.correct;
+            if (isCorrect) {
+              document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
+            } else {
+              document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
+            }
+            // Show explanation immediately
+            showExplanation();
+          }
         }
       }
       
       updateProgress();
       updateButtons();
-      clearFeedback();
+      
+      // Only clear feedback if no previous answer exists
+      if (!answers[currentQuestion]) {
+        clearFeedback();
+      }
       updateScoreDisplay();
     }
 
