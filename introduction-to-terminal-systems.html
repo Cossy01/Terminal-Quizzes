@@ -509,18 +509,18 @@
             const isCorrect = selectedValue === question.correct;
             
             // Immediate feedback without delay for smooth UI
+            // Store answer immediately for smooth navigation
+            answers[currentQuestion] = selectedValue;
+            
+            // Calculate and update score
+            calculateCurrentScore();
+            
+            // Immediate feedback without delay for smooth UI
             if (isCorrect) {
               document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
-              // Only increment score if this question hasn't been answered correctly before
-              if (!answers[currentQuestion] || answers[currentQuestion] !== question.correct) {
-                currentScore++;
-              }
             } else {
               document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
             }
-            
-            // Store answer immediately for smooth navigation
-            answers[currentQuestion] = selectedValue;
             
             // Show explanation immediately without delay
             showExplanation();
@@ -869,6 +869,17 @@
       explanation.textContent = explanationText;
       explanation.classList.remove('hidden');
       document.getElementById('show-explanation-btn').classList.add('hidden');
+    }
+
+    function calculateCurrentScore() {
+      let score = 0;
+      for (let i = 0; i < answers.length; i++) {
+        if (answers[i] === quizData[i].correct) {
+          score++;
+        }
+      }
+      currentScore = score;
+      document.getElementById('current-score').textContent = currentScore;
     }
 
     // Initialize the quiz

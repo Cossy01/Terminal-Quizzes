@@ -442,6 +442,17 @@
       document.getElementById('current-score').textContent = currentScore;
     }
 
+    function calculateCurrentScore() {
+      let score = 0;
+      for (let i = 0; i < answers.length; i++) {
+        if (answers[i] === quizData[i].correct) {
+          score++;
+        }
+      }
+      currentScore = score;
+      updateScoreDisplay();
+    }
+
     function showQuestion() {
       const question = quizData[currentQuestion];
       const questionNumber = document.getElementById('question-number');
@@ -478,24 +489,10 @@
           this.classList.add('selected');
           
           if (currentMode === 'study') {
-            // Immediate feedback without delay for smooth UI
-            const previousAnswer = answers[currentQuestion];
-            const question = quizData[currentQuestion];
-            
-            // Update score only if the answer changed
-            if (previousAnswer !== option) {
-              // Remove score if previous answer was correct
-              if (previousAnswer === question.correct) {
-                currentScore--;
-              }
-              // Add score if new answer is correct
-              if (option === question.correct) {
-                currentScore++;
-              }
-              updateScoreDisplay();
-            }
-            
+            // Store the answer and calculate score
             answers[currentQuestion] = option;
+            calculateCurrentScore();
+            
             checkAnswerInStudyMode(option);
           }
         });
@@ -588,24 +585,9 @@
         return;
       }
       
-      const previousAnswer = answers[currentQuestion];
-      const newAnswer = selectedAnswer.value;
-      const question = quizData[currentQuestion];
-      
-      // Update score only if the answer changed
-      if (previousAnswer !== newAnswer) {
-        // Remove score if previous answer was correct
-        if (previousAnswer === question.correct) {
-          currentScore--;
-        }
-        // Add score if new answer is correct
-        if (newAnswer === question.correct) {
-          currentScore++;
-        }
-        updateScoreDisplay();
-      }
-      
+      // Store the answer and calculate score
       answers[currentQuestion] = newAnswer;
+      calculateCurrentScore();
       
       if (currentQuestion < quizData.length - 1) {
         currentQuestion++;

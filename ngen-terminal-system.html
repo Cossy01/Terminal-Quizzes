@@ -657,19 +657,15 @@
         const isCorrect = selected.value === quizData[currentQuestion].correct;
         
         // Store answer with additional metadata
+        // Store the answer
         answers[currentQuestion] = {
           answer: selected.value,
           isCorrect: isCorrect,
           feedback: true
         };
         
-        if (isCorrect) {
-          // Only increment score if this question hasn't been answered correctly before
-          if (!answers[currentQuestion] || !answers[currentQuestion].isCorrect) {
-            currentScore++;
-            document.getElementById('current-score').textContent = currentScore;
-          }
-        }
+        // Calculate current score
+        calculateCurrentScore();
         
         // Show immediate feedback
         showFeedback(isCorrect, quizData[currentQuestion].explanation);
@@ -711,6 +707,17 @@
           hintText.classList.remove('hidden');
         }
       }
+    }
+
+    function calculateCurrentScore() {
+      let score = 0;
+      for (let i = 0; i < answers.length; i++) {
+        if (answers[i] && answers[i].isCorrect) {
+          score++;
+        }
+      }
+      currentScore = score;
+      document.getElementById('current-score').textContent = currentScore;
     }
 
     function showResults() {

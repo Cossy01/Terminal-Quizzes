@@ -719,6 +719,17 @@
       }
     }
 
+    function calculateCurrentScore() {
+      let score = 0;
+      for (let i = 0; i < answers.length; i++) {
+        if (answers[i] && answers[i].isCorrect) {
+          score++;
+        }
+      }
+      currentScore = score;
+      document.getElementById('current-score').textContent = currentScore;
+    }
+
     function showQuestion() {
       const q = quizData[currentQuestion];
       
@@ -777,6 +788,9 @@
               feedback: true,
               hintUsed: hintsUsed.includes(currentQuestion)
             };
+            
+            // Calculate current score
+            calculateCurrentScore();
           }
         });
         
@@ -850,12 +864,9 @@
           };
         }
         
-        if (isCorrect && currentMode === 'quiz') {
-          // Only increment score if this question hasn't been answered correctly before
-          if (!answers[currentQuestion] || !answers[currentQuestion].isCorrect) {
-            currentScore++;
-            document.getElementById('current-score').textContent = currentScore;
-          }
+        // Calculate current score for quiz mode
+        if (currentMode === 'quiz') {
+          calculateCurrentScore();
         }
         
         // Show immediate feedback only in quiz mode (study mode handles this on click)
