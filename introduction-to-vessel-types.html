@@ -769,10 +769,18 @@
     }
 
     function clearFeedback() {
-      // Don't clear feedback in study mode if there's already an answer
+      // In quiz mode, never show feedback when navigating - just preserve the selection
+      if (currentMode === 'quiz') {
+        document.getElementById('answer-feedback').innerHTML = '';
+        document.getElementById('explanation').classList.add('hidden');
+        return;
+      }
+      
+      // In study mode, don't clear feedback if there's already an answer
       if (currentMode === 'study' && answers[currentQuestion]) {
         return;
       }
+      
       document.getElementById('answer-feedback').innerHTML = '';
       document.getElementById('explanation').classList.add('hidden');
     }
@@ -1106,6 +1114,26 @@
     }
 
     function clearFeedback() {
+      // In quiz mode, never show feedback when navigating - just preserve the selection
+      if (currentMode === 'quiz') {
+        document.getElementById('answer-feedback').textContent = '';
+        document.getElementById('explanation').classList.add('hidden');
+        document.getElementById('show-explanation-btn').classList.add('hidden');
+        document.getElementById('hint-text').classList.add('hidden');
+        
+        // Reset hint button for new question
+        const hintBtn = document.getElementById('hint-btn');
+        hintBtn.disabled = false;
+        hintBtn.textContent = '💡 Use Hint';
+        hintBtn.classList.remove('opacity-50');
+        return;
+      }
+      
+      // In study mode, don't clear feedback if there's already an answer
+      if (currentMode === 'study' && answers[currentQuestion]) {
+        return;
+      }
+      
       document.getElementById('answer-feedback').textContent = '';
       document.getElementById('explanation').classList.add('hidden');
       document.getElementById('show-explanation-btn').classList.add('hidden');

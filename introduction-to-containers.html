@@ -1012,8 +1012,8 @@
           input.checked = true;
           input.closest('.quiz-option').classList.add('selected');
           
-          // Show previous feedback if available - smooth display
-          if (answers[currentQuestion].feedback) {
+          // Only show previous feedback in study mode - quiz mode should never show feedback when navigating
+          if (currentMode === 'study' && answers[currentQuestion].feedback) {
             const isCorrect = answers[currentQuestion].isCorrect;
             const feedbackEl = document.getElementById('answer-feedback');
             const explanationEl = document.getElementById('explanation');
@@ -1022,11 +1022,8 @@
               '<div class="text-green-600 font-medium">✓ Correct!</div>' :
               '<div class="text-red-600 font-medium">✗ Incorrect</div>';
             
-            // In study mode, always show explanation immediately without any delay
-            if (currentMode === 'study') {
-              explanationEl.textContent = q.explanation;
-              explanationEl.classList.remove('hidden');
-            }
+            explanationEl.textContent = q.explanation;
+            explanationEl.classList.remove('hidden');
           }
         }
       });

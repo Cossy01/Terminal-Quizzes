@@ -825,8 +825,8 @@
           input.checked = true;
           input.closest('.quiz-option').classList.add('selected');
           
-          // Show previous feedback if available
-          if (answers[currentQuestion].feedback) {
+          // Only show previous feedback in study mode - quiz mode should never show feedback when navigating
+          if (currentMode === 'study' && answers[currentQuestion].feedback) {
             showFeedback(answers[currentQuestion].isCorrect, q.explanation);
           }
         }
