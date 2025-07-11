@@ -48,6 +48,23 @@
         background: rgba(15, 23, 42, 0.95);
         border: 1px solid rgba(71, 85, 105, 0.3);
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        color: #f8fafc;
+      }
+      
+      .text-gray-800 {
+        color: #f8fafc !important;
+      }
+      
+      .text-gray-700 {
+        color: #e2e8f0 !important;
+      }
+      
+      .text-gray-600 {
+        color: #cbd5e1 !important;
+      }
+      
+      .bg-gradient-to-br {
+        background: rgba(71, 85, 105, 0.3) !important;
       }
     }
     
@@ -518,9 +535,10 @@
       </div>
     </div>
     
-    <!-- Performance Summary -->
-    <div class="text-center mb-8" style="display: none;">
-      <div id="performance-summary" class="text-3xl font-bold text-green-600 mb-4"></div>
+    <!-- Category Performance -->
+    <div class="mb-6">
+      <h3 class="text-lg font-bold mb-4 text-gray-800">Performance by Category</h3>
+      <div id="category-performance" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
     </div>
     
     <div class="overflow-x-auto">

@@ -48,6 +48,23 @@
         background: rgba(15, 23, 42, 0.95);
         border: 1px solid rgba(71, 85, 105, 0.3);
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        color: #f8fafc;
+      }
+      
+      .text-gray-800 {
+        color: #f8fafc !important;
+      }
+      
+      .text-gray-700 {
+        color: #e2e8f0 !important;
+      }
+      
+      .text-gray-600 {
+        color: #cbd5e1 !important;
+      }
+      
+      .bg-gradient-to-br {
+        background: rgba(71, 85, 105, 0.3) !important;
       }
     }
     
@@ -510,13 +527,19 @@
         <p class="text-xl mb-2 text-gray-700 font-medium">Your Final Score</p>
         <p class="text-5xl font-bold text-green-700 mb-2"><span id="final-score"></span>/<span>15</span></p>
         <p class="text-xl text-green-600 font-semibold"><span id="percentage"></span>% Complete</p>
+        
+        <!-- Performance Grade -->
+        <div class="mt-4">
+          <div id="performance-grade" class="text-2xl font-bold mb-2"></div>
+          <div id="performance-message" class="text-gray-600"></div>
+        </div>
       </div>
     </div>
     
-    <!-- Performance Summary -->
-    <div class="text-center mb-8">
-      <div id="performance-summary" class="text-3xl font-bold text-green-600 mb-4"></div>
-      <p id="performance-message" class="text-gray-600 text-lg"></p>
+    <!-- Category Performance -->
+    <div class="mb-6">
+      <h3 class="text-lg font-bold mb-4 text-gray-800">Performance by Category</h3>
+      <div id="category-performance" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
     </div>
     
     <div class="overflow-x-auto">
@@ -668,16 +691,19 @@
     }
 
     function startQuiz() {
-      currentScore = 0;
+      // Hide mode selection, show quiz content
       document.getElementById('mode-selection').style.display = 'none';
-      document.getElementById('quiz-container').style.display = 'block';
+      document.getElementById('quiz-content').style.display = 'block';
       
       shuffleArray(quizData);
       answers = new Array(quizData.length).fill(null);
-      studyModeAnswers = new Array(quizData.length).fill(null);
-      hintsUsed = new Array(quizData.length).fill(false);
       currentQuestion = 0;
-      updateScoreDisplay();
+      currentScore = 0;
+      hintsRemaining = 3;
+      hintsUsed = [];
+      
+      showQuestion();
+    }
       showQuestion();
     }
 
@@ -982,9 +1008,81 @@
 
     // Initialize the quiz
     document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('mode-selection').style.display = 'block';
-      document.getElementById('quiz-content').style.display = 'none';
-      document.getElementById('results-container').style.display = 'none';
+      // Ensure all elements are available before setting up event listeners
+      console.log('DOM loaded, initializing quiz...');
+      
+      document.getElementById('next-btn').addEventListener('click', nextQuestion);
+      document.getElementById('back-btn').addEventListener('click', backQuestion);
+      document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+      document.getElementById('print-btn').addEventListener('click', printResults);
+      
+      // Add click event listeners as fallback for mode selection
+      document.addEventListener('click', function(event) {
+        if (event.target.closest('[onclick*="selectMode"]')) {
+          console.log('Click detected on mode selection element');
+          const element = event.target.closest('[onclick*="selectMode"]');
+          const onclickAttr = element.getAttribute('onclick');
+          console.log('onclick attribute:', onclickAttr);
+          
+          if (onclickAttr.includes("selectMode('study')")) {
+            console.log('Study mode clicked');
+            selectMode('study');
+          } else if (onclickAttr.includes("selectMode('quiz')")) {
+            console.log('Quiz mode clicked');
+            selectMode('quiz');
+          }
+        }
+      });
+      
+      // Add direct event listeners to mode cards
+      const studyModeCard = document.getElementById('study-mode-card');
+      const quizModeCard = document.getElementById('quiz-mode-card');
+      
+      if (studyModeCard) {
+        studyModeCard.addEventListener('click', function(e) {
+          console.log('Study mode card clicked directly');
+          e.preventDefault();
+          selectMode('study');
+        });
+      }
+      
+      if (quizModeCard) {
+        quizModeCard.addEventListener('click', function(e) {
+          console.log('Quiz mode card clicked directly');
+          e.preventDefault();
+          selectMode('quiz');
+        });
+      }
+      
+      document.getElementById('reset-mode-btn').addEventListener('click', function() {
+        console.log('Reset mode clicked');
+        resetMode();
+      });
+      
+      // Hint system event handler
+      document.getElementById('hint-btn').addEventListener('click', function() {
+        if (currentMode === 'study' || hintsRemaining > 0) {
+          showHint();
+        }
+      });
+      
+      // Add new event handlers
+      document.getElementById('show-explanation-btn').addEventListener('click', function() {
+        const explanationEl = document.getElementById('explanation');
+        explanationEl.classList.toggle('hidden');
+        this.textContent = explanationEl.classList.contains('hidden') ? 'Show Explanation' : 'Hide Explanation';
+      });
+      
+      // Initialize with mode selection
+      console.log('Initializing with mode selection...');
+      console.log('DOM elements check:');
+      console.log('mode-selection:', document.getElementById('mode-selection'));
+      console.log('quiz-content:', document.getElementById('quiz-content'));
+      
+      // Test if onclick works
+      console.log('Testing selectMode function availability:', typeof window.selectMode);
+      
+      resetMode();
     });
   </script>
 </body>
