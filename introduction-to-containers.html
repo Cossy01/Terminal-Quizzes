@@ -955,11 +955,19 @@
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
           
+          const selectedValue = radioInput.value;
+          const isCorrect = selectedValue === q.correct;
+          
+          // Store the answer immediately for both modes
+          answers[currentQuestion] = {
+            answer: selectedValue,
+            isCorrect: isCorrect,
+            feedback: currentMode === 'study',
+            hintUsed: hintsUsed.includes(currentQuestion)
+          };
+          
           // In study mode, show explanation immediately for any selection
           if (currentMode === 'study') {
-            const selectedValue = radioInput.value;
-            const isCorrect = selectedValue === q.correct;
-            
             // Immediately update feedback - no delay, smooth transition
             const feedbackEl = document.getElementById('answer-feedback');
             const explanationEl = document.getElementById('explanation');
@@ -977,14 +985,6 @@
             // Always show explanation in study mode - smooth update without hiding/showing
             explanationEl.textContent = q.explanation;
             explanationEl.classList.remove('hidden');
-            
-            // Store the answer immediately for smooth navigation
-            answers[currentQuestion] = {
-              answer: selectedValue,
-              isCorrect: isCorrect,
-              feedback: true,
-              hintUsed: hintsUsed.includes(currentQuestion)
-            };
             
             // Calculate current score
             calculateCurrentScore();

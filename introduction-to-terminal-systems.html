@@ -723,18 +723,18 @@
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
           
+          const selectedValue = radioInput.value;
+          const isCorrect = selectedValue === question.correct;
+          
+          // Store answer for both modes
+          answers[currentQuestion] = {
+            answer: selectedValue,
+            isCorrect: isCorrect,
+            feedback: currentMode === 'study'
+          };
+          
           // In study mode, show explanation immediately
           if (currentMode === 'study') {
-            const selectedValue = radioInput.value;
-            const isCorrect = selectedValue === question.correct;
-            
-            // Store answer as object for consistency
-            answers[currentQuestion] = {
-              answer: selectedValue,
-              isCorrect: isCorrect,
-              feedback: true
-            };
-            
             // Calculate and update score
             calculateCurrentScore();
             

@@ -690,10 +690,17 @@
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
           
+          const selectedValue = radioInput.value;
+          const isCorrect = selectedValue === question.correct;
+          
+          // Store answer for both modes
+          answers[currentQuestion] = {
+            answer: selectedValue,
+            isCorrect: isCorrect,
+            feedback: currentMode === 'study'
+          };
+          
           if (currentMode === 'study') {
-            const selectedValue = radioInput.value;
-            const isCorrect = selectedValue === question.correct;
-            
             const feedbackEl = document.getElementById('answer-feedback');
             const explanationEl = document.getElementById('explanation');
             
@@ -709,12 +716,6 @@
             
             explanationEl.textContent = question.explanation || 'This equipment plays a crucial role in terminal operations.';
             explanationEl.classList.remove('hidden');
-            
-            answers[currentQuestion] = {
-              answer: selectedValue,
-              isCorrect: isCorrect,
-              feedback: true
-            };
           }
         });
         
