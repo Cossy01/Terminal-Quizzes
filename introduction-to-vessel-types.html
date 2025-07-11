@@ -401,8 +401,7 @@
   </style>
 </head>
 <body>
-  <!-- Mode Selection Screen -->
-  <div id="mode-selection" class="container p-8 rounded-xl shadow-xl">
+  <div id="quiz-container" class="container p-8 rounded-xl shadow-xl">
     <div class="flex justify-between items-center mb-6">
       <a href="index.html" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium text-sm">
         ← Back to Menu
@@ -410,11 +409,12 @@
       <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">Introduction to Vessel Types</h1>
       <div class="w-24"></div> <!-- Spacer for centering -->
     </div>
-
-    <div class="text-center mb-8">
+    
+    <!-- Mode Selection -->
+    <div id="mode-selection" class="mb-6 text-center">
       <p class="text-lg text-gray-600 mb-6">Choose your learning mode:</p>
       <div class="flex flex-col md:flex-row gap-6 justify-center">
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('study')">>
+        <div id="study-mode-card" class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('study')">
           <div class="text-blue-600 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -423,7 +423,7 @@
           <h3 class="text-xl font-bold text-blue-800 mb-2">Study Mode</h3>
           <p class="text-blue-700">Learn with immediate feedback, hints, and explanations. Perfect for understanding new concepts.</p>
         </div>
-        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('quiz')">>
+        <div id="quiz-mode-card" class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('quiz')">
           <div class="text-green-600 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -433,37 +433,46 @@
           <p class="text-green-700">Test your knowledge with limited hints available. Get detailed results at the end to review your performance.</p>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div id="quiz-container" class="container p-8 rounded-xl shadow-xl" style="display: none;">
-    <div class="flex justify-between items-center mb-6">
-      <a href="index.html" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium text-sm">
-        ← Back to Menu
-      </a>
-      <h1 class="text-3xl font-bold text-gray-800 flex-1 text-center">Introduction to Vessel Types</h1>
-      <div class="w-24"></div> <!-- Spacer for centering -->
+      <div class="mt-6">
+        <button id="reset-mode-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[120px] hidden">🔄 Change Mode</button>
+      </div>
     </div>
     
-    <!-- Progress Bar -->
-    <div class="progress-container">
-      <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
-    </div>
+    <!-- Quiz Content (initially hidden) -->
+    <div id="quiz-content" style="display: none;">
+      <!-- Mode Indicator -->
+      <div class="flex justify-between items-center mb-4">
+        <div id="mode-indicator" class="px-3 py-1 rounded-full text-sm font-medium"></div>
+        <div class="flex items-center gap-2">
+          <span id="hints-remaining" class="text-sm text-gray-600"></span>
+          <button id="reset-mode-btn" class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors text-sm">
+            Change Mode
+          </button>
+        </div>
+      </div>
     
-    <!-- Live Score Counter -->
-    <div class="text-center mb-4" style="display: none;">
-      <div class="inline-block bg-green-50 px-4 py-2 rounded-lg border border-green-200">
-        <span class="text-green-800 font-medium">
+    <!-- Enhanced Progress Section -->
+    <div class="mb-6">
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+      </div>
+      
+      <!-- Quiz Stats -->
+      <div class="flex justify-between items-center mt-3 text-sm text-gray-600">
+        <div class="quiz-stats">
+          <span id="question-category" class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium"></span>
+        </div>
+        <div class="score-display" style="display: none;">
           Correct: <span id="current-score" class="font-bold text-green-600">0</span> / 
-          <span id="total-questions" class="font-bold text-green-600">15</span>
-        </span>
+          <span id="total-questions">15</span>
+        </div>
       </div>
     </div>
     
     <div id="question-number" class="text-lg text-gray-600 mb-3 text-center font-medium"></div>
     <div id="question-text" class="text-xl mb-6 text-center leading-relaxed text-gray-700 font-medium"></div>
     <form id="options-form"></form>
-    <div id="feedback" class="mt-6 text-center font-medium text-red-600"></div>
     
     <!-- Hint System -->
     <div id="hint-section" class="mt-4 text-center" style="display: none;">
@@ -473,10 +482,18 @@
       <div id="hint-text" class="mt-2 text-sm text-gray-600 bg-yellow-50 p-3 rounded-lg hidden"></div>
     </div>
     
+    <!-- Feedback Section -->
+    <div id="feedback" class="mt-6 text-center">
+      <div id="answer-feedback" class="mb-4"></div>
+      <div id="explanation" class="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg hidden"></div>
+    </div>
+    
     <div class="flex justify-center gap-4 mt-8">
       <button id="back-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[100px] disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
+      <button id="show-explanation-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium min-w-[140px] hidden">Show Explanation</button>
       <button id="next-btn" class="px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors duration-200 font-medium min-w-[100px] shadow-lg hover:shadow-xl">Next</button>
     </div>
+    </div> <!-- End quiz-content -->
   </div>
   <div id="results-container" class="container p-8 rounded-xl shadow-xl" style="display:none;">
     <div class="flex justify-between items-center mb-6">
@@ -493,8 +510,13 @@
         <p class="text-xl mb-2 text-gray-700 font-medium">Your Final Score</p>
         <p class="text-5xl font-bold text-green-700 mb-2"><span id="final-score"></span>/<span>15</span></p>
         <p class="text-xl text-green-600 font-semibold"><span id="percentage"></span>% Complete</p>
-        <p id="mode-indicator" class="text-sm text-gray-600 mt-2"></p>
       </div>
+    </div>
+    
+    <!-- Performance Summary -->
+    <div class="text-center mb-8">
+      <div id="performance-summary" class="text-3xl font-bold text-green-600 mb-4"></div>
+      <p id="performance-message" class="text-gray-600 text-lg"></p>
     </div>
     
     <div class="overflow-x-auto">
@@ -503,8 +525,6 @@
     <div class="flex justify-center gap-4 mt-8">
       <button id="print-btn" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">📄 Print Results</button>
       <button id="restart-btn" class="px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors duration-200 font-medium min-w-[120px] shadow-lg hover:shadow-xl">🔄 Restart Quiz</button>
-    </div>
-  </div>
     </div>
   </div>
   <script>
@@ -617,13 +637,8 @@
     }
 
     function selectMode(mode) {
-      console.log('selectMode called with:', mode);
-      try {
-        setMode(mode);
-        startQuiz();
-      } catch (error) {
-        console.error('Error in selectMode:', error);
-      }
+      currentMode = mode;
+      startQuiz();
     }
 
     // Make selectMode globally accessible immediately
