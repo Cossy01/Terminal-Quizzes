@@ -947,12 +947,17 @@
         
         // Add click handler for enhanced interaction
         label.addEventListener('click', function() {
+          // Ensure the radio button is selected
+          const radioInput = this.querySelector('input[type="radio"]');
+          radioInput.checked = true;
+          
+          // Update visual selection
           document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
           
           // In study mode, show explanation immediately for any selection
           if (currentMode === 'study') {
-            const selectedValue = this.querySelector('input').value;
+            const selectedValue = radioInput.value;
             const isCorrect = selectedValue === q.correct;
             
             // Immediately update feedback - no delay, smooth transition
