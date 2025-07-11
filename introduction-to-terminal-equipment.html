@@ -757,7 +757,7 @@
       
       // Restore previous selection
       if (answers[currentQuestion]) {
-        const selectedOption = document.querySelector(`input[value="${answers[currentQuestion]}"]`);
+        const selectedOption = document.querySelector(`input[value="${answers[currentQuestion].answer}"]`);
         if (selectedOption) {
           selectedOption.checked = true;
           selectedOption.closest('.quiz-option').classList.add('selected');
@@ -767,6 +767,22 @@
       updateProgress();
       updateButtons();
       clearFeedback();
+      
+      // Restore feedback in study mode
+      if (currentMode === 'study' && answers[currentQuestion] && answers[currentQuestion].feedback) {
+        const feedbackEl = document.getElementById('answer-feedback');
+        const explanationEl = document.getElementById('explanation');
+        
+        if (answers[currentQuestion].isCorrect) {
+          feedbackEl.innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
+        } else {
+          feedbackEl.innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect. The correct answer is: ' + quizData[currentQuestion].correct + '</div>';
+        }
+        
+        explanationEl.textContent = quizData[currentQuestion].explanation || 'This equipment plays a crucial role in terminal operations.';
+        explanationEl.classList.remove('hidden');
+      }
+      
       updateScoreDisplay();
     }
 
@@ -1164,7 +1180,7 @@
     function calculateCurrentScore() {
       let score = 0;
       for (let i = 0; i < answers.length; i++) {
-        if (answers[i] === quizData[i].correct) {
+        if (answers[i] && answers[i].isCorrect) {
           score++;
         }
       }
