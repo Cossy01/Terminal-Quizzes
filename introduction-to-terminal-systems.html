@@ -917,7 +917,7 @@
         Object.entries(categoryStats).forEach(([category, stats]) => {
           const categoryCard = document.createElement('div');
           const categoryPercentage = Math.round((stats.correct / stats.total) * 100);
-          categoryCard.className = 'bg-white p-4 rounded-lg border text-center';
+          categoryCard.className = 'bg-gray-50 p-4 rounded-lg border text-center shadow-sm';
           categoryCard.innerHTML = `
             <div class="font-semibold text-gray-800">${category}</div>
             <div class="text-2xl font-bold ${categoryPercentage >= 80 ? 'text-green-600' : categoryPercentage >= 60 ? 'text-yellow-600' : 'text-red-600'}">${stats.correct}/${stats.total}</div>
