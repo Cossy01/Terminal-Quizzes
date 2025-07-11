@@ -763,126 +763,165 @@
       hintBtn.classList.remove('opacity-50');
     }
     
-    function startQuiz() {
-      currentScore = 0;
-      shuffleArray(quizData);
-      answers = new Array(quizData.length).fill(null);
-      currentQuestion = 0;
-      document.getElementById('current-score').textContent = currentScore;
-      showQuestion();
-    }
-    
-    document.getElementById('back-btn').addEventListener('click', function() {
-      if (currentQuestion > 0) {
-        currentQuestion--;
-        showQuestion();
-      }
-    });
+    document.getElementById('back-btn').addEventListener('click', backQuestion);
 
-    document.getElementById('next-btn').addEventListener('click', function() {
-      const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+    function showFeedback(isCorrect, explanation) {
+      const feedbackEl = document.getElementById('answer-feedback');
+      const explanationEl = document.getElementById('explanation');
+      const showExplanationBtn = document.getElementById('show-explanation-btn');
       
-      if (!selectedAnswer) {
+      feedbackEl.innerHTML = isCorrect ? 
+        '<div class="text-green-600 font-semibold">✓ Correct!</div>' :
+        '<div class="text-red-600 font-semibold">✗ Incorrect</div>';
+      
+      if (explanation) {
+        explanationEl.textContent = explanation;
+        if (currentMode === 'study') {
+          // In study mode, show explanation immediately
+          explanationEl.classList.remove('hidden');
+          showExplanationBtn.style.display = 'none';
+        } else {
+          // In quiz mode, show button to reveal explanation
+          showExplanationBtn.style.display = 'inline-block';
+        }
+      }
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected && currentQuestion < quizData.length - 1) {
         document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">Please select an answer!</div>';
         return;
       }
       
-      const selectedValue = selectedAnswer.value;
-      const currentQ = quizData[currentQuestion];
-      const isCorrect = selectedValue === currentQ.correct;
-      
-      // In quiz mode, show feedback and explanation button
-      if (currentMode === 'quiz') {
-        if (isCorrect) {
-          document.getElementById('answer-feedback').innerHTML = '<div class="text-green-600 font-medium">✓ Correct!</div>';
-          // Only increment score if this question hasn't been answered correctly before
-          if (!answers[currentQuestion] || answers[currentQuestion] !== currentQ.correct) {
-            score++;
-          }
-        } else {
-          document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">✗ Incorrect</div>';
+      if (selected) {
+        const isCorrect = selected.value === quizData[currentQuestion].correct;
+        
+        // Store answer with additional metadata (if not already stored in study mode)
+        if (!answers[currentQuestion]) {
+          answers[currentQuestion] = {
+            answer: selected.value,
+            isCorrect: isCorrect,
+            feedback: true,
+            hintUsed: hintsUsed.includes(currentQuestion)
+          };
         }
         
-        // Show explanation button in quiz mode
-        document.getElementById('show-explanation-btn').classList.remove('hidden');
-        updateScoreDisplay();
+        // Calculate current score for quiz mode
+        if (currentMode === 'quiz') {
+          calculateCurrentScore();
+        }
+        
+        // Show immediate feedback only in quiz mode (study mode handles this on click)
+        if (currentMode === 'quiz') {
+          showFeedback(isCorrect, quizData[currentQuestion].explanation);
+        }
       }
       
-      // Store the answer after score calculation
-      answers[currentQuestion] = selectedValue;
-      
-      // Move to next question or show results
       if (currentQuestion < quizData.length - 1) {
         currentQuestion++;
         showQuestion();
       } else {
         showResults();
       }
-    });
+    }
+
+    function backQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion();
+      }
+    }
+
+    document.getElementById('next-btn').addEventListener('click', nextQuestion);
 
     function showResults() {
       document.getElementById('quiz-container').style.display = 'none';
       document.getElementById('results-container').style.display = 'block';
       
-      // Use tracked score instead of recalculating
-      let finalScore = currentScore;
-      const resultsTable = document.getElementById('results-table');
+      let finalScore = 0;
+      let categoryStats = {};
       
-      // Add hint usage column if in quiz mode
-      let tableHeaders = `
-        <tr>
-          <th>Question</th>
-          <th>Your Answer</th>
-          <th>Correct Answer</th>
-          <th>Status</th>
-          ${currentMode === 'quiz' ? '<th>Hint Used</th>' : ''}
-        </tr>
-      `;
-      resultsTable.innerHTML = tableHeaders;
-      
-      quizData.forEach((question, index) => {
-        const userAnswer = answers[index] || 'Not answered';
-        const isCorrect = userAnswer === question.correct;
+      // Calculate performance statistics
+      quizData.forEach((q, index) => {
+        const answer = answers[index];
+        const isCorrect = answer && answer.isCorrect;
+        if (isCorrect) finalScore++;
         
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${question.question}</td>
-          <td>${userAnswer}</td>
-          <td>${question.correct}</td>
-          <td><span class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</span></td>
-          ${currentMode === 'quiz' ? `<td>${hintsUsedInQuestions[index] ? 'Yes' : 'No'}</td>` : ''}
-        `;
-        resultsTable.appendChild(row);
+        // Category performance tracking
+        const category = q.category || 'General';
+        if (!categoryStats[category]) {
+          categoryStats[category] = { correct: 0, total: 0 };
+        }
+        categoryStats[category].total++;
+        if (isCorrect) categoryStats[category].correct++;
       });
       
-      document.getElementById('final-score').textContent = finalScore;
-      document.getElementById('percentage').textContent = Math.round((finalScore / quizData.length) * 100);
-      
-      // Add performance summary
-      const performanceEl = document.getElementById('performance-summary');
+      // Update score display
       const percentage = Math.round((finalScore / quizData.length) * 100);
+      document.getElementById('final-score').textContent = finalScore;
+      document.getElementById('percentage').textContent = percentage;
+      
+      // Show performance grade with mode consideration
+      const gradeEl = document.getElementById('performance-grade');
       const messageEl = document.getElementById('performance-message');
       
       let modeBonus = currentMode === 'study' ? ' (Study Mode)' : '';
-      let hintPenalty = currentMode === 'quiz' && hintsUsed > 0 ? ` (${hintsUsed} hint${hintsUsed > 1 ? 's' : ''} used)` : '';
+      let hintPenalty = hintsUsed.length > 0 ? ` (${hintsUsed.length} hints used)` : '';
       
       if (percentage >= 90) {
-        performanceEl.textContent = 'Outstanding! 🌟';
-        performanceEl.className = 'text-3xl font-bold text-green-600 mb-4';
-        messageEl.textContent = 'Excellent mastery of terminal systems concepts!' + modeBonus + hintPenalty;
+        gradeEl.textContent = 'Excellent! �' + modeBonus;
+        gradeEl.className = 'text-2xl font-bold mb-2 text-green-600';
+        messageEl.textContent = 'Outstanding performance! You have mastered terminal systems concepts.' + hintPenalty;
       } else if (percentage >= 80) {
-        performanceEl.textContent = 'Great Job! 👍';
-        performanceEl.className = 'text-3xl font-bold text-green-600 mb-4';
-        messageEl.textContent = 'Strong understanding of terminal systems!' + modeBonus + hintPenalty;
+        gradeEl.textContent = 'Very Good! 🎯' + modeBonus;
+        gradeEl.className = 'text-2xl font-bold mb-2 text-blue-600';
+        messageEl.textContent = 'Great job! You have a strong understanding of terminal systems.' + hintPenalty;
       } else if (percentage >= 70) {
-        performanceEl.textContent = 'Good Work! 📈';
-        performanceEl.className = 'text-3xl font-bold text-yellow-600 mb-4';
-        messageEl.textContent = 'Solid foundation, review missed topics for improvement.' + modeBonus + hintPenalty;
+        gradeEl.textContent = 'Good �' + modeBonus;
+        gradeEl.className = 'text-2xl font-bold mb-2 text-yellow-600';
+        messageEl.textContent = 'Good work! Consider reviewing some topics for improvement.' + hintPenalty;
       } else {
-        performanceEl.textContent = 'Keep Learning! 📚';
-        performanceEl.className = 'text-3xl font-bold text-orange-600 mb-4';
+        gradeEl.textContent = 'Needs Review 📚' + modeBonus;
+        gradeEl.className = 'text-2xl font-bold mb-2 text-red-600';
         messageEl.textContent = 'Additional study recommended. Try Study Mode to learn without pressure.' + hintPenalty;
       }
+      
+      // Category performance
+      const categoryContainer = document.getElementById('category-performance');
+      if (categoryContainer) {
+        categoryContainer.innerHTML = '';
+        Object.entries(categoryStats).forEach(([category, stats]) => {
+          const categoryCard = document.createElement('div');
+          const categoryPercentage = Math.round((stats.correct / stats.total) * 100);
+          categoryCard.className = 'bg-white p-4 rounded-lg border text-center';
+          categoryCard.innerHTML = `
+            <div class="font-semibold text-gray-800">${category}</div>
+            <div class="text-2xl font-bold ${categoryPercentage >= 80 ? 'text-green-600' : categoryPercentage >= 60 ? 'text-yellow-600' : 'text-red-600'}">${stats.correct}/${stats.total}</div>
+            <div class="text-sm text-gray-600">${categoryPercentage}%</div>
+          `;
+          categoryContainer.appendChild(categoryCard);
+        });
+      }
+      
+      // Update results table with hint usage
+      const table = document.getElementById('results-table');
+      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th><th>Hints</th></tr>';
+      quizData.forEach((q, index) => {
+        const answer = answers[index];
+        const userAnswer = answer ? answer.answer : 'Not answered';
+        const isCorrect = answer ? answer.isCorrect : false;
+        const hintUsed = answer && answer.hintUsed ? '💡' : '';
+        html += `<tr>
+          <td>${q.question}</td>
+          <td><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">${q.category || 'General'}</span></td>
+          <td>${userAnswer}</td>
+          <td>${q.correct}</td>
+          <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
+          <td class="text-center">${hintUsed}</td>
+        </tr>`;
+      });
+      table.innerHTML = html;
     }
 
     document.getElementById('print-btn').addEventListener('click', function() {
@@ -953,7 +992,7 @@
       document.getElementById('quiz-content').style.display = 'none';
     }
 
-    function startQuizMode() {
+    function startQuiz() {
       // Hide mode selection, show quiz content
       document.getElementById('mode-selection').style.display = 'none';
       document.getElementById('quiz-content').style.display = 'block';

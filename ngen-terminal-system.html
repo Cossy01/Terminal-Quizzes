@@ -416,7 +416,7 @@
     <div class="text-center mb-8">
       <p class="text-lg text-gray-600 mb-6">Choose your learning mode:</p>
       <div class="flex flex-col md:flex-row gap-6 justify-center">
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="startQuiz('study')">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('study')">>
           <div class="text-blue-600 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -425,7 +425,7 @@
           <h3 class="text-xl font-bold text-blue-800 mb-2">Study Mode</h3>
           <p class="text-blue-700">Learn with immediate feedback, hints, and explanations. Perfect for understanding new concepts.</p>
         </div>
-        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="startQuiz('quiz')">
+        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('quiz')">>
           <div class="text-green-600 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -720,6 +720,7 @@
     let currentMode = 'study';
     let studyModeAnswers = [];
     let hintsUsed = [];
+    let hintsRemaining = 3;
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -750,8 +751,42 @@
       }
     }
 
-    function startQuiz(mode) {
+    function selectMode(mode) {
+      console.log('selectMode called with:', mode);
+      try {
+        setMode(mode);
+        startQuiz();
+      } catch (error) {
+        console.error('Error in selectMode:', error);
+      }
+    }
+
+    // Make selectMode globally accessible immediately
+    window.selectMode = selectMode;
+
+    function setMode(mode) {
       currentMode = mode;
+      const modeIndicator = document.getElementById('mode-indicator');
+      const hintsRemainingEl = document.getElementById('hints-remaining');
+      const hintSection = document.getElementById('hint-section');
+      
+      if (mode === 'study') {
+        modeIndicator.textContent = '📚 Study Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
+        if (hintsRemainingEl) hintsRemainingEl.style.display = 'none';
+        if (hintSection) hintSection.style.display = 'block'; // Show hints in study mode too
+      } else {
+        modeIndicator.textContent = '🎯 Quiz Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
+        if (hintsRemainingEl) {
+          hintsRemainingEl.style.display = 'block';
+          hintsRemainingEl.textContent = `💡 Hints: ${hintsRemaining}`;
+        }
+        if (hintSection) hintSection.style.display = 'block'; // Show hints in quiz mode
+      }
+    }
+
+    function startQuiz() {
       document.getElementById('mode-selection').style.display = 'none';
       document.getElementById('quiz-container').style.display = 'block';
       
@@ -939,26 +974,29 @@
       document.getElementById('final-score').textContent = finalScore;
       document.getElementById('percentage').textContent = percentage;
       
-      // Show performance grade
+      // Show performance grade with mode consideration
       const gradeEl = document.getElementById('performance-grade');
       const messageEl = document.getElementById('performance-message');
       
+      let modeBonus = currentMode === 'study' ? ' (Study Mode)' : '';
+      let hintPenalty = hintsUsed.length > 0 ? ` (${hintsUsed.length} hints used)` : '';
+      
       if (percentage >= 90) {
-        gradeEl.textContent = 'Excellent! 🏆';
-        gradeEl.className = 'text-2xl font-bold mb-2 text-purple-600';
-        messageEl.textContent = 'Outstanding performance! You have mastered nGen terminal operations.';
+        gradeEl.textContent = 'Excellent! 🏆' + modeBonus;
+        gradeEl.className = 'text-2xl font-bold mb-2 text-green-600';
+        messageEl.textContent = 'Outstanding performance! You have mastered nGen terminal operations.' + hintPenalty;
       } else if (percentage >= 80) {
-        gradeEl.textContent = 'Very Good! 🎯';
+        gradeEl.textContent = 'Very Good! 🎯' + modeBonus;
         gradeEl.className = 'text-2xl font-bold mb-2 text-blue-600';
-        messageEl.textContent = 'Great job! You have a strong understanding of nGen system concepts.';
+        messageEl.textContent = 'Great job! You have a strong understanding of nGen system concepts.' + hintPenalty;
       } else if (percentage >= 70) {
-        gradeEl.textContent = 'Good 👍';
+        gradeEl.textContent = 'Good 👍' + modeBonus;
         gradeEl.className = 'text-2xl font-bold mb-2 text-yellow-600';
-        messageEl.textContent = 'Good work! Consider reviewing some nGen topics for improvement.';
+        messageEl.textContent = 'Good work! Consider reviewing some nGen topics for improvement.' + hintPenalty;
       } else {
-        gradeEl.textContent = 'Needs Review 📚';
+        gradeEl.textContent = 'Needs Review 📚' + modeBonus;
         gradeEl.className = 'text-2xl font-bold mb-2 text-red-600';
-        messageEl.textContent = 'Additional study recommended. Focus on the nGen areas you missed.';
+        messageEl.textContent = 'Additional study recommended. Focus on the nGen areas you missed.' + hintPenalty;
       }
       
       // Category performance
@@ -976,45 +1014,53 @@
         categoryContainer.appendChild(categoryCard);
       });
       
-      // Update results table
+      // Update results table with hint usage
       const table = document.getElementById('results-table');
-      const modeIndicator = document.getElementById('mode-indicator');
-      
-      // Set mode indicator
-      modeIndicator.textContent = currentMode === 'study' ? 'Study Mode Results' : 'Quiz Mode Results';
-      
-      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th>';
-      
-      if (currentMode === 'study') {
-        html += '<th>Hint Used</th>';
-      }
-      
-      html += '</tr>';
-      
+      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th><th>Hints</th></tr>';
       quizData.forEach((q, index) => {
         const answer = answers[index];
         const userAnswer = answer ? answer.answer : 'Not answered';
         const isCorrect = answer ? answer.isCorrect : false;
+        const hintUsed = answer && answer.hintUsed ? '💡' : '';
         html += `<tr>
           <td>${q.question}</td>
           <td><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">${q.category || 'General'}</span></td>
           <td>${userAnswer}</td>
           <td>${q.correct}</td>
-          <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>`;
-        
-        if (currentMode === 'study') {
-          html += `<td>${hintsUsed[index] ? '💡 Yes' : 'No'}</td>`;
-        }
-        
-        html += '</tr>';
+          <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
+          <td class="text-center">${hintUsed}</td>
+        </tr>`;
       });
       table.innerHTML = html;
     }
 
+    function resetMode() {
+      console.log('Resetting mode - showing mode selection');
+      
+      // Reset variables
+      currentQuestion = 0;
+      answers = [];
+      currentScore = 0;
+      hintsRemaining = 3;
+      hintsUsed = [];
+      
+      // Show mode selection, hide quiz content
+      const modeSelection = document.getElementById('mode-selection');
+      const quizContent = document.getElementById('quiz-content');
+      
+      if (modeSelection && quizContent) {
+        modeSelection.style.display = 'block';
+        quizContent.style.display = 'none';
+        console.log('Mode selection shown, quiz content hidden');
+      } else {
+        console.error('Mode selection or quiz content elements not found');
+      }
+    }
+
     function restartQuiz() {
       document.getElementById('results-container').style.display = 'none';
-      document.getElementById('mode-selection').style.display = 'block';
-      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      resetMode();
     }
 
     function printResults() { window.print(); }

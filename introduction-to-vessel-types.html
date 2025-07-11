@@ -414,7 +414,7 @@
     <div class="text-center mb-8">
       <p class="text-lg text-gray-600 mb-6">Choose your learning mode:</p>
       <div class="flex flex-col md:flex-row gap-6 justify-center">
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="startQuiz('study')">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('study')">>
           <div class="text-blue-600 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -423,7 +423,7 @@
           <h3 class="text-xl font-bold text-blue-800 mb-2">Study Mode</h3>
           <p class="text-blue-700">Learn with immediate feedback, hints, and explanations. Perfect for understanding new concepts.</p>
         </div>
-        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="startQuiz('quiz')">
+        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all duration-300 cursor-pointer transform hover:scale-105" onclick="selectMode('quiz')">>
           <div class="text-green-600 mb-4">
             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -607,6 +607,7 @@
     let currentMode = 'study';
     let studyModeAnswers = [];
     let hintsUsed = [];
+    let hintsRemaining = 3;
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -615,8 +616,42 @@
       }
     }
 
-    function startQuiz(mode) {
+    function selectMode(mode) {
+      console.log('selectMode called with:', mode);
+      try {
+        setMode(mode);
+        startQuiz();
+      } catch (error) {
+        console.error('Error in selectMode:', error);
+      }
+    }
+
+    // Make selectMode globally accessible immediately
+    window.selectMode = selectMode;
+
+    function setMode(mode) {
       currentMode = mode;
+      const modeIndicator = document.getElementById('mode-indicator');
+      const hintsRemainingEl = document.getElementById('hints-remaining');
+      const hintSection = document.getElementById('hint-section');
+      
+      if (mode === 'study') {
+        modeIndicator.textContent = '📚 Study Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700';
+        if (hintsRemainingEl) hintsRemainingEl.style.display = 'none';
+        if (hintSection) hintSection.style.display = 'block'; // Show hints in study mode too
+      } else {
+        modeIndicator.textContent = '🎯 Quiz Mode';
+        modeIndicator.className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700';
+        if (hintsRemainingEl) {
+          hintsRemainingEl.style.display = 'block';
+          hintsRemainingEl.textContent = `💡 Hints: ${hintsRemaining}`;
+        }
+        if (hintSection) hintSection.style.display = 'block'; // Show hints in quiz mode
+      }
+    }
+
+    function startQuiz() {
       currentScore = 0;
       document.getElementById('mode-selection').style.display = 'none';
       document.getElementById('quiz-container').style.display = 'block';
@@ -762,24 +797,60 @@
       }
     });
 
-    document.getElementById('back-btn').addEventListener('click', function() {
-      if (currentQuestion > 0) {
-        currentQuestion--;
-        showQuestion();
-      }
-    });
+    document.getElementById('back-btn').addEventListener('click', backQuestion);
 
-    document.getElementById('next-btn').addEventListener('click', function() {
-      const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+    function showFeedback(isCorrect, explanation) {
+      const feedbackEl = document.getElementById('answer-feedback');
+      const explanationEl = document.getElementById('explanation');
+      const showExplanationBtn = document.getElementById('show-explanation-btn');
       
-      if (!selectedAnswer) {
-        document.getElementById('feedback').innerHTML = '<div class="text-red-600 font-medium">Please select an answer!</div>';
+      feedbackEl.innerHTML = isCorrect ? 
+        '<div class="text-green-600 font-semibold">✓ Correct!</div>' :
+        '<div class="text-red-600 font-semibold">✗ Incorrect</div>';
+      
+      if (explanation) {
+        explanationEl.textContent = explanation;
+        if (currentMode === 'study') {
+          // In study mode, show explanation immediately
+          explanationEl.classList.remove('hidden');
+          showExplanationBtn.style.display = 'none';
+        } else {
+          // In quiz mode, show button to reveal explanation
+          showExplanationBtn.style.display = 'inline-block';
+        }
+      }
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected && currentQuestion < quizData.length - 1) {
+        document.getElementById('answer-feedback').innerHTML = '<div class="text-red-600 font-medium">Please select an answer!</div>';
         return;
       }
       
-      // Store the answer and calculate score
-      answers[currentQuestion] = newAnswer;
-      calculateCurrentScore();
+      if (selected) {
+        const isCorrect = selected.value === quizData[currentQuestion].correct;
+        
+        // Store answer with additional metadata (if not already stored in study mode)
+        if (!answers[currentQuestion]) {
+          answers[currentQuestion] = {
+            answer: selected.value,
+            isCorrect: isCorrect,
+            feedback: true,
+            hintUsed: hintsUsed.includes(currentQuestion)
+          };
+        }
+        
+        // Calculate current score for quiz mode
+        if (currentMode === 'quiz') {
+          calculateCurrentScore();
+        }
+        
+        // Show immediate feedback only in quiz mode (study mode handles this on click)
+        if (currentMode === 'quiz') {
+          showFeedback(isCorrect, quizData[currentQuestion].explanation);
+        }
+      }
       
       if (currentQuestion < quizData.length - 1) {
         currentQuestion++;
@@ -787,63 +858,104 @@
       } else {
         showResults();
       }
-    });
+    }
+
+    function backQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion();
+      }
+    }
+
+    document.getElementById('next-btn').addEventListener('click', nextQuestion);
 
     function showResults() {
       document.getElementById('quiz-container').style.display = 'none';
       document.getElementById('results-container').style.display = 'block';
       
-      let score = 0;
-      const resultsTable = document.getElementById('results-table');
-      const modeIndicator = document.getElementById('mode-indicator');
+      let finalScore = 0;
+      let categoryStats = {};
       
-      // Calculate score
-      quizData.forEach((question, index) => {
-        const userAnswer = answers[index] || 'Not answered';
-        const isCorrect = userAnswer === question.correct;
-        if (isCorrect) score++;
+      // Calculate performance statistics
+      quizData.forEach((q, index) => {
+        const answer = answers[index];
+        const isCorrect = answer && answer.isCorrect;
+        if (isCorrect) finalScore++;
+        
+        // Category performance tracking
+        const category = q.category || 'General';
+        if (!categoryStats[category]) {
+          categoryStats[category] = { correct: 0, total: 0 };
+        }
+        categoryStats[category].total++;
+        if (isCorrect) categoryStats[category].correct++;
       });
       
-      // Set mode indicator
-      modeIndicator.textContent = currentMode === 'study' ? 'Study Mode Results' : 'Quiz Mode Results';
+      // Update score display
+      const percentage = Math.round((finalScore / quizData.length) * 100);
+      document.getElementById('final-score').textContent = finalScore;
+      document.getElementById('percentage').textContent = percentage;
       
-      let tableHeaders = `
-        <tr>
-          <th>Question</th>
-          <th>Your Answer</th>
-          <th>Correct Answer</th>
-          <th>Status</th>
-      `;
+      // Show performance grade with mode consideration
+      const gradeEl = document.getElementById('performance-grade');
+      const messageEl = document.getElementById('performance-message');
       
-      if (currentMode === 'study') {
-        tableHeaders += `<th>Hint Used</th>`;
+      let modeBonus = currentMode === 'study' ? ' (Study Mode)' : '';
+      let hintPenalty = hintsUsed.length > 0 ? ` (${hintsUsed.length} hints used)` : '';
+      
+      if (percentage >= 90) {
+        gradeEl.textContent = 'Excellent! 🏆' + modeBonus;
+        gradeEl.className = 'text-2xl font-bold mb-2 text-green-600';
+        messageEl.textContent = 'Outstanding performance! You have mastered vessel types concepts.' + hintPenalty;
+      } else if (percentage >= 80) {
+        gradeEl.textContent = 'Very Good! 🎯' + modeBonus;
+        gradeEl.className = 'text-2xl font-bold mb-2 text-blue-600';
+        messageEl.textContent = 'Great job! You have a strong understanding of vessel types.' + hintPenalty;
+      } else if (percentage >= 70) {
+        gradeEl.textContent = 'Good 👍' + modeBonus;
+        gradeEl.className = 'text-2xl font-bold mb-2 text-yellow-600';
+        messageEl.textContent = 'Good work! Consider reviewing some topics for improvement.' + hintPenalty;
+      } else {
+        gradeEl.textContent = 'Needs Review 📚' + modeBonus;
+        gradeEl.className = 'text-2xl font-bold mb-2 text-red-600';
+        messageEl.textContent = 'Additional study recommended. Try Study Mode to learn without pressure.' + hintPenalty;
       }
       
-      tableHeaders += `</tr>`;
-      resultsTable.innerHTML = tableHeaders;
+      // Category performance
+      const categoryContainer = document.getElementById('category-performance');
+      if (categoryContainer) {
+        categoryContainer.innerHTML = '';
+        Object.entries(categoryStats).forEach(([category, stats]) => {
+          const categoryCard = document.createElement('div');
+          const categoryPercentage = Math.round((stats.correct / stats.total) * 100);
+          categoryCard.className = 'bg-white p-4 rounded-lg border text-center';
+          categoryCard.innerHTML = `
+            <div class="font-semibold text-gray-800">${category}</div>
+            <div class="text-2xl font-bold ${categoryPercentage >= 80 ? 'text-green-600' : categoryPercentage >= 60 ? 'text-yellow-600' : 'text-red-600'}">${stats.correct}/${stats.total}</div>
+            <div class="text-sm text-gray-600">${categoryPercentage}%</div>
+          `;
+          categoryContainer.appendChild(categoryCard);
+        });
+      }
       
-      quizData.forEach((question, index) => {
-        const userAnswer = answers[index] || 'Not answered';
-        const isCorrect = userAnswer === question.correct;
-        
-        const row = document.createElement('tr');
-        let rowContent = `
-          <td>${question.question}</td>
+      // Update results table with hint usage
+      const table = document.getElementById('results-table');
+      let html = '<tr><th>Question</th><th>Category</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th><th>Hints</th></tr>';
+      quizData.forEach((q, index) => {
+        const answer = answers[index];
+        const userAnswer = answer ? answer.answer : 'Not answered';
+        const isCorrect = answer ? answer.isCorrect : false;
+        const hintUsed = answer && answer.hintUsed ? '💡' : '';
+        html += `<tr>
+          <td>${q.question}</td>
+          <td><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">${q.category || 'General'}</span></td>
           <td>${userAnswer}</td>
-          <td>${question.correct}</td>
-          <td><span class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</span></td>
-        `;
-        
-        if (currentMode === 'study') {
-          rowContent += `<td>${hintsUsed[index] ? '💡 Yes' : 'No'}</td>`;
-        }
-        
-        row.innerHTML = rowContent;
-        resultsTable.appendChild(row);
+          <td>${q.correct}</td>
+          <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
+          <td class="text-center">${hintUsed}</td>
+        </tr>`;
       });
-      
-      document.getElementById('final-score').textContent = score;
-      document.getElementById('percentage').textContent = Math.round((score / quizData.length) * 100);
+      table.innerHTML = html;
     }
 
     document.getElementById('print-btn').addEventListener('click', function() {
